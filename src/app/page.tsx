@@ -113,8 +113,8 @@ export default function Home() {
           setSystemSettings(fetchedSettings);
           
           // Seed the calculator factors with default settings
-          setCustomReturnRate(fetchedSettings.returnRate * 100);
-          setCustomRiskFactor(fetchedSettings.riskFactor * 100);
+          setCustomReturnRate((fetchedSettings.returnRate * 100).toString());
+          setCustomRiskFactor((fetchedSettings.riskFactor * 100).toString());
         })
         .catch((err) => console.error('Error fetching data:', err))
         .finally(() => setDbLoading(false));
