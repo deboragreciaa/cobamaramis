@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/firebase';
 import { Room, staticRooms } from '@/lib/rooms-data';
-import { Client, Submission, Booking, Survey, ClosedSurveySlot } from '@/lib/types';
+import { Client, Submission, Booking, Survey, ClosedSurveySlot, AuditLog } from '@/lib/types';
 import { validateBookingLock } from '@/lib/validation';
 
 export interface SystemSettings {
@@ -154,6 +154,7 @@ let mockSubmissions: Submission[] = [];
 let mockBookings: Booking[] = [];
 let mockSurveys: Survey[] = [];
 let mockClosedSlots: ClosedSurveySlot[] = [];
+let mockAuditLogs: AuditLog[] = [];
 
 /**
  * Clients actions
@@ -174,6 +175,7 @@ export async function getClients(): Promise<Client[]> {
 export async function createClient(clientData: Omit<Client, 'id' | 'createdAt'>): Promise<Client> {
   const newClient: Omit<Client, 'id'> = {
     ...clientData,
+    isActive: true,
     createdAt: new Date().toISOString(),
   };
 
@@ -190,6 +192,63 @@ export async function createClient(clientData: Omit<Client, 'id' | 'createdAt'>)
   return {
     id: docRef.id,
     ...newClient
+  };
+}
+
+export async function updateClient(id: string, clientData: Partial<Omit<Client, 'id' | 'createdAt'>>): Promise<boolean> {
+  if (!isFirebaseConfigured) {
+    const idx = mockClients.findIndex(c => c.id === id);
+    if (idx !== -1) {
+      mockClients[idx] = { ...mockClients[idx], ...clientData };
+      return true;
+    }
+    return false;
+  }
+  try {
+    await db.collection('clients').doc(id).update(clientData);
+    return true;
+  } catch (error) {
+    console.error('Failed to update client:', error);
+    return false;
+  }
+}
+
+export async function deleteClientPermanently(id: string): Promise<boolean> {
+  if (!isFirebaseConfigured) {
+    const initialLen = mockClients.length;
+    mockClients = mockClients.filter(c => c.id !== id);
+    return mockClients.length < initialLen;
+  }
+  try {
+    await db.collection('clients').doc(id).delete();
+    return true;
+  } catch (error) {
+    console.error('Failed to delete client permanently:', error);
+    return false;
+  }
+}
+
+export async function createAuditLog(action: string, details: string): Promise<AuditLog> {
+  const log: Omit<AuditLog, 'id'> = {
+    action,
+    details,
+    createdAt: new Date().toISOString(),
+  };
+  
+  if (!isFirebaseConfigured) {
+    const newLog: AuditLog = {
+      id: 'mock-log-' + Math.random().toString(36).substring(2, 11),
+      ...log
+    };
+    mockAuditLogs.push(newLog);
+    console.log(`[AUDIT LOG] ${action}: ${details}`);
+    return newLog;
+  }
+  
+  const docRef = await db.collection('audit_logs').add(log);
+  return {
+    id: docRef.id,
+    ...log
   };
 }
 

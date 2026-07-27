@@ -8,6 +8,9 @@ import {
   SystemSettings,
   getClients,
   createClient,
+  updateClient,
+  deleteClientPermanently,
+  createAuditLog,
   getSubmissions,
   createSubmission,
   updateSubmissionStage,
@@ -151,6 +154,11 @@ export default function Home() {
   const [clientPicEmail, setClientPicEmail] = useState('');
   const [clientPicPhone, setClientPicPhone] = useState('');
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
+  const [editingClientId, setEditingClientId] = useState<string | null>(null);
+  
+  const activeClients = useMemo(() => {
+    return clients.filter((c) => c.isActive !== false);
+  }, [clients]);
   
   // F4 Submission Form States
   const [subClientId, setSubClientId] = useState('');
@@ -245,6 +253,104 @@ export default function Home() {
     } catch (err) {
       console.error(err);
       alert('Gagal menambahkan klien.');
+    }
+  };
+
+  const handleUpdateClient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingClientId) return;
+    if (!clientCompanyName || !clientPicName || !clientPicEmail || !clientPicPhone) {
+      alert('Semua field wajib diisi.');
+      return;
+    }
+    try {
+      const success = await updateClient(editingClientId, {
+        companyName: clientCompanyName,
+        picName: clientPicName,
+        picEmail: clientPicEmail,
+        picPhone: clientPicPhone,
+      });
+      if (success) {
+        await createAuditLog(
+          'Edit Klien',
+          `Mengubah data klien ID ${editingClientId}: ${clientCompanyName} (PIC: ${clientPicName})`
+        );
+        setClients((prev) =>
+          prev.map((c) =>
+            c.id === editingClientId
+              ? {
+                  ...c,
+                  companyName: clientCompanyName,
+                  picName: clientPicName,
+                  picEmail: clientPicEmail,
+                  picPhone: clientPicPhone,
+                }
+              : c
+          ).sort((a, b) => a.companyName.localeCompare(b.companyName))
+        );
+        // Reset form
+        setClientCompanyName('');
+        setClientPicName('');
+        setClientPicEmail('');
+        setClientPicPhone('');
+        setEditingClientId(null);
+        alert('Perubahan data klien berhasil disimpan!');
+      } else {
+        alert('Gagal menyimpan perubahan klien.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menyimpan perubahan klien.');
+    }
+  };
+
+  const handleDeleteClient = async (client: Client) => {
+    const confirmDelete = window.confirm(`Yakin hapus klien ${client.companyName}?`);
+    if (!confirmDelete) return;
+
+    const hasSubmissions = submissions.some((sub) => sub.clientId === client.id);
+
+    if (hasSubmissions) {
+      const confirmDeactivate = window.confirm(
+        `Klien "${client.companyName}" tidak bisa dihapus permanen karena masih memiliki pengajuan sewa terkait.\n\nApakah Anda bersedia menonaktifkan klien ini saja? (Klien akan diarsipkan lunak dan disembunyikan dari daftar utama)`
+      );
+      if (!confirmDeactivate) return;
+
+      try {
+        const success = await updateClient(client.id, { isActive: false });
+        if (success) {
+          await createAuditLog(
+            'Deaktivasi Klien (Soft Delete)',
+            `Menonaktifkan klien ID ${client.id}: ${client.companyName}`
+          );
+          setClients((prev) =>
+            prev.map((c) => (c.id === client.id ? { ...c, isActive: false } : c))
+          );
+          alert(`Klien ${client.companyName} dinonaktifkan.`);
+        } else {
+          alert('Gagal menonaktifkan klien.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Gagal menonaktifkan klien.');
+      }
+    } else {
+      try {
+        const success = await deleteClientPermanently(client.id);
+        if (success) {
+          await createAuditLog(
+            'Hapus Klien Permanen',
+            `Menghapus klien permanen ID ${client.id}: ${client.companyName}`
+          );
+          setClients((prev) => prev.filter((c) => c.id !== client.id));
+          alert(`Klien ${client.companyName} berhasil dihapus permanen.`);
+        } else {
+          alert('Gagal menghapus klien.');
+        }
+      } catch (err) {
+        console.error(err);
+        alert('Gagal menghapus klien.');
+      }
     }
   };
 
@@ -946,9 +1052,9 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   <Users className={`h-4 w-4 shrink-0 ${activeTab === 'clients' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
                   <span>Basis Data Klien</span>
                 </div>
-                {clients.length > 0 && (
+                {activeClients.length > 0 && (
                   <span className="bg-slate-100 text-slate-500 rounded px-1 text-[9px] font-extrabold">
-                    {clients.length}
+                    {activeClients.length}
                   </span>
                 )}
               </button>
@@ -1764,13 +1870,22 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               <div className="lg:col-span-1">
                 <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
                   <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
-                    <Users className="h-4 w-4 text-[#0073C2]" />
-                    Tambah Klien Baru
+                    {editingClientId ? (
+                      <>
+                        <Settings className="h-4 w-4 text-yellow-500" />
+                        <span>Edit Klien</span>
+                      </>
+                    ) : (
+                      <>
+                        <Users className="h-4 w-4 text-[#0073C2]" />
+                        <span>Tambah Klien Baru</span>
+                      </>
+                    )}
                   </h2>
                   {role !== 'PENGINPUT' ? (
                     <p className="text-xs text-slate-500 italic">Peran Pereview hanya memiliki akses baca (Read-only).</p>
                   ) : (
-                    <form onSubmit={handleCreateClient} className="space-y-4">
+                    <form onSubmit={editingClientId ? handleUpdateClient : handleCreateClient} className="space-y-4">
                       <div>
                         <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Instansi / Badan Usaha</label>
                         <input
@@ -1818,12 +1933,35 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       <div className="p-2.5 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg text-[9px] leading-relaxed">
                         ⚠️ <strong>Perlindungan Data Klien (A3)</strong>: Dilarang keras menginput identitas pribadi sensitif seperti NIK, data KTP, paspor, tanggal lahir, atau alamat pribadi.
                       </div>
-                      <button
-                        type="submit"
-                        className="w-full bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
-                      >
-                        Simpan Data Klien
-                      </button>
+                      
+                      <div className="flex flex-col gap-2">
+                        <button
+                          type="submit"
+                          className={`w-full font-bold py-2 rounded-lg text-xs transition-colors shadow-sm ${
+                            editingClientId 
+                              ? 'bg-yellow-400 hover:bg-yellow-500 text-black' 
+                              : 'bg-[#0073C2] hover:bg-[#0284c7] text-white'
+                          }`}
+                        >
+                          {editingClientId ? 'Simpan Perubahan' : 'Simpan Data Klien'}
+                        </button>
+                        
+                        {editingClientId && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingClientId(null);
+                              setClientCompanyName('');
+                              setClientPicName('');
+                              setClientPicEmail('');
+                              setClientPicPhone('');
+                            }}
+                            className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-xs transition-colors"
+                          >
+                            Batal Edit
+                          </button>
+                        )}
+                      </div>
                     </form>
                   )}
                 </div>
@@ -1833,7 +1971,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               <div className="lg:col-span-2 flex flex-col gap-6">
                 <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
                   <h2 className="text-sm font-bold text-slate-800">Daftar Instansi Klien</h2>
-                  {clients.length === 0 ? (
+                  {activeClients.length === 0 ? (
                     <p className="text-xs text-slate-500 italic py-8 text-center">Belum ada data klien terdaftar.</p>
                   ) : (
                     <div className="border border-slate-200 rounded-lg overflow-hidden bg-slate-50/50">
@@ -1847,7 +1985,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
-                          {clients.map((c) => (
+                          {activeClients.map((c) => (
                             <tr
                               key={c.id}
                               className={`hover:bg-slate-50 transition-colors ${
@@ -1861,12 +1999,38 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                 <div className="text-[10px] mt-0.5">{c.picPhone}</div>
                               </td>
                               <td className="p-3 text-right">
-                                <button
-                                  onClick={() => setSelectedClientId(c.id === selectedClientId ? null : c.id)}
-                                  className="px-2.5 py-1 rounded bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold transition-all"
-                                >
-                                  {selectedClientId === c.id ? 'Tutup Riwayat' : 'Lihat Riwayat'}
-                                </button>
+                                <div className="flex flex-wrap justify-end gap-1.5">
+                                  <button
+                                    onClick={() => setSelectedClientId(c.id === selectedClientId ? null : c.id)}
+                                    className="px-2.5 py-1 rounded bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold transition-all text-[10px]"
+                                  >
+                                    {selectedClientId === c.id ? 'Tutup Riwayat' : 'Lihat Riwayat'}
+                                  </button>
+                                  
+                                  {role === 'PENGINPUT' && (
+                                    <>
+                                      <button
+                                        onClick={() => {
+                                          setEditingClientId(c.id);
+                                          setClientCompanyName(c.companyName);
+                                          setClientPicName(c.picName);
+                                          setClientPicEmail(c.picEmail);
+                                          setClientPicPhone(c.picPhone);
+                                        }}
+                                        className="px-2.5 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-bold transition-all text-[10px]"
+                                      >
+                                        Edit
+                                      </button>
+                                      
+                                      <button
+                                        onClick={() => handleDeleteClient(c)}
+                                        className="px-2.5 py-1 rounded bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold transition-all text-[10px]"
+                                      >
+                                        Hapus
+                                      </button>
+                                    </>
+                                  )}
+                                </div>
                               </td>
                             </tr>
                           ))}
@@ -1960,7 +2124,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         >
                           <option value="">-- Pilih Instansi --</option>
-                          {clients.map((c) => (
+                          {activeClients.map((c) => (
                             <option key={c.id} value={c.id}>
                               {c.companyName}
                             </option>
@@ -2021,7 +2185,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     <div className="grid grid-cols-2 gap-3">
                       <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Total Klien</span>
-                        <div className="text-xl font-bold text-slate-800 mt-1">{clients.length}</div>
+                        <div className="text-xl font-bold text-slate-800 mt-1">{activeClients.length}</div>
                       </div>
                       <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
                         <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Total Pengajuan</span>

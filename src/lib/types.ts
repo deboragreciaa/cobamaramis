@@ -5,6 +5,7 @@ export interface Client {
   picEmail: string;
   picPhone: string;
   createdAt: string;
+  isActive?: boolean;
 }
 
 export interface Submission {
@@ -53,4 +54,11 @@ export interface ClosedSurveySlot {
   date: string; // YYYY-MM-DD
   timeSlot: '10:00' | '14:00';
   reason: string;
+}
+
+export interface AuditLog {
+  id: string;
+  action: string;
+  details: string;
+  createdAt: string;
 }
