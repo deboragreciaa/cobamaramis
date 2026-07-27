@@ -550,7 +550,9 @@ export default function Home() {
       const response = await fetch('/loi_template.docx');
       const arrayBuffer = await response.arrayBuffer();
       const zip = new PizZip(arrayBuffer);
-      let docXml = zip.file('word/document.xml').asText();
+      const xmlFile = zip.file('word/document.xml');
+      if (!xmlFile) throw new Error('word/document.xml not found in template');
+      let docXml = xmlFile.asText();
 
       // Replace hardcoded Summerland text with dynamic placeholders in document.xml
       docXml = docXml.replaceAll('S-229/LMAN/LMAN.4/2026', '{loiNomorSurat}');
@@ -643,7 +645,9 @@ export default function Home() {
       const response = await fetch('/agreement_template.docx');
       const arrayBuffer = await response.arrayBuffer();
       const zip = new PizZip(arrayBuffer);
-      let docXml = zip.file('word/document.xml').asText();
+      const xmlFile = zip.file('word/document.xml');
+      if (!xmlFile) throw new Error('word/document.xml not found in template');
+      let docXml = xmlFile.asText();
 
       // Replace hardcoded OJK text with dynamic placeholders in document.xml
       docXml = docXml.replaceAll('PRIN-10/LMAN/2024', '{agrNoOrdinance}');
