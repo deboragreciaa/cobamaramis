@@ -27,6 +27,7 @@ import {
   openSurveySlot
 } from '@/app/actions/db';
 import { Room, getQuickPackages, QuickPackage } from '@/lib/rooms-data';
+import { buildLoiText, buildPerjanjianText } from '@/lib/documents';
 import { calculatePenawaran, formatRupiah, PURPOSE_OPTIONS, PurposeOption } from '@/lib/calculator';
 import { Client, Submission, Booking, Survey, ClosedSurveySlot, BookingType } from '@/lib/types';
 import {
@@ -53,7 +54,8 @@ import {
   Sparkles,
   Clock,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  X
 } from 'lucide-react';
 
 interface QuickPackageNew {
@@ -186,6 +188,90 @@ export default function Home() {
   const [closeSlotDate, setCloseSlotDate] = useState('');
   const [closeSlotTimeSlot, setCloseSlotTimeSlot] = useState<'10:00' | '14:00'>('10:00');
   const [closeSlotReason, setCloseSlotReason] = useState('');
+
+  // F7 & F8 Document Generator States
+  const [activeLoiSubmission, setActiveLoiSubmission] = useState<Submission | null>(null);
+  const [loiNomorSurat, setLoiNomorSurat] = useState('');
+  const [loiNomorSuratPemohon, setLoiNomorSuratPemohon] = useState('');
+  const [loiNamaPenandatangan, setLoiNamaPenandatangan] = useState('Tim LMAN');
+  const [loiJabatanPenandatangan, setLoiJabatanPenandatangan] = useState('Divisi Pengembangan dan Pendayagunaan Properti 1');
+
+  const [activeAgreementSubmission, setActiveAgreementSubmission] = useState<Submission | null>(null);
+  const [agreementNomor, setAgreementNomor] = useState('');
+  const [agreementPihakPertama, setAgreementPihakPertama] = useState('Tim LMAN');
+  const [agreementJabatanPihakPertama, setAgreementJabatanPihakPertama] = useState('Divisi Pengembangan dan Pendayagunaan Properti 1');
+
+  // F7 & F8 Generated Memos
+  const loiTextGenerated = useMemo(() => {
+    if (!activeLoiSubmission) return '';
+    const client = clients.find(c => c.id === activeLoiSubmission.clientId);
+    if (!client) return '';
+
+    const subBookings = bookings.filter(b => b.submissionId === activeLoiSubmission.id);
+    const startDate = subBookings.length > 0 ? subBookings[0].startDate : new Date().toISOString().split('T')[0];
+    const endDate = subBookings.length > 0 ? subBookings[subBookings.length - 1].endDate : new Date().toISOString().split('T')[0];
+
+    const dpp = activeLoiSubmission.estimatedCost / (1 + systemSettings.ppnRate);
+    const ppn = activeLoiSubmission.estimatedCost - dpp;
+
+    return buildLoiText({
+      nomorSurat: loiNomorSurat || '001/LMAN-P3/2026',
+      tanggalSurat: new Date().toISOString().split('T')[0],
+      namaPemohon: client.picName,
+      jabatanPemohon: 'Pimpinan / Perwakilan Instansi',
+      instansiPemohon: client.companyName,
+      nomorSuratPemohon: loiNomorSuratPemohon || '123/EXT/2026',
+      tanggalSuratPemohon: activeLoiSubmission.createdAt.split('T')[0],
+      perihalSuratPemohon: 'Permohonan Pemanfaatan Gedung A.A. Maramis',
+      objekPemanfaatan: 'Ruang Acara Gedung A.A. Maramis (' + activeLoiSubmission.roomCodes.join(', ') + ')',
+      luasAreaSqm: activeLoiSubmission.roomCodes.length * 150,
+      peruntukan: activeLoiSubmission.activityName,
+      tanggalMulai: startDate,
+      tanggalSelesai: endDate,
+      tarifDpp: dpp,
+      ppn: ppn,
+      totalTarif: activeLoiSubmission.estimatedCost,
+      ppnRatePersen: systemSettings.ppnRate * 100,
+      tautanPerjanjian: 'https://cobamaramis.vercel.app/template-perjanjian',
+      tautanTataTertib: 'https://cobamaramis.vercel.app/tata-tertib',
+      namaPenandatangan: loiNamaPenandatangan,
+      jabatanPenandatangan: loiJabatanPenandatangan
+    });
+  }, [activeLoiSubmission, clients, bookings, systemSettings, loiNomorSurat, loiNomorSuratPemohon, loiNamaPenandatangan, loiJabatanPenandatangan]);
+
+  const agreementTextGenerated = useMemo(() => {
+    if (!activeAgreementSubmission) return '';
+    const client = clients.find(c => c.id === activeAgreementSubmission.clientId);
+    if (!client) return '';
+
+    const subBookings = bookings.filter(b => b.submissionId === activeAgreementSubmission.id);
+    const startDate = subBookings.length > 0 ? subBookings[0].startDate : new Date().toISOString().split('T')[0];
+    const endDate = subBookings.length > 0 ? subBookings[subBookings.length - 1].endDate : new Date().toISOString().split('T')[0];
+
+    return buildPerjanjianText({
+      nomorPerjanjian: agreementNomor || '002/SPG/LMAN/2026',
+      tanggalPerjanjian: new Date().toISOString().split('T')[0],
+      nomorSuratPenawaran: loiNomorSurat || '001/LMAN-P3/2026',
+      tanggalSuratPenawaran: activeAgreementSubmission.createdAt.split('T')[0],
+      nomorSuratPermohonan: loiNomorSuratPemohon || '123/EXT/2026',
+      tanggalSuratPermohonan: activeAgreementSubmission.createdAt.split('T')[0],
+      namaPihakPertama: agreementPihakPertama,
+      jabatanPihakPertama: agreementJabatanPihakPertama,
+      namaPihakKedua: client.picName,
+      jabatanPihakKedua: 'Direktur Utama',
+      instansiPihakKedua: client.companyName,
+      alamatPihakKedua: 'Gedung Keuangan Instansi Pihak Kedua',
+      teleponPihakKedua: client.picPhone,
+      objekDeskripsi: 'Ruang Acara Gedung A.A. Maramis (' + activeAgreementSubmission.roomCodes.join(', ') + ')',
+      luasAreaSqm: activeAgreementSubmission.roomCodes.length * 150,
+      peruntukan: activeAgreementSubmission.activityName,
+      tanggalMulai: startDate,
+      tanggalSelesai: endDate,
+      uangSewa: activeAgreementSubmission.estimatedCost,
+      batasBayar: new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      securityDeposit: activeAgreementSubmission.estimatedCost * 0.10
+    });
+  }, [activeAgreementSubmission, clients, bookings, agreementNomor, loiNomorSurat, loiNomorSuratPemohon, agreementPihakPertama, agreementJabatanPihakPertama]);
 
   // Calendar Month Navigation
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -2443,6 +2529,33 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                   {st.label}
                                 </h4>
                                 <p className="text-[10px] mt-0.5 leading-normal">{st.desc}</p>
+                                
+                                {st.t === 3 && isDone && (
+                                  <button
+                                    onClick={() => {
+                                      setLoiNomorSurat('');
+                                      setLoiNomorSuratPemohon('');
+                                      setActiveLoiSubmission(sub);
+                                    }}
+                                    className="mt-2 px-2.5 py-1 rounded bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold text-[9px] transition-all flex items-center gap-1 shadow-sm"
+                                  >
+                                    <FileText className="h-3 w-3" />
+                                    Buat / Lihat LOI (F7)
+                                  </button>
+                                )}
+
+                                {st.t === 6 && isDone && (
+                                  <button
+                                    onClick={() => {
+                                      setAgreementNomor('');
+                                      setActiveAgreementSubmission(sub);
+                                    }}
+                                    className="mt-2 px-2.5 py-1 rounded bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold text-[9px] transition-all flex items-center gap-1 shadow-sm"
+                                  >
+                                    <FileText className="h-3 w-3" />
+                                    Buat / Lihat Perjanjian (F8)
+                                  </button>
+                                )}
                               </div>
                             </div>
                           );
@@ -2862,6 +2975,229 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </button>
                   </div>
                 ))}
+              </div>
+            </div>
+          )}
+
+          {/* F7: LOI MODAL */}
+          {activeLoiSubmission && (
+            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-fadeIn text-slate-700 font-sans">
+                {/* Modal Header */}
+                <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                  <div>
+                    <h3 className="text-sm font-bold text-[#0073C2] flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Penerbitan Surat Penawaran Harga / LOI (F7)
+                    </h3>
+                    <p className="text-[10px] text-slate-400 mt-1">Instansi: {activeLoiSubmission.companyName} · Kegiatan: {activeLoiSubmission.activityName}</p>
+                  </div>
+                  <button
+                    onClick={() => setActiveLoiSubmission(null)}
+                    className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {/* Modal Content */}
+                <div className="flex-1 overflow-y-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Left Parameter Panel */}
+                  <div className="lg:col-span-1 space-y-4">
+                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Sesuaikan Parameter LOI</h4>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Surat Penawaran</label>
+                        <input
+                          type="text"
+                          value={loiNomorSurat}
+                          onChange={(e) => setLoiNomorSurat(e.target.value)}
+                          placeholder="e.g. 001/LMAN-P3/2026"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Surat Permohonan Klien</label>
+                        <input
+                          type="text"
+                          value={loiNomorSuratPemohon}
+                          onChange={(e) => setLoiNomorSuratPemohon(e.target.value)}
+                          placeholder="e.g. 123/EXT/2026"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Penandatangan LMAN</label>
+                        <input
+                          type="text"
+                          value={loiNamaPenandatangan}
+                          onChange={(e) => setLoiNamaPenandatangan(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Jabatan Penandatangan LMAN</label>
+                        <input
+                          type="text"
+                          value={loiJabatanPenandatangan}
+                          onChange={(e) => setLoiJabatanPenandatangan(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-yellow-50 border border-yellow-250 text-yellow-800 rounded-lg text-[9px] leading-relaxed">
+                      💡 <strong>Petunjuk F7</strong>: Nomor surat dan tanda tangan elektronik akan dicantumkan secara otomatis pada keluaran naskah dinas LOI di sebelah kanan.
+                    </div>
+                  </div>
+
+                  {/* Right Document Preview Panel */}
+                  <div className="lg:col-span-2 flex flex-col gap-3 h-[420px] lg:h-auto">
+                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Pratinjau Naskah LOI</h4>
+                    <textarea
+                      readOnly
+                      value={loiTextGenerated}
+                      className="flex-1 w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-[10px] font-mono leading-normal text-slate-800 resize-none focus:outline-none scrollbar-thin"
+                    />
+                  </div>
+                </div>
+
+                {/* Modal Footer */}
+                <div className="p-4 border-t border-slate-100 flex justify-end gap-3 bg-slate-50">
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(loiTextGenerated);
+                      alert('Naskah LOI berhasil disalin ke clipboard!');
+                    }}
+                    className="px-4 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-xs font-bold text-slate-700 transition-colors shadow-sm"
+                  >
+                    Salin Teks LOI
+                  </button>
+                  <button
+                    onClick={() => {
+                      const element = document.createElement("a");
+                      const file = new Blob([loiTextGenerated], {type: 'text/plain'});
+                      element.href = URL.createObjectURL(file);
+                      element.download = `LOI_Gedung_Maramis_${activeLoiSubmission.companyName.replace(/\s+/g, '_')}.txt`;
+                      document.body.appendChild(element);
+                      element.click();
+                      document.body.removeChild(element);
+                    }}
+                    className="px-4 py-2 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-xs font-bold transition-colors shadow-sm"
+                  >
+                    Unduh File LOI (.txt)
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* F8: AGREEMENT MODAL */}
+          {activeAgreementSubmission && (
+            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-fadeIn text-slate-700 font-sans">
+                {/* Modal Header */}
+                <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                  <div>
+                    <h3 className="text-sm font-bold text-[#0073C2] flex items-center gap-2">
+                      <FileText className="h-4 w-4" />
+                      Penyusunan Perjanjian Sewa Guna (F8)
+                    </h3>
+                    <p className="text-[10px] text-slate-400 mt-1">Instansi: {activeAgreementSubmission.companyName} · Kegiatan: {activeAgreementSubmission.activityName}</p>
+                  </div>
+                  <button
+                    onClick={() => setActiveAgreementSubmission(null)}
+                    className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
+                  >
+                    <X className="h-4 w-4" />
+                  </button>
+                </div>
+
+                {/* Modal Content */}
+                <div className="flex-1 overflow-y-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                  {/* Left Parameter Panel */}
+                  <div className="lg:col-span-1 space-y-4">
+                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Sesuaikan Ketentuan Kontrak</h4>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Kontrak Perjanjian</label>
+                        <input
+                          type="text"
+                          value={agreementNomor}
+                          onChange={(e) => setAgreementNomor(e.target.value)}
+                          placeholder="e.g. 002/SPG/LMAN/2026"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Pihak Pertama (LMAN)</label>
+                        <input
+                          type="text"
+                          value={agreementPihakPertama}
+                          onChange={(e) => setAgreementPihakPertama(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Jabatan Pihak Pertama</label>
+                        <input
+                          type="text"
+                          value={agreementJabatanPihakPertama}
+                          onChange={(e) => setAgreementJabatanPihakPertama(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-yellow-550 border border-yellow-200 text-yellow-800 rounded-lg text-[9px] leading-relaxed">
+                      📑 <strong>Petunjuk F8</strong>: Draf ini memuat 17 pasal standar sewa LMAN termasuk klausul jaminan keamanan (*security deposit* 10%) dan kewajiban denda keterlambatan.
+                    </div>
+                  </div>
+
+                  {/* Right Document Preview Panel */}
+                  <div className="lg:col-span-2 flex flex-col gap-3 h-[420px] lg:h-auto">
+                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Pratinjau Naskah Perjanjian</h4>
+                    <textarea
+                      readOnly
+                      value={agreementTextGenerated}
+                      className="flex-1 w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-[10px] font-mono leading-normal text-slate-800 resize-none focus:outline-none scrollbar-thin"
+                    />
+                  </div>
+                </div>
+
+                {/* Modal Footer */}
+                <div className="p-4 border-t border-slate-100 flex justify-end gap-3 bg-slate-50">
+                  <button
+                    onClick={() => {
+                      navigator.clipboard.writeText(agreementTextGenerated);
+                      alert('Naskah Perjanjian berhasil disalin ke clipboard!');
+                    }}
+                    className="px-4 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-xs font-bold text-slate-700 transition-colors shadow-sm"
+                  >
+                    Salin Kontrak
+                  </button>
+                  <button
+                    onClick={() => {
+                      const element = document.createElement("a");
+                      const file = new Blob([agreementTextGenerated], {type: 'text/plain'});
+                      element.href = URL.createObjectURL(file);
+                      element.download = `Kontrak_Sewa_Guna_${activeAgreementSubmission.companyName.replace(/\s+/g, '_')}.txt`;
+                      document.body.appendChild(element);
+                      element.click();
+                      document.body.removeChild(element);
+                    }}
+                    className="px-4 py-2 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-xs font-bold transition-colors shadow-sm"
+                  >
+                    Unduh Draf Kontrak (.txt)
+                  </button>
+                </div>
               </div>
             </div>
           )}
