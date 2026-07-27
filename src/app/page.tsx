@@ -603,9 +603,9 @@ export default function Home() {
     if (!sub) return;
 
     // Check if slot is closed
-    const isClosed = closedSlots.some((slot) => slot.date === surveyDate && slot.timeSlot === surveyTimeSlot);
+    const isClosed = closedSlots.some((slot) => slot.date === surveyDate);
     if (isClosed) {
-      alert('Slot ini telah ditutup untuk kunjungan survei (ada kegiatan internal LMAN). Silakan pilih slot lain.');
+      alert('Slot ini telah ditutup untuk kunjungan survei. Silakan pilih tanggal lain.');
       return;
     }
 
@@ -614,14 +614,15 @@ export default function Home() {
         submissionId: surveySubmissionId,
         companyName: sub.companyName,
         date: surveyDate,
-        timeSlot: surveyTimeSlot,
-        picInternal: surveyPicInternal,
-        guestCount: parseInt(surveyGuestCount) || 0,
+        timeSlot: '10:00',
+        picInternal: 'Tim LMAN',
+        guestCount: 5,
         status: 'SCHEDULED',
       });
 
       setSurveys((prev) => [...prev, newSurvey]);
       setSurveyDate('');
+      setSurveySubmissionId('');
       alert('Jadwal survei berhasil dicatat!');
     } catch (err) {
       console.error(err);
@@ -1187,17 +1188,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 <span>Kalender Kegiatan</span>
               </button>
 
-              <button
-                onClick={() => setActiveTab('surveys')}
-                className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
-                  activeTab === 'surveys'
-                    ? 'bg-[#e0f2fe] text-[#0073C2]'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
-                }`}
-              >
-                <CheckSquare className={`h-4 w-4 shrink-0 ${activeTab === 'surveys' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
-                <span>Jadwal Survei</span>
-              </button>
+
 
               <button
                 onClick={() => setActiveTab('documents')}
@@ -2550,6 +2541,54 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </form>
                   )}
                 </div>
+
+                {/* Penjadwalan Survei Lokasi Form */}
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
+                  <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                    <CheckSquare className="h-4 w-4 text-indigo-650" />
+                    Penjadwalan Survei Lokasi
+                  </h2>
+                  {role !== 'PENGINPUT' ? (
+                    <p className="text-xs text-slate-500 italic">Peran Pereview hanya memiliki akses baca (Read-only).</p>
+                  ) : (
+                    <form onSubmit={handleCreateSurvey} className="space-y-4">
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Pilih Pengajuan Terkait</label>
+                        <select
+                          required
+                          value={surveySubmissionId}
+                          onChange={(e) => setSurveySubmissionId(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        >
+                          <option value="">-- Pilih Pengajuan --</option>
+                          {submissions.map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {s.companyName} - {s.activityName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal Kunjungan Survei</label>
+                        <input
+                          type="date"
+                          required
+                          value={surveyDate}
+                          onChange={(e) => setSurveyDate(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="w-full bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
+                      >
+                        Simpan Jadwal Survei
+                      </button>
+                    </form>
+                  )}
+                </div>
               </div>
 
               {/* RIGHT COLUMN: Grid Calendar View */}
@@ -2629,11 +2668,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             
                             // Find bookings that fall on this day
                             const dayBookings = bookings.filter((b) => dateStr >= b.startDate && dateStr <= b.endDate);
+                            // Find surveys on this day
+                            const daySurveys = surveys.filter((s) => s.date === dateStr && s.status !== 'CANCELLED');
 
                             return (
                               <div
                                 key={`day-${day}`}
-                                className="aspect-square p-1 bg-white border border-slate-200 rounded-lg flex flex-col justify-between overflow-hidden shadow-sm"
+                                className="aspect-square p-1 bg-white border border-slate-200 rounded-lg flex flex-col justify-between overflow-hidden shadow-sm hover:border-slate-350 transition-colors"
                               >
                                 <span className="text-[10px] font-bold text-slate-400 font-mono">{day}</span>
                                 <div className="flex flex-col gap-0.5 mt-1 overflow-y-auto scrollbar-none">
@@ -2653,6 +2694,16 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                       </div>
                                     );
                                   })}
+
+                                  {daySurveys.map((s) => (
+                                    <div
+                                      key={s.id}
+                                      title={`Survei: ${s.companyName} (Status: ${s.status})`}
+                                      className="text-[7.5px] px-1 py-0.5 rounded border leading-none font-bold truncate bg-indigo-50 text-indigo-700 border-indigo-200"
+                                    >
+                                      🕵️ Survei: {s.companyName}
+                                    </div>
+                                  ))}
                                 </div>
                               </div>
                             );
@@ -2706,232 +2757,57 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
                     )}
                   </div>
-                </div>
-              </div>
-            </div>
-          )}
 
-          {/* TAB: SURVEYS (F6) */}
-          {activeTab === 'surveys' && (
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
-              {/* LEFT COLUMN: Schedule Survey Form (Penginput only) */}
-              <div className="lg:col-span-1">
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
-                  <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
-                    <CheckSquare className="h-4 w-4 text-[#0073C2]" />
-                    Jadwalkan Survei Baru
-                  </h2>
-                  {role !== 'PENGINPUT' ? (
-                    <p className="text-xs text-slate-500 italic">Peran Pereview hanya memiliki akses baca (Read-only).</p>
-                  ) : (
-                    <form onSubmit={handleCreateSurvey} className="space-y-4">
-                      <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Pilih Pengajuan Terkait</label>
-                        <select
-                          required
-                          value={surveySubmissionId}
-                          onChange={(e) => setSurveySubmissionId(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
-                        >
-                          <option value="">-- Pilih Pengajuan --</option>
-                          {submissions.map((s) => (
-                            <option key={s.id} value={s.id}>
-                              {s.companyName} - {s.activityName}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
+                  {/* Calendar Surveys List View */}
+                  <div className="mt-6 pt-4 border-t border-slate-100">
+                    <h4 className="text-xs font-bold text-slate-500 mb-3">Daftar Jadwal Survei Lokasi</h4>
+                    {surveys.filter(s => s.status !== 'CANCELLED').length === 0 ? (
+                      <p className="text-xs text-slate-500 italic py-2">Belum ada survei terjadwal.</p>
+                    ) : (
+                      <div className="space-y-2 max-h-60 overflow-y-auto">
+                        {surveys.filter(s => s.status !== 'CANCELLED').map((s) => (
+                          <div
+                            key={s.id}
+                            className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4 text-xs text-slate-700"
+                          >
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-slate-800">{s.companyName}</span>
+                                <span className={`text-[8px] border px-1.5 py-0.5 rounded font-extrabold ${
+                                  s.status === 'SCHEDULED'
+                                    ? 'bg-blue-50 border-blue-200 text-blue-750'
+                                    : 'bg-emerald-50 border-emerald-200 text-emerald-750'
+                                }`}>
+                                  {s.status}
+                                </span>
+                              </div>
+                              <p className="text-[10px] text-slate-500">
+                                Tanggal Kunjungan: {s.date} · Waktu Slot: 10:00 WIB
+                              </p>
+                            </div>
 
-                      <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal Survei (Standard: Selasa / Kamis)</label>
-                        <input
-                          type="date"
-                          required
-                          value={surveyDate}
-                          onChange={(e) => setSurveyDate(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
-                        />
+                            {role === 'PENGINPUT' && s.status === 'SCHEDULED' && (
+                              <div className="flex gap-2">
+                                <button
+                                  onClick={() => handleUpdateSurvey(s.id, 'COMPLETED')}
+                                  className="text-[10px] text-emerald-600 hover:text-emerald-800 font-bold transition-colors"
+                                >
+                                  Selesai
+                                </button>
+                                <button
+                                  onClick={() => handleUpdateSurvey(s.id, 'CANCELLED')}
+                                  className="text-[10px] text-red-500 hover:text-red-700 font-bold transition-colors"
+                                >
+                                  Batal
+                                </button>
+                              </div>
+                            )}
+                          </div>
+                        ))}
                       </div>
-
-                      <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Waktu Slot Kunjungan</label>
-                        <select
-                          value={surveyTimeSlot}
-                          onChange={(e) => setSurveyTimeSlot(e.target.value as '10:00' | '14:00')}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
-                        >
-                          <option value="10:00">10:00 WIB (Pagi)</option>
-                          <option value="14:00">14:00 WIB (Siang)</option>
-                        </select>
-                      </div>
-
-                      <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">PIC Internal Pendamping LMAN</label>
-                        <input
-                          type="text"
-                          required
-                          value={surveyPicInternal}
-                          onChange={(e) => setSurveyPicInternal(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
-                        />
-                      </div>
-
-                      <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Jumlah Peserta Survei</label>
-                        <input
-                          type="number"
-                          required
-                          min="1"
-                          value={surveyGuestCount}
-                          onChange={(e) => setSurveyGuestCount(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
-                        />
-                      </div>
-
-                      <button
-                        type="submit"
-                        className="w-full bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
-                      >
-                        Simpan Jadwal Survei
-                      </button>
-                    </form>
-                  )}
-                </div>
-
-                {/* Close Standard Survey Slots (Penginput only) */}
-                {role === 'PENGINPUT' && (
-                  <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 mt-6 text-slate-700">
-                    <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Tutup Slot Survei Standard</h2>
-                    <form onSubmit={handleCloseSlot} className="space-y-4">
-                      <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal</label>
-                        <input
-                          type="date"
-                          required
-                          value={closeSlotDate}
-                          onChange={(e) => setCloseSlotDate(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
-                        />
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Waktu</label>
-                        <select
-                          value={closeSlotTimeSlot}
-                          onChange={(e) => setCloseSlotTimeSlot(e.target.value as '10:00' | '14:00')}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
-                        >
-                          <option value="10:00">10:00 WIB</option>
-                          <option value="14:00">14:00 WIB</option>
-                        </select>
-                      </div>
-                      <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Alasan Penutupan</label>
-                        <input
-                          type="text"
-                          required
-                          value={closeSlotReason}
-                          onChange={(e) => setCloseSlotReason(e.target.value)}
-                          placeholder="e.g. Rapat Koordinasi Internal LMAN"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
-                        />
-                      </div>
-                      <button
-                        type="submit"
-                        className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
-                      >
-                        Tutup Slot Ini
-                      </button>
-                    </form>
+                    )}
                   </div>
-                )}
-              </div>
-
-              {/* RIGHT COLUMN: Surveys List & Closed Slots */}
-              <div className="lg:col-span-2 flex flex-col gap-6">
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
-                  <h2 className="text-sm font-bold text-slate-800">Jadwal Kunjungan Survei</h2>
-                  {surveys.length === 0 ? (
-                    <p className="text-xs text-slate-500 italic py-8 text-center">Belum ada survei terjadwal.</p>
-                  ) : (
-                    <div className="space-y-3">
-                      {surveys.map((s) => (
-                        <div
-                          key={s.id}
-                          className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4 text-xs text-slate-750"
-                        >
-                          <div>
-                            <div className="flex items-center gap-2">
-                              <span className="font-bold text-slate-850">{s.companyName}</span>
-                              <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded border ${
-                                s.status === 'SCHEDULED'
-                                  ? 'bg-blue-550 border border-blue-200 text-[#0073C2]'
-                                  : s.status === 'COMPLETED'
-                                  ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
-                                  : 'bg-red-50 border border-red-200 text-red-700'
-                              }`}>
-                                {s.status}
-                              </span>
-                            </div>
-                            <p className="text-[10px] text-slate-500 mt-1">
-                              Tanggal: {s.date} · Jam: {s.timeSlot} WIB · Pendamping: {s.picInternal}
-                            </p>
-                            <span className="inline-block text-[9px] bg-white text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded font-mono mt-1.5">
-                              Jumlah Peserta: {s.guestCount} orang
-                            </span>
-                          </div>
-
-                          {role === 'PENGINPUT' && s.status === 'SCHEDULED' && (
-                            <div className="flex gap-1">
-                              <button
-                                onClick={() => handleUpdateSurvey(s.id, 'COMPLETED')}
-                                className="px-2.5 py-1 rounded bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition-colors shadow-sm"
-                              >
-                                Selesai
-                              </button>
-                              <button
-                                onClick={() => handleUpdateSurvey(s.id, 'CANCELLED')}
-                                className="px-2.5 py-1 rounded bg-red-50 hover:bg-red-100 text-red-650 font-bold border border-red-200 transition-colors"
-                              >
-                                Batal
-                              </button>
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-
-                {/* Closed Slots Panel */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
-                  <h2 className="text-sm font-bold text-slate-800">Daftar Slot Kunjungan Ditutup</h2>
-                  {closedSlots.length === 0 ? (
-                    <p className="text-xs text-slate-500 italic py-4">Tidak ada slot standar yang ditutup.</p>
-                  ) : (
-                    <div className="space-y-2">
-                      {closedSlots.map((slot) => (
-                        <div
-                          key={slot.id}
-                          className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4 text-xs text-slate-700"
-                        >
-                          <div>
-                            <span className="font-bold text-red-600">{slot.date}</span>
-                            <span className="text-slate-500 ml-2">Jam: {slot.timeSlot} WIB</span>
-                            <p className="text-[10px] text-slate-400 mt-1 italic">&quot;{slot.reason}&quot;</p>
-                          </div>
-                          {role === 'PENGINPUT' && (
-                            <button
-                              onClick={() => handleOpenSlot(slot.id)}
-                              className="text-xs font-bold text-[#0073C2] hover:underline"
-                            >
-                              Buka Slot
-                            </button>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
+      </div>
               </div>
             </div>
           )}

@@ -524,11 +524,21 @@ export async function createSurvey(surveyData: Omit<Survey, 'id'>): Promise<Surv
     mockSurveys.push(survey);
     return survey;
   }
-  const docRef = await db.collection('surveys').add(surveyData);
-  return {
-    id: docRef.id,
-    ...surveyData
-  };
+  try {
+    const docRef = await db.collection('surveys').add(surveyData);
+    return {
+      id: docRef.id,
+      ...surveyData
+    };
+  } catch (error) {
+    console.error('Failed to create survey in Firestore, falling back to mock:', error);
+    const survey: Survey = {
+      id: 'mock-survey-fallback-' + Math.random().toString(36).substring(2, 11),
+      ...surveyData
+    };
+    mockSurveys.push(survey);
+    return survey;
+  }
 }
 
 export async function updateSurveyStatus(id: string, status: Survey['status']): Promise<boolean> {
