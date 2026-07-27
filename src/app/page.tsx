@@ -891,8 +891,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 <div className="text-[10px] text-sky-200 font-mono mt-0.5 tracking-wider truncate">
                   {user?.email || 'team@maramis.go.id'}
                 </div>
-                <div className="text-[9px] text-white/80 mt-1.5 leading-relaxed line-clamp-2">
-                  di Seksi Pengembangan & Pendayagunaan Aset Negara, LMAN Kanwil AA Maramis.
+                <div className="text-[9px] text-white/80 mt-1.5 leading-relaxed">
+                  Divisi Pengembangan dan Pendayagunaan Properti 1, Lembaga Manajemen Aset Negara
                 </div>
               </div>
             </div>
