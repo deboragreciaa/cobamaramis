@@ -2762,7 +2762,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             {role === 'PENGINPUT' && (
                               <button
                                 onClick={() => handleDeleteBooking(b.id)}
-                                className="text-[10px] text-red-500 hover:text-red-700 font-bold transition-colors"
+                                className="px-2.5 py-1 rounded bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-[10px] font-bold transition-all shadow-sm"
                               >
                                 Hapus
                               </button>
@@ -2805,13 +2805,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               <div className="flex gap-2">
                                 <button
                                   onClick={() => handleUpdateSurvey(s.id, 'COMPLETED')}
-                                  className="text-[10px] text-emerald-600 hover:text-emerald-800 font-bold transition-colors"
+                                  className="px-2.5 py-1 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 text-[10px] font-bold transition-all shadow-sm"
                                 >
                                   Selesai
                                 </button>
                                 <button
                                   onClick={() => handleUpdateSurvey(s.id, 'CANCELLED')}
-                                  className="text-[10px] text-red-500 hover:text-red-700 font-bold transition-colors"
+                                  className="px-2.5 py-1 rounded bg-red-50 hover:bg-red-100 text-red-650 border border-red-200 text-[10px] font-bold transition-all shadow-sm"
                                 >
                                   Batal
                                 </button>
