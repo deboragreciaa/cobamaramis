@@ -414,14 +414,30 @@ export default function Home() {
   // F5 Booking Handlers
   const handleCreateBooking = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!bookingStartDate || !bookingEndDate || !bookingActivityName) {
-      alert('Isi tanggal mulai, tanggal selesai, dan nama kegiatan.');
+    if (!bookingStartDate || !bookingEndDate) {
+      alert('Isi tanggal mulai dan tanggal selesai.');
       return;
     }
 
-    const roomsToBook = bookingRoomCodes.length > 0 ? bookingRoomCodes : selectedRoomCodes;
+    let resolvedActivityName = 'Internal / Tidak Tersedia';
+    let roomsToBook = bookingRoomCodes.length > 0 ? bookingRoomCodes : selectedRoomCodes;
+
+    if (bookingSubmissionId) {
+      const selectedSub = submissions.find(s => s.id === bookingSubmissionId);
+      if (selectedSub) {
+        resolvedActivityName = selectedSub.activityName;
+        if (roomsToBook.length === 0) {
+          roomsToBook = selectedSub.roomCodes;
+        }
+      }
+    } else if (bookingType === 'UNAVAILABLE') {
+      resolvedActivityName = 'Kebutuhan Internal / Pemeliharaan';
+    } else {
+      resolvedActivityName = 'Pemanfaatan Ruang (Umum)';
+    }
+
     if (roomsToBook.length === 0 && bookingType !== 'UNAVAILABLE') {
-      alert('Pilih minimal satu ruangan.');
+      alert('Pilih minimal satu ruangan atau paket di tab Kalkulator/Katalog terlebih dahulu.');
       return;
     }
 
@@ -449,7 +465,7 @@ export default function Home() {
         roomCodes: roomsToBook,
         startDate: bookingStartDate,
         endDate: bookingEndDate,
-        activityName: bookingActivityName,
+        activityName: resolvedActivityName,
         notes: bookingNotes,
       });
 
@@ -2419,17 +2435,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         </div>
                       </div>
 
-                      <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Kegiatan (Acara)</label>
-                        <input
-                          type="text"
-                          required
-                          value={bookingActivityName}
-                          onChange={(e) => setBookingActivityName(e.target.value)}
-                          placeholder="e.g., Shooting Film / Rapat Kerja"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
-                        />
-                      </div>
+
 
                       <div>
                         <label className="text-[10px] font-semibold text-slate-500 block mb-1">Ruangan Di-Booking</label>
