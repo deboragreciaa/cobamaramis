@@ -1431,14 +1431,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               
               {/* LEFT & MIDDLE: SETTINGS & INPUTS */}
-              <div className="lg:col-span-2 flex flex-col gap-6">
-                
-                {/* SELECTED ROOMS SUMMARY */}
-                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5">
+              <div className="lg:col-span-2 flex flex-col ga                {/* SELECTED ROOMS SUMMARY */}
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h2 className="text-base font-bold text-white">1. Ruangan Terpilih</h2>
-                      <p className="text-xs text-slate-400 mt-1">Estimasi dihitung dari luas meter persegi ruangan terpilih</p>
+                      <h2 className="text-base font-bold text-slate-800">1. Ruangan Terpilih</h2>
+                      <p className="text-xs text-slate-500 mt-1">Estimasi dihitung dari luas meter persegi ruangan terpilih</p>
                     </div>
                     {(selectedRoomCodes.length > 0 || selectedPackageIds.length > 0) && (
                       <button
@@ -1446,7 +1444,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           setSelectedRoomCodes([]);
                           setSelectedPackageIds([]);
                         }}
-                        className="text-xs text-red-400 hover:text-red-350 transition-colors font-medium"
+                        className="text-xs text-red-500 hover:text-red-600 transition-colors font-medium"
                       >
                         Hapus Semua Pilihan
                       </button>
@@ -1454,11 +1452,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </div>
 
                   {selectedRooms.length === 0 && activePackages.length === 0 ? (
-                    <div className="p-6 text-center border border-dashed border-slate-800 rounded-lg">
-                      <p className="text-xs text-slate-500">Belum ada ruangan atau paket terpilih.</p>
+                    <div className="p-6 text-center border border-dashed border-slate-200 rounded-lg bg-slate-50/50">
+                      <p className="text-xs text-slate-400">Belum ada ruangan atau paket terpilih.</p>
                       <button
                         onClick={() => setActiveTab('catalog')}
-                        className="mt-2 text-xs font-bold text-amber-500 hover:underline"
+                        className="mt-2 text-xs font-bold text-[#0073C2] hover:underline"
                       >
                         Pilih dari Katalog Ruangan &rarr;
                       </button>
@@ -1472,13 +1470,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             {activePackages.map((pkg) => (
                               <span
                                 key={pkg.id}
-                                className="inline-flex items-center gap-1.5 text-xs font-bold bg-amber-500/10 border border-amber-500/30 text-amber-400 px-3 py-1 rounded-lg"
+                                className="inline-flex items-center gap-1.5 text-xs font-bold bg-[#e0f2fe] border border-[#bae6fd] text-[#0073C2] px-3 py-1 rounded-lg"
                               >
                                 <Layers className="h-3 w-3" />
                                 {pkg.label} (Lt. {pkg.floor}) — {pkg.areaSqm} m²
                                 <button
                                   onClick={() => applyQuickPackage(pkg.id)}
-                                  className="text-red-400 hover:text-red-300 font-bold ml-1.5"
+                                  className="text-red-500 hover:text-red-600 font-bold ml-1.5"
                                 >
                                   &times;
                                 </button>
@@ -1491,17 +1489,17 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       {/* Render Individual Rooms Summary if any */}
                       {selectedRooms.length > 0 && (
                         <div>
-                          <span className="text-[10px] text-slate-500 font-bold block mb-2 uppercase tracking-wider">Ruangan Individual</span>
-                          <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto p-2 bg-slate-950/60 border border-slate-950 rounded-lg">
+                          <span className="text-[10px] text-slate-400 font-bold block mb-2 uppercase tracking-wider">Ruangan Individual</span>
+                          <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto p-2 bg-slate-50 border border-slate-200 rounded-lg">
                             {selectedRooms.map((room) => (
                               <span
                                 key={room.code}
-                                className="inline-flex items-center gap-1 text-[10px] font-bold bg-slate-900 border border-slate-800 text-slate-300 pl-2 pr-1 py-0.5 rounded-full"
+                                className="inline-flex items-center gap-1 text-[10px] font-bold bg-white border border-slate-200 text-slate-700 pl-2 pr-1 py-0.5 rounded-full shadow-sm"
                               >
                                 {room.code} {room.name ? `(${room.name})` : ''}
                                 <button
                                   onClick={() => toggleRoomSelection(room.code)}
-                                  className="text-slate-500 hover:text-slate-350 ml-1 hover:bg-slate-800 rounded-full h-3.5 w-3.5 flex items-center justify-center font-bold"
+                                  className="text-slate-400 hover:text-red-500 ml-1 hover:bg-slate-100 rounded-full h-3.5 w-3.5 flex items-center justify-center font-bold"
                                 >
                                   &times;
                                 </button>
@@ -1512,20 +1510,20 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       )}
 
                       {/* Summary Metrics Grid */}
-                      <div className="grid grid-cols-3 gap-4 pt-3 border-t border-slate-950 text-center">
+                      <div className="grid grid-cols-3 gap-4 pt-3 border-t border-slate-100 text-center">
                         <div>
-                          <span className="text-[10px] text-slate-500 block">Jumlah Ruang</span>
-                          <span className="text-base font-bold text-white">
+                          <span className="text-[10px] text-slate-400 block">Jumlah Ruang</span>
+                          <span className="text-base font-bold text-slate-800">
                             {activePackages.length > 0 ? `${activePackageRoomsCount} unit` : `${selectedRooms.length} unit`}
                           </span>
                         </div>
                         <div>
-                          <span className="text-[10px] text-slate-500 block">Akumulasi Luas</span>
-                          <span className="text-base font-bold text-amber-500">{totalSelectedArea} m²</span>
+                          <span className="text-[10px] text-slate-400 block">Akumulasi Luas</span>
+                          <span className="text-base font-bold text-[#0073C2]">{totalSelectedArea} m²</span>
                         </div>
                         <div>
-                          <span className="text-[10px] text-slate-500 block">Akumulasi Kapasitas</span>
-                          <span className="text-base font-bold text-white">
+                          <span className="text-[10px] text-slate-400 block">Akumulasi Kapasitas</span>
+                          <span className="text-base font-bold text-slate-800">
                             {activePackages.length > 0 ? 'Sesuai Layanan Paket' : `${totalSelectedCapacity} orang`}
                           </span>
                         </div>
@@ -1535,30 +1533,30 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 </div>
 
                 {/* PMK 144 ADJUSTMENT PARAMETERS */}
-                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5">
-                  <h2 className="text-base font-bold text-white mb-4">2. Parameter Penyesuai & Hari Sewa</h2>
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                  <h2 className="text-base font-bold text-slate-800 mb-4">2. Parameter Penyesuai & Hari Sewa</h2>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Days Inputs */}
                     <div className="space-y-4">
                       <div>
-                        <label className="text-xs font-semibold text-slate-400 block mb-1.5">Hari Acara</label>
+                        <label className="text-xs font-semibold text-slate-500 block mb-1.5">Hari Acara</label>
                         <input
                           type="number"
                           min="1"
                           value={eventDays}
                           onChange={(e) => setEventDays(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-white text-sm focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-slate-800 text-sm focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-semibold text-slate-400 block mb-1.5">Hari Loading (Persiapan & Bongkar)</label>
+                        <label className="text-xs font-semibold text-slate-500 block mb-1.5">Hari Loading (Persiapan & Bongkar)</label>
                         <input
                           type="number"
                           min="0"
                           value={loadingDays}
                           onChange={(e) => setLoadingDays(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-white text-sm focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-slate-800 text-sm focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                     </div>
@@ -1566,11 +1564,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     {/* PMK 144 Purpose & Custom factors */}
                     <div className="space-y-4">
                       <div>
-                        <label className="text-xs font-semibold text-slate-400 block mb-1.5">Tujuan Sewa Guna (Rentang PMK 144)</label>
+                        <label className="text-xs font-semibold text-slate-500 block mb-1.5">Tujuan Sewa Guna (Rentang PMK 144)</label>
                         <select
                           value={selectedPurposeKey}
                           onChange={(e) => setSelectedPurposeKey(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-white text-sm focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-slate-800 text-sm focus:outline-none focus:border-[#0073C2]"
                         >
                           {PURPOSE_OPTIONS.map((opt) => (
                             <option key={opt.key} value={opt.key}>
@@ -1582,7 +1580,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-[10px] font-semibold text-slate-400 block mb-1">
+                          <label className="text-[10px] font-semibold text-slate-500 block mb-1">
                             Faktor Tujuan (%)
                           </label>
                           <input
@@ -1590,13 +1588,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             min="0"
                             value={customPurposeFactor}
                             onChange={(e) => setCustomPurposeFactor(e.target.value)}
-                            className={`w-full bg-slate-950 border rounded-lg py-1.5 px-2.5 text-white text-xs focus:outline-none ${
-                              isPurposeFactorDeviating ? 'border-yellow-500/50' : 'border-slate-850'
+                            className={`w-full bg-white border rounded-lg py-1.5 px-2.5 text-slate-800 text-xs focus:outline-none ${
+                              isPurposeFactorDeviating ? 'border-yellow-500 focus:border-yellow-500' : 'border-slate-200 focus:border-[#0073C2]'
                             }`}
                           />
                         </div>
                         <div>
-                          <label className="text-[10px] font-semibold text-slate-400 block mb-1">
+                          <label className="text-[10px] font-semibold text-slate-500 block mb-1">
                             Tingkat Pengembalian (%)
                           </label>
                           <input
@@ -1604,7 +1602,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             min="0"
                             value={customReturnRate}
                             onChange={(e) => setCustomReturnRate(e.target.value)}
-                            className="w-full bg-slate-950 border border-slate-850 rounded-lg py-1.5 px-2.5 text-white text-xs focus:outline-none focus:border-amber-500/40"
+                            className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-slate-800 text-xs focus:outline-none focus:border-[#0073C2]"
                             placeholder="Markup 15% = 115%"
                           />
                         </div>
@@ -1612,7 +1610,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                       {/* Warnings and alerts */}
                       {isPurposeFactorDeviating && (
-                        <div className="p-2.5 bg-yellow-500/10 border border-yellow-500/20 text-yellow-400 rounded-lg text-[10px] flex items-start gap-1.5">
+                        <div className="p-2.5 bg-yellow-50 border border-yellow-200 text-yellow-700 rounded-lg text-[10px] flex items-start gap-1.5">
                           <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
                           <span>
                             Nilai di luar rekomendasi PMK 144 ({activePurposeOption.min * 100}%–{activePurposeOption.max * 100}%). Pengetikan diizinkan untuk negosiasi khusus.
@@ -1624,13 +1622,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 </div>
 
                 {/* CONSTANT/SYSTEM SETTINGS DISPLAY */}
-                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 flex flex-col md:flex-row gap-4 justify-between items-center text-xs text-slate-400">
+                <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col md:flex-row gap-4 justify-between items-center text-xs text-slate-500 shadow-sm">
                   <div className="flex items-center gap-1.5">
-                    <Info className="h-4 w-4 text-amber-500/80 shrink-0" />
+                    <Info className="h-4 w-4 text-[#0073C2] shrink-0" />
                     <span>Konstanta System (Settings): Nilai Wajar = {formatRupiah(systemSettings.fairValuePerSqm)}/m² · Faktor Loading = {systemSettings.loadingFactor * 100}% · PPN = {systemSettings.ppnRate * 100}%</span>
                   </div>
                   {role === 'PENGINPUT' && (
-                    <span className="text-[10px] text-slate-500 shrink-0 italic">
+                    <span className="text-[10px] text-slate-400 shrink-0 italic">
                       Dapat diubah di bagian kelola parameter (Fase 2)
                     </span>
                   )}
@@ -1638,29 +1636,29 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               </div>
 
               {/* RIGHT: RESULTS BOARD */}
-              <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 flex flex-col justify-between h-fit gap-6 shadow-xl sticky top-24">
+              <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between h-fit gap-6 shadow-sm sticky top-24 text-slate-700">
                 <div>
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-base font-bold text-white">Hasil Kalkulasi</h2>
+                    <h2 className="text-base font-bold text-slate-800">Hasil Kalkulasi</h2>
                     
                     {/* Mode Toggle */}
-                    <div className="flex bg-slate-950 border border-slate-900 rounded p-0.5 text-[10px]">
+                    <div className="flex bg-slate-100 border border-slate-200 rounded p-0.5 text-[10px]">
                       <button
                         onClick={() => setCalcMode('auto')}
-                        className={`px-2 py-1 rounded font-bold ${
+                        className={`px-2 py-1 rounded font-bold transition-all ${
                           calcMode === 'auto'
-                            ? 'bg-amber-500/10 text-amber-400'
-                            : 'text-slate-500 hover:text-slate-300'
+                            ? 'bg-[#0073C2] text-white shadow-sm'
+                            : 'text-slate-500 hover:text-slate-700'
                         }`}
                       >
                         Otomatis
                       </button>
                       <button
                         onClick={() => setCalcMode('manual')}
-                        className={`px-2 py-1 rounded font-bold ${
+                        className={`px-2 py-1 rounded font-bold transition-all ${
                           calcMode === 'manual'
-                            ? 'bg-amber-500/10 text-amber-400'
-                            : 'text-slate-500 hover:text-slate-300'
+                            ? 'bg-[#0073C2] text-white shadow-sm'
+                            : 'text-slate-500 hover:text-slate-700'
                         }`}
                       >
                         Manual
@@ -1671,72 +1669,72 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   {calcMode === 'manual' ? (
                     <div className="space-y-3 my-4">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Sewa Acara (Rp)</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Sewa Acara (Rp)</label>
                         <input
                           type="number"
                           placeholder="Masukkan nilai sewa"
                           value={manualSewa}
                           onChange={(e) => setManualSewa(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded py-1 px-2.5 text-xs text-white focus:outline-none"
+                          className="w-full bg-white border border-slate-200 rounded py-1 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">PPN Sewa (Rp)</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">PPN Sewa (Rp)</label>
                         <input
                           type="number"
                           placeholder="PPN Sewa"
                           value={manualPPNSewa}
                           onChange={(e) => setManualPPNSewa(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded py-1 px-2.5 text-xs text-white focus:outline-none"
+                          className="w-full bg-white border border-slate-200 rounded py-1 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Sewa Loading (Rp)</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Sewa Loading (Rp)</label>
                         <input
                           type="number"
                           placeholder="Nilai loading"
                           value={manualLoading}
                           onChange={(e) => setManualLoading(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded py-1 px-2.5 text-xs text-white focus:outline-none"
+                          className="w-full bg-white border border-slate-200 rounded py-1 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">PPN Loading (Rp)</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">PPN Loading (Rp)</label>
                         <input
                           type="number"
                           placeholder="PPN Loading"
                           value={manualPPNLoading}
                           onChange={(e) => setManualPPNLoading(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded py-1 px-2.5 text-xs text-white focus:outline-none"
+                          className="w-full bg-white border border-slate-200 rounded py-1 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                     </div>
                   ) : (
                     <div className="space-y-4 my-6">
-                      <div className="flex justify-between text-xs pb-2 border-b border-slate-950">
-                        <span className="text-slate-400">Sewa Acara ({eventDays} hari)</span>
-                        <span className="font-semibold text-white">{formatRupiah(calculatorResults.sewa)}</span>
+                      <div className="flex justify-between text-xs pb-2 border-b border-slate-100">
+                        <span className="text-slate-500">Sewa Acara ({eventDays} hari)</span>
+                        <span className="font-bold text-slate-800">{formatRupiah(calculatorResults.sewa)}</span>
                       </div>
-                      <div className="flex justify-between text-xs pb-2 border-b border-slate-950">
-                        <span className="text-slate-400">PPN Sewa ({(systemSettings.ppnRate * 100)}%)</span>
-                        <span className="font-semibold text-white">{formatRupiah(calculatorResults.ppnSewa)}</span>
+                      <div className="flex justify-between text-xs pb-2 border-b border-slate-100">
+                        <span className="text-slate-500">PPN Sewa ({(systemSettings.ppnRate * 100)}%)</span>
+                        <span className="font-bold text-slate-800">{formatRupiah(calculatorResults.ppnSewa)}</span>
                       </div>
-                      <div className="flex justify-between text-xs pb-2 border-b border-slate-950">
-                        <span className="text-slate-400">Loading ({loadingDays} hari)</span>
-                        <span className="font-semibold text-white">{formatRupiah(calculatorResults.loading)}</span>
+                      <div className="flex justify-between text-xs pb-2 border-b border-slate-100">
+                        <span className="text-slate-500">Loading ({loadingDays} hari)</span>
+                        <span className="font-bold text-slate-800">{formatRupiah(calculatorResults.loading)}</span>
                       </div>
-                      <div className="flex justify-between text-xs pb-2 border-b border-slate-950">
-                        <span className="text-slate-400">PPN Loading ({(systemSettings.ppnRate * 100)}%)</span>
-                        <span className="font-semibold text-white">{formatRupiah(calculatorResults.ppnLoading)}</span>
+                      <div className="flex justify-between text-xs pb-2 border-b border-slate-100">
+                        <span className="text-slate-500">PPN Loading ({(systemSettings.ppnRate * 100)}%)</span>
+                        <span className="font-bold text-slate-800">{formatRupiah(calculatorResults.ppnLoading)}</span>
                       </div>
                     </div>
                   )}
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-slate-950">
+                <div className="mt-4 pt-4 border-t border-slate-100">
                   <div className="flex justify-between items-baseline mb-6">
                     <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">TOTAL ESTIMASI</span>
-                    <span className="text-xl font-black text-amber-500 tracking-tight">
+                    <span className="text-xl font-black text-[#f59e0b] tracking-tight">
                       {formatRupiah(calculatorResults.total)}
                     </span>
                   </div>
@@ -1744,7 +1742,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   <div className="space-y-2">
                     <button
                       onClick={handleCopyResults}
-                      className="w-full bg-slate-950 hover:bg-slate-900 border border-slate-850 hover:border-slate-800 text-slate-200 font-bold py-2.5 rounded-lg text-xs transition-colors flex items-center justify-center gap-2"
+                      className="w-full bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold py-2.5 rounded-lg text-xs transition-colors flex items-center justify-center gap-2 shadow-sm"
                     >
                       <Copy className="h-4 w-4" />
                       {copySuccess ? 'Berhasil Disalin!' : 'Salin Rincian Tarif'}
@@ -1764,9 +1762,9 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
               {/* LEFT: Client Form (Penginput Only) */}
               <div className="lg:col-span-1">
-                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
-                  <h2 className="text-sm font-bold text-white flex items-center gap-1.5 border-b border-slate-950 pb-2">
-                    <Users className="h-4 w-4 text-amber-500" />
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
+                  <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                    <Users className="h-4 w-4 text-[#0073C2]" />
                     Tambah Klien Baru
                   </h2>
                   {role !== 'PENGINPUT' ? (
@@ -1774,55 +1772,55 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   ) : (
                     <form onSubmit={handleCreateClient} className="space-y-4">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Nama Instansi / Badan Usaha</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Instansi / Badan Usaha</label>
                         <input
                           type="text"
                           required
                           value={clientCompanyName}
                           onChange={(e) => setClientCompanyName(e.target.value)}
                           placeholder="e.g., PT. Media Nusantara"
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Nama PIC Kontak</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama PIC Kontak</label>
                         <input
                           type="text"
                           required
                           value={clientPicName}
                           onChange={(e) => setClientPicName(e.target.value)}
                           placeholder="e.g., Budi Santoso"
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Email PIC profesional</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Email PIC profesional</label>
                         <input
                           type="email"
                           required
                           value={clientPicEmail}
                           onChange={(e) => setClientPicEmail(e.target.value)}
                           placeholder="e.g., budi@instansi.co.id"
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Nomor Telepon PIC</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Telepon PIC</label>
                         <input
                           type="text"
                           required
                           value={clientPicPhone}
                           onChange={(e) => setClientPicPhone(e.target.value)}
                           placeholder="e.g., 08123456789"
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
-                      <div className="p-2.5 bg-blue-500/5 border border-blue-500/10 text-blue-400 rounded-lg text-[9px] leading-relaxed">
+                      <div className="p-2.5 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg text-[9px] leading-relaxed">
                         ⚠️ <strong>Perlindungan Data Klien (A3)</strong>: Dilarang keras menginput identitas pribadi sensitif seperti NIK, data KTP, paspor, tanggal lahir, atau alamat pribadi.
                       </div>
                       <button
                         type="submit"
-                        className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 rounded-lg text-xs transition-colors shadow-lg"
+                        className="w-full bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
                       >
                         Simpan Data Klien
                       </button>
@@ -1833,39 +1831,39 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
               {/* RIGHT: Client List & Submission History */}
               <div className="lg:col-span-2 flex flex-col gap-6">
-                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
-                  <h2 className="text-sm font-bold text-white">Daftar Instansi Klien</h2>
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
+                  <h2 className="text-sm font-bold text-slate-800">Daftar Instansi Klien</h2>
                   {clients.length === 0 ? (
                     <p className="text-xs text-slate-500 italic py-8 text-center">Belum ada data klien terdaftar.</p>
                   ) : (
-                    <div className="border border-slate-950 rounded-lg overflow-hidden bg-slate-950/20">
+                    <div className="border border-slate-200 rounded-lg overflow-hidden bg-slate-50/50">
                       <table className="w-full text-xs text-left border-collapse">
                         <thead>
-                          <tr className="bg-slate-950 text-slate-400 font-bold border-b border-slate-900">
+                          <tr className="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
                             <th className="p-3">Nama Instansi</th>
                             <th className="p-3">Nama PIC</th>
                             <th className="p-3">Kontak</th>
                             <th className="p-3 text-right">Aksi</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-950">
+                        <tbody className="divide-y divide-slate-100">
                           {clients.map((c) => (
                             <tr
                               key={c.id}
-                              className={`hover:bg-slate-900/40 transition-colors ${
-                                selectedClientId === c.id ? 'bg-amber-500/[0.02]' : ''
+                              className={`hover:bg-slate-50 transition-colors ${
+                                selectedClientId === c.id ? 'bg-sky-50/50' : 'bg-white'
                               }`}
                             >
-                              <td className="p-3 font-bold text-white">{c.companyName}</td>
-                              <td className="p-3 text-slate-300">{c.picName}</td>
-                              <td className="p-3 text-slate-400">
+                              <td className="p-3 font-bold text-slate-800">{c.companyName}</td>
+                              <td className="p-3 text-slate-600">{c.picName}</td>
+                              <td className="p-3 text-slate-500">
                                 <div>{c.picEmail}</div>
                                 <div className="text-[10px] mt-0.5">{c.picPhone}</div>
                               </td>
                               <td className="p-3 text-right">
                                 <button
                                   onClick={() => setSelectedClientId(c.id === selectedClientId ? null : c.id)}
-                                  className="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white font-bold"
+                                  className="px-2.5 py-1 rounded bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold transition-all"
                                 >
                                   {selectedClientId === c.id ? 'Tutup Riwayat' : 'Lihat Riwayat'}
                                 </button>
@@ -1883,8 +1881,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   const client = clients.find((c) => c.id === selectedClientId);
                   const clientSubs = submissions.filter((s) => s.clientId === selectedClientId);
                   return (
-                    <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg animate-fadeIn">
-                      <h3 className="text-xs font-bold text-amber-400 mb-3">
+                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm animate-fadeIn text-slate-700">
+                      <h3 className="text-xs font-bold text-[#0073C2] mb-3">
                         Riwayat Pengajuan Sewa: {client?.companyName}
                       </h3>
                       {clientSubs.length === 0 ? (
@@ -1894,22 +1892,22 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           {clientSubs.map((sub) => (
                             <div
                               key={sub.id}
-                              className="p-3.5 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between gap-4"
+                              className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4"
                             >
                               <div>
-                                <h4 className="text-xs font-bold text-white">{sub.activityName}</h4>
-                                <p className="text-[10px] text-slate-400 mt-1">
+                                <h4 className="text-xs font-bold text-slate-800">{sub.activityName}</h4>
+                                <p className="text-[10px] text-slate-500 mt-1">
                                   Ruang: {sub.roomCodes.join(', ')} · Durasi: {sub.eventDays} hari (Loading: {sub.loadingDays} hari)
                                 </p>
-                                <div className="text-[9px] text-slate-500 mt-0.5">
+                                <div className="text-[9px] text-slate-400 mt-0.5">
                                   Dibuat pada: {new Date(sub.createdAt).toLocaleDateString('id-ID')}
                                 </div>
                               </div>
                               <div className="text-right">
-                                <div className="text-xs font-mono font-bold text-amber-500">
+                                <div className="text-xs font-mono font-bold text-[#0073C2]">
                                   {formatRupiah(sub.estimatedCost)}
                                 </div>
-                                <span className="inline-block text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold mt-1.5">
+                                <span className="inline-block text-[9px] bg-[#e0f2fe] text-[#0073C2] border border-[#bae6fd] px-2 py-0.5 rounded font-bold mt-1.5">
                                   Tahap {sub.stage}
                                 </span>
                               </div>
@@ -1930,36 +1928,36 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               {/* LEFT COLUMN: Record New Submission (Penginput only) / Statistics (Pereview) */}
               <div className="lg:col-span-1">
                 {role === 'PENGINPUT' ? (
-                  <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
-                    <h2 className="text-sm font-bold text-white flex items-center gap-1.5 border-b border-slate-950 pb-2">
-                      <FileText className="h-4 w-4 text-amber-500" />
+                  <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
+                    <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                      <FileText className="h-4 w-4 text-[#0073C2]" />
                       Catat Pengajuan Sewa Baru
                     </h2>
                     
                     {selectedRoomCodes.length === 0 && selectedPackageIds.length === 0 ? (
-                      <div className="p-3.5 bg-amber-500/5 border border-amber-500/15 text-amber-400 rounded-lg text-xs flex items-start gap-2">
+                      <div className="p-3.5 bg-amber-50 border border-yellow-200 text-yellow-750 rounded-lg text-xs flex items-start gap-2">
                         <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                         <span>
                           <strong>Perhatian:</strong> Silakan pilih ruangan/paket dan set waktu di tab <strong>Kalkulator</strong> terlebih dahulu untuk menautkan tarif estimasi.
                         </span>
                       </div>
                     ) : (
-                      <div className="p-3 bg-slate-950 border border-slate-850 rounded-lg text-[11px] space-y-2">
-                        <div className="font-bold text-slate-400">Data Kalkulator Tertaut:</div>
-                        <div className="text-slate-300">Ruangan: <span className="font-semibold text-white">{activePackages.length > 0 ? activePackages.map(p=>p.label).join(', ') : selectedRoomCodes.join(', ')}</span></div>
-                        <div className="text-slate-300">Total Luas: <span className="font-semibold text-white">{totalSelectedArea} m²</span></div>
-                        <div className="text-slate-300">Estimasi Tarif: <span className="font-semibold text-amber-400">{formatRupiah(calculatorResults.total)}</span></div>
+                      <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-[11px] space-y-2 text-slate-700">
+                        <div className="font-bold text-slate-500">Data Kalkulator Tertaut:</div>
+                        <div>Ruangan: <span className="font-semibold text-slate-800">{activePackages.length > 0 ? activePackages.map(p=>p.label).join(', ') : selectedRoomCodes.join(', ')}</span></div>
+                        <div>Total Luas: <span className="font-semibold text-slate-800">{totalSelectedArea} m²</span></div>
+                        <div>Estimasi Tarif: <span className="font-semibold text-[#0073C2]">{formatRupiah(calculatorResults.total)}</span></div>
                       </div>
                     )}
 
                     <form onSubmit={handleCreateSubmission} className="space-y-4">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Pilih Klien Instansi</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Pilih Klien Instansi</label>
                         <select
                           required
                           value={subClientId}
                           onChange={(e) => setSubClientId(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         >
                           <option value="">-- Pilih Instansi --</option>
                           {clients.map((c) => (
@@ -1971,43 +1969,43 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Nama Kegiatan (Acara)</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Kegiatan (Acara)</label>
                         <input
                           type="text"
                           required
                           value={subActivityName}
                           onChange={(e) => setSubActivityName(e.target.value)}
                           placeholder="e.g., Produksi Film / Rapat Umum"
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">PIC Internal Pendamping</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">PIC Internal Pendamping</label>
                         <input
                           type="text"
                           required
                           value={subPicInternal}
                           onChange={(e) => setSubPicInternal(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Catatan Tambahan</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Catatan Tambahan</label>
                         <textarea
                           value={subNotes}
                           onChange={(e) => setSubNotes(e.target.value)}
                           rows={3}
                           placeholder="e.g., Kebutuhan khusus kelistrikan, detail panggung."
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <button
                         type="submit"
                         disabled={selectedRoomCodes.length === 0 && selectedPackageIds.length === 0}
-                        className="w-full bg-amber-500 disabled:bg-slate-800 disabled:text-slate-600 hover:bg-amber-600 text-slate-950 font-bold py-2 rounded-lg text-xs transition-colors shadow-lg"
+                        className="w-full bg-[#0073C2] disabled:bg-slate-100 disabled:text-slate-400 hover:bg-[#0284c7] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
                       >
                         Buat Pengajuan Sewa
                       </button>
@@ -2015,35 +2013,35 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </div>
                 ) : (
                   // Pereview Board Statistics Dashboard
-                  <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
-                    <h2 className="text-sm font-bold text-white flex items-center gap-1.5 border-b border-slate-950 pb-2">
-                      <Layers className="h-4 w-4 text-blue-400" />
+                  <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
+                    <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                      <Layers className="h-4 w-4 text-[#0073C2]" />
                       Statistik Papan Pemantauan
                     </h2>
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="p-3 bg-slate-950 border border-slate-850 rounded-xl">
-                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wide">Total Klien</span>
-                        <div className="text-xl font-bold text-white mt-1">{clients.length}</div>
+                      <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Total Klien</span>
+                        <div className="text-xl font-bold text-slate-800 mt-1">{clients.length}</div>
                       </div>
-                      <div className="p-3 bg-slate-950 border border-slate-850 rounded-xl">
-                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wide">Total Pengajuan</span>
-                        <div className="text-xl font-bold text-white mt-1">{submissions.length}</div>
+                      <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
+                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Total Pengajuan</span>
+                        <div className="text-xl font-bold text-slate-800 mt-1">{submissions.length}</div>
                       </div>
                     </div>
 
                     <div className="space-y-2 mt-2">
-                      <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Sebaran Pengajuan Per Tahap</h4>
+                      <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Sebaran Pengajuan Per Tahap</h4>
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((t) => {
                         const count = submissions.filter((s) => s.stage === t).length;
                         const percent = submissions.length > 0 ? (count / submissions.length) * 100 : 0;
                         return (
                           <div key={t} className="text-[10px] space-y-1">
-                            <div className="flex justify-between font-mono text-slate-400">
+                            <div className="flex justify-between font-mono text-slate-500">
                               <span>Tahap {t}</span>
-                              <span className="font-bold text-slate-300">{count} pengajuan</span>
+                              <span className="font-bold text-slate-700">{count} pengajuan</span>
                             </div>
-                            <div className="w-full bg-slate-950 h-1.5 rounded overflow-hidden border border-slate-900">
-                              <div className="bg-blue-500 h-full rounded" style={{ width: `${percent}%` }}></div>
+                            <div className="w-full bg-slate-100 h-1.5 rounded overflow-hidden border border-slate-200">
+                              <div className="bg-[#0073C2] h-full rounded" style={{ width: `${percent}%` }}></div>
                             </div>
                           </div>
                         );
@@ -2055,8 +2053,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
               {/* RIGHT COLUMN: Submissions List & Checklist Detail */}
               <div className="lg:col-span-2 flex flex-col gap-6">
-                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
-                  <h2 className="text-sm font-bold text-white">Daftar Aktif Pengajuan Sewa</h2>
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
+                  <h2 className="text-sm font-bold text-slate-800">Daftar Aktif Pengajuan Sewa</h2>
                   {submissions.length === 0 ? (
                     <p className="text-xs text-slate-500 italic py-8 text-center">Belum ada pengajuan sewa tercatat.</p>
                   ) : (
@@ -2070,40 +2068,40 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         return (
                           <div
                             key={sub.id}
-                            className={`p-4 bg-slate-950/60 border rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 ${
+                            className={`p-4 bg-white border rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 ${
                               selectedSubmissionId === sub.id
-                                ? 'border-amber-500/60 bg-amber-500/[0.01]'
-                                : 'border-slate-850 hover:border-slate-800'
+                                ? 'border-[#0073C2] bg-sky-50/20'
+                                : 'border-slate-200 hover:border-slate-350'
                             }`}
                           >
                             <div className="space-y-1.5">
                               <div className="flex items-center flex-wrap gap-2">
-                                <span className="font-extrabold text-xs text-white">{sub.companyName}</span>
+                                <span className="font-extrabold text-xs text-slate-800">{sub.companyName}</span>
                                 {isStalled && (
-                                  <span className="text-[8px] bg-red-500/10 text-red-400 border border-red-500/20 px-1.5 py-0.5 rounded font-extrabold flex items-center gap-1 animate-pulse">
+                                  <span className="text-[8px] bg-red-50 text-red-600 border border-red-200 px-1.5 py-0.5 rounded font-extrabold flex items-center gap-1 animate-pulse">
                                     ⚠️ TERSENDAT ({diffDays} HARI)
                                   </span>
                                 )}
                               </div>
-                              <div className="text-xs text-slate-300 font-medium">{sub.activityName}</div>
+                              <div className="text-xs text-slate-650 font-semibold">{sub.activityName}</div>
                               <p className="text-[10px] text-slate-500 leading-normal">
-                                Ruang: {sub.roomCodes.join(', ')} · Estimasi: <span className="font-mono font-bold text-slate-400">{formatRupiah(sub.estimatedCost)}</span>
+                                Ruang: {sub.roomCodes.join(', ')} · Estimasi: <span className="font-mono font-bold text-slate-600">{formatRupiah(sub.estimatedCost)}</span>
                               </p>
-                              <div className="text-[9px] text-slate-500 font-mono">
+                              <div className="text-[9px] text-slate-400 font-mono">
                                 Diperbarui: {lastUpdate.toLocaleDateString('id-ID')}
                               </div>
                             </div>
 
                             <div className="flex items-center gap-2 shrink-0">
                               <div className="flex flex-col gap-1.5">
-                                <span className="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-1 rounded font-bold text-center">
+                                <span className="text-[9px] bg-[#e0f2fe] text-[#0073C2] border border-[#bae6fd] px-2 py-1 rounded font-bold text-center">
                                   Tahap {sub.stage}/9
                                 </span>
                                 {role === 'PENGINPUT' && (
                                   <select
                                     value={sub.stage}
                                     onChange={(e) => handleUpdateStage(sub.id, parseInt(e.target.value))}
-                                    className="bg-slate-900 border border-slate-880 text-[10px] py-1 px-1.5 rounded text-slate-300 focus:outline-none font-bold"
+                                    className="bg-white border border-slate-200 text-[10px] py-1 px-1.5 rounded text-slate-700 focus:outline-none font-bold focus:border-[#0073C2]"
                                   >
                                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((s) => (
                                       <option key={s} value={s}>
@@ -2116,7 +2114,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               
                               <button
                                 onClick={() => setSelectedSubmissionId(sub.id === selectedSubmissionId ? null : sub.id)}
-                                className="px-3 py-2 rounded bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold text-slate-200"
+                                className="px-3 py-2 rounded bg-white hover:bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 transition-colors"
                               >
                                 {selectedSubmissionId === sub.id ? 'Tutup Detail' : 'Tampilkan Checklist'}
                               </button>
@@ -2155,16 +2153,16 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   ];
 
                   return (
-                    <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg animate-fadeIn flex flex-col gap-4">
-                      <div className="flex justify-between items-start border-b border-slate-950 pb-2">
+                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm animate-fadeIn flex flex-col gap-4 text-slate-700">
+                      <div className="flex justify-between items-start border-b border-slate-100 pb-2">
                         <div>
-                          <h3 className="text-xs font-bold text-amber-400">
-                            F9: Daftar Periksa 9-Tahap Pengajuan
+                          <h3 className="text-xs font-bold text-[#0073C2]">
+                            Daftar Periksa 9-Tahap Pengajuan
                           </h3>
                           <p className="text-[10px] text-slate-400 mt-0.5">Pengajuan: {sub.activityName} ({sub.companyName})</p>
                         </div>
                         {showTMWarning && (
-                          <div className="p-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-[9px] font-bold animate-pulse">
+                          <div className="p-2 bg-red-50 border border-red-200 text-red-650 rounded-lg text-[9px] font-bold animate-pulse">
                             ⚠️ H-7 TECHNICAL MEETING JATUH TEMPO
                           </div>
                         )}
@@ -2179,21 +2177,21 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               key={st.t}
                               className={`p-3 rounded-lg flex items-start gap-3 border transition-colors ${
                                 isActive
-                                  ? 'bg-amber-500/[0.02] border-amber-500/30'
+                                  ? 'bg-sky-50/50 border-[#0073C2]/40 text-slate-800'
                                   : isDone
-                                  ? 'bg-slate-950/40 border-slate-900 text-slate-400'
-                                  : 'bg-slate-950/20 border-slate-950 text-slate-600'
+                                  ? 'bg-slate-50 border-slate-100 text-slate-400'
+                                  : 'bg-slate-50/20 border-slate-100 text-slate-350'
                               }`}
                             >
                               <div className={`mt-0.5 h-5 w-5 rounded-full flex items-center justify-center border font-bold text-[10px] ${
                                 isDone 
-                                  ? 'bg-amber-500 border-amber-500 text-slate-950'
-                                  : 'border-slate-800'
+                                  ? 'bg-[#0073C2] border-[#0073C2] text-white'
+                                  : 'border-slate-300'
                               }`}>
                                 {isDone ? '✓' : st.t}
                               </div>
                               <div>
-                                <h4 className={`text-[11px] font-bold ${isActive ? 'text-amber-400' : isDone ? 'text-slate-300' : 'text-slate-500'}`}>
+                                <h4 className={`text-[11px] font-bold ${isActive ? 'text-[#0073C2]' : isDone ? 'text-slate-700' : 'text-slate-400'}`}>
                                   {st.label}
                                 </h4>
                                 <p className="text-[10px] mt-0.5 leading-normal">{st.desc}</p>
@@ -2214,9 +2212,9 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
               {/* LEFT COLUMN: Reserve Date Form (Penginput only) */}
               <div className="lg:col-span-1">
-                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
-                  <h2 className="text-sm font-bold text-white flex items-center gap-1.5 border-b border-slate-950 pb-2">
-                    <MapPin className="h-4 w-4 text-amber-500" />
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
+                  <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                    <MapPin className="h-4 w-4 text-[#0073C2]" />
                     Pencatatan Booking Tanggal
                   </h2>
 
@@ -2225,11 +2223,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   ) : (
                     <form onSubmit={handleCreateBooking} className="space-y-4">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Pilih Pengajuan Terkait (Opsional)</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Pilih Pengajuan Terkait (Opsional)</label>
                         <select
                           value={bookingSubmissionId}
                           onChange={(e) => setBookingSubmissionId(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         >
                           <option value="">-- Tidak Dikaitkan (e.g. UNAVAILABLE) --</option>
                           {submissions.map((s) => (
@@ -2241,11 +2239,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Status Reservasi</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Status Reservasi</label>
                         <select
                           value={bookingType}
                           onChange={(e) => setBookingType(e.target.value as BookingType)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         >
                           <option value="TENTATIVE">Tentatif (Tahap 1-4)</option>
                           <option value="CONFIRMED">Terkunci / Confirmed (Tahap 5+)</option>
@@ -2255,59 +2253,59 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-[10px] font-semibold text-slate-400 block mb-1">Tanggal Mulai</label>
+                          <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal Mulai</label>
                           <input
                             type="date"
                             required
                             value={bookingStartDate}
                             onChange={(e) => setBookingStartDate(e.target.value)}
-                            className="w-full bg-slate-950 border border-slate-850 rounded-lg py-1.5 px-2.5 text-xs text-white focus:outline-none"
+                            className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                           />
                         </div>
                         <div>
-                          <label className="text-[10px] font-semibold text-slate-400 block mb-1">Tanggal Selesai</label>
+                          <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal Selesai</label>
                           <input
                             type="date"
                             required
                             value={bookingEndDate}
                             onChange={(e) => setBookingEndDate(e.target.value)}
-                            className="w-full bg-slate-950 border border-slate-850 rounded-lg py-1.5 px-2.5 text-xs text-white focus:outline-none"
+                            className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                           />
                         </div>
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Nama Kegiatan (Acara)</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Kegiatan (Acara)</label>
                         <input
                           type="text"
                           required
                           value={bookingActivityName}
                           onChange={(e) => setBookingActivityName(e.target.value)}
                           placeholder="e.g., Shooting Film / Rapat Kerja"
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Ruangan Di-Booking</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Ruangan Di-Booking</label>
                         {selectedRoomCodes.length > 0 ? (
-                          <div className="p-2 bg-slate-950 border border-slate-850 rounded text-[10px] text-white">
+                          <div className="p-2 bg-slate-50 border border-slate-200 rounded text-[10px] text-slate-800 font-medium">
                             {selectedRoomCodes.join(', ')}
                           </div>
                         ) : (
-                          <div className="p-2 bg-slate-950 border border-slate-850 rounded text-[10px] text-slate-500 italic">
+                          <div className="p-2 bg-slate-50 border border-slate-200 rounded text-[10px] text-slate-400 italic">
                             Belum ada ruang dipilih. Silakan klik ruang di tab Kalkulator/Katalog.
                           </div>
                         )}
                       </div>
 
-                      <div className="p-2.5 bg-yellow-500/5 border border-yellow-500/10 text-yellow-500 rounded-lg text-[9.5px] leading-normal">
+                      <div className="p-2.5 bg-yellow-50 border border-yellow-250 text-yellow-800 rounded-lg text-[9.5px] leading-normal">
                         🚨 <strong>Validasi F5</strong>: Status *Terkunci* wajib divalidasi sistem. Tanggal tidak dapat dikonfirmasi/dikunci jika pengajuan belum mencapai minimal Tahap 5 (Surat Resmi Diterima).
                       </div>
 
                       <button
                         type="submit"
-                        className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 rounded-lg text-xs transition-colors shadow-lg"
+                        className="w-full bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
                       >
                         Catat Booking Tanggal
                       </button>
@@ -2318,10 +2316,10 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
               {/* RIGHT COLUMN: Grid Calendar View */}
               <div className="lg:col-span-2 flex flex-col gap-6">
-                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
                   {/* Calendar Month Selector Header */}
-                  <div className="flex justify-between items-center border-b border-slate-950 pb-3">
-                    <h2 className="text-sm font-bold text-white">Grid Kalender Pemakaian</h2>
+                  <div className="flex justify-between items-center border-b border-slate-100 pb-3">
+                    <h2 className="text-sm font-bold text-slate-800">Grid Kalender Pemakaian</h2>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => {
@@ -2332,11 +2330,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             setCurrentMonth(m => m - 1);
                           }
                         }}
-                        className="p-1 bg-slate-950 border border-slate-850 rounded hover:bg-slate-900 text-slate-300 font-bold"
+                        className="p-1.5 bg-white border border-slate-200 rounded hover:bg-slate-50 text-slate-600 font-bold transition-colors"
                       >
                         &larr;
                       </button>
-                      <span className="text-xs font-extrabold text-white uppercase tracking-wider font-mono">
+                      <span className="text-xs font-extrabold text-slate-800 uppercase tracking-wider font-mono">
                         {new Date(currentYear, currentMonth).toLocaleString('id-ID', { month: 'long', year: 'numeric' })}
                       </span>
                       <button
@@ -2348,7 +2346,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             setCurrentMonth(m => m + 1);
                           }
                         }}
-                        className="p-1 bg-slate-950 border border-slate-850 rounded hover:bg-slate-900 text-slate-300 font-bold"
+                        className="p-1.5 bg-white border border-slate-200 rounded hover:bg-slate-50 text-slate-600 font-bold transition-colors"
                       >
                         &rarr;
                       </button>
@@ -2378,14 +2376,14 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       <div className="space-y-4">
                         <div className="grid grid-cols-7 gap-1.5 text-center text-[10px] font-bold text-slate-500 uppercase tracking-wider">
                           {weekDays.map((wd) => (
-                            <div key={wd} className="py-1 bg-slate-950/20 rounded">{wd}</div>
+                            <div key={wd} className="py-1 bg-slate-100 rounded">{wd}</div>
                           ))}
                         </div>
 
                         <div className="grid grid-cols-7 gap-1.5">
                           {daysArray.map((day, idx) => {
                             if (day === null) {
-                              return <div key={`empty-${idx}`} className="aspect-square bg-slate-950/5 rounded-lg border border-transparent"></div>;
+                              return <div key={`empty-${idx}`} className="aspect-square bg-slate-50 rounded-lg border border-dashed border-slate-100"></div>;
                             }
 
                             const padZero = (n: number) => n.toString().padStart(2, '0');
@@ -2397,21 +2395,21 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             return (
                               <div
                                 key={`day-${day}`}
-                                className="aspect-square p-1 bg-slate-950/60 border border-slate-850 rounded-lg flex flex-col justify-between overflow-hidden"
+                                className="aspect-square p-1 bg-white border border-slate-200 rounded-lg flex flex-col justify-between overflow-hidden shadow-sm"
                               >
                                 <span className="text-[10px] font-bold text-slate-400 font-mono">{day}</span>
                                 <div className="flex flex-col gap-0.5 mt-1 overflow-y-auto scrollbar-none">
                                   {dayBookings.map((b) => {
                                     const color = b.type === 'CONFIRMED'
-                                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
                                       : b.type === 'TENTATIVE'
-                                      ? 'bg-amber-500/20 text-amber-400 border-amber-500/30'
-                                      : 'bg-red-500/20 text-red-400 border-red-500/30';
+                                      ? 'bg-amber-50 text-amber-700 border-amber-250'
+                                      : 'bg-red-50 text-red-700 border-red-200';
                                     return (
                                       <div
                                         key={b.id}
                                         title={`${b.activityName} (${b.roomCodes.join(', ')})`}
-                                        className={`text-[7.5px] px-1 py-0.5 rounded border leading-none font-medium truncate ${color}`}
+                                        className={`text-[7.5px] px-1 py-0.5 rounded border leading-none font-bold truncate ${color}`}
                                       >
                                         {b.activityName}
                                       </div>
@@ -2427,8 +2425,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   })()}
 
                   {/* Calendar Bookings List View */}
-                  <div className="mt-4 pt-4 border-t border-slate-950">
-                    <h4 className="text-xs font-bold text-slate-400 mb-3">Daftar Aktif Booking Tanggal</h4>
+                  <div className="mt-4 pt-4 border-t border-slate-100">
+                    <h4 className="text-xs font-bold text-slate-500 mb-3">Daftar Aktif Booking Tanggal</h4>
                     {bookings.length === 0 ? (
                       <p className="text-xs text-slate-500 italic py-2">Belum ada booking terdaftar.</p>
                     ) : (
@@ -2436,31 +2434,31 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         {bookings.map((b) => (
                           <div
                             key={b.id}
-                            className="p-3 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between gap-4 text-xs"
+                            className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4 text-xs text-slate-700"
                           >
                             <div className="space-y-1">
                               <div className="flex items-center gap-2">
-                                <span className="font-bold text-white">{b.activityName}</span>
+                                <span className="font-bold text-slate-800">{b.activityName}</span>
                                 <span className={`text-[8px] border px-1.5 py-0.5 rounded font-extrabold ${
                                   b.type === 'CONFIRMED'
-                                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                                    ? 'bg-emerald-50 border-emerald-200 text-emerald-750'
                                     : b.type === 'TENTATIVE'
-                                    ? 'bg-amber-500/10 border-amber-500/20 text-amber-400'
-                                    : 'bg-red-500/10 border-red-500/20 text-red-400'
+                                    ? 'bg-amber-50 border-amber-250 text-amber-750'
+                                    : 'bg-red-50 border-red-200 text-red-750'
                                 }`}>
                                   {b.type}
                                 </span>
                               </div>
-                              <p className="text-[10px] text-slate-400">
+                              <p className="text-[10px] text-slate-500">
                                 Ruang: {b.roomCodes.join(', ')} | Periode: {b.startDate} s/d {b.endDate}
                               </p>
-                              {b.notes && <p className="text-[9px] text-slate-500 italic mt-1">&quot;{b.notes}&quot;</p>}
+                              {b.notes && <p className="text-[9px] text-slate-400 italic mt-1">&quot;{b.notes}&quot;</p>}
                             </div>
 
                             {role === 'PENGINPUT' && (
                               <button
                                 onClick={() => handleDeleteBooking(b.id)}
-                                className="text-[10px] text-red-400 hover:text-red-300 font-bold"
+                                className="text-[10px] text-red-500 hover:text-red-700 font-bold transition-colors"
                               >
                                 Hapus
                               </button>
@@ -2480,9 +2478,9 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
               {/* LEFT COLUMN: Schedule Survey Form (Penginput only) */}
               <div className="lg:col-span-1">
-                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
-                  <h2 className="text-sm font-bold text-white flex items-center gap-1.5 border-b border-slate-950 pb-2">
-                    <CheckSquare className="h-4 w-4 text-amber-500" />
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
+                  <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                    <CheckSquare className="h-4 w-4 text-[#0073C2]" />
                     Jadwalkan Survei Baru
                   </h2>
                   {role !== 'PENGINPUT' ? (
@@ -2490,12 +2488,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   ) : (
                     <form onSubmit={handleCreateSurvey} className="space-y-4">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Pilih Pengajuan Terkait</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Pilih Pengajuan Terkait</label>
                         <select
                           required
                           value={surveySubmissionId}
                           onChange={(e) => setSurveySubmissionId(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         >
                           <option value="">-- Pilih Pengajuan --</option>
                           {submissions.map((s) => (
@@ -2507,22 +2505,22 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Tanggal Survei (Standard: Selasa / Kamis)</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal Survei (Standard: Selasa / Kamis)</label>
                         <input
                           type="date"
                           required
                           value={surveyDate}
                           onChange={(e) => setSurveyDate(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-1.5 px-2.5 text-xs text-white focus:outline-none"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Waktu Slot Kunjungan</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Waktu Slot Kunjungan</label>
                         <select
                           value={surveyTimeSlot}
                           onChange={(e) => setSurveyTimeSlot(e.target.value as '10:00' | '14:00')}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         >
                           <option value="10:00">10:00 WIB (Pagi)</option>
                           <option value="14:00">14:00 WIB (Siang)</option>
@@ -2530,31 +2528,31 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">PIC Internal Pendamping LMAN</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">PIC Internal Pendamping LMAN</label>
                         <input
                           type="text"
                           required
                           value={surveyPicInternal}
                           onChange={(e) => setSurveyPicInternal(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Jumlah Peserta Survei</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Jumlah Peserta Survei</label>
                         <input
                           type="number"
                           required
                           min="1"
                           value={surveyGuestCount}
                           onChange={(e) => setSurveyGuestCount(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <button
                         type="submit"
-                        className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 rounded-lg text-xs transition-colors shadow-lg"
+                        className="w-full bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
                       >
                         Simpan Jadwal Survei
                       </button>
@@ -2564,44 +2562,44 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                 {/* Close Standard Survey Slots (Penginput only) */}
                 {role === 'PENGINPUT' && (
-                  <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4 mt-6">
-                    <h2 className="text-sm font-bold text-white border-b border-slate-950 pb-2">Tutup Slot Survei Standard</h2>
+                  <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 mt-6 text-slate-700">
+                    <h2 className="text-sm font-bold text-slate-800 border-b border-slate-100 pb-2">Tutup Slot Survei Standard</h2>
                     <form onSubmit={handleCloseSlot} className="space-y-4">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Tanggal</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal</label>
                         <input
                           type="date"
                           required
                           value={closeSlotDate}
                           onChange={(e) => setCloseSlotDate(e.target.value)}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-1.5 px-2.5 text-xs text-white focus:outline-none"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Waktu</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Waktu</label>
                         <select
                           value={closeSlotTimeSlot}
                           onChange={(e) => setCloseSlotTimeSlot(e.target.value as '10:00' | '14:00')}
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         >
                           <option value="10:00">10:00 WIB</option>
                           <option value="14:00">14:00 WIB</option>
                         </select>
                       </div>
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Alasan Penutupan</label>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Alasan Penutupan</label>
                         <input
                           type="text"
                           required
                           value={closeSlotReason}
                           onChange={(e) => setCloseSlotReason(e.target.value)}
                           placeholder="e.g. Rapat Koordinasi Internal LMAN"
-                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <button
                         type="submit"
-                        className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-lg"
+                        className="w-full bg-red-600 hover:bg-red-700 text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
                       >
                         Tutup Slot Ini
                       </button>
@@ -2612,8 +2610,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
               {/* RIGHT COLUMN: Surveys List & Closed Slots */}
               <div className="lg:col-span-2 flex flex-col gap-6">
-                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
-                  <h2 className="text-sm font-bold text-white">Jadwal Kunjungan Survei</h2>
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
+                  <h2 className="text-sm font-bold text-slate-800">Jadwal Kunjungan Survei</h2>
                   {surveys.length === 0 ? (
                     <p className="text-xs text-slate-500 italic py-8 text-center">Belum ada survei terjadwal.</p>
                   ) : (
@@ -2621,25 +2619,25 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       {surveys.map((s) => (
                         <div
                           key={s.id}
-                          className="p-3.5 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between gap-4 text-xs"
+                          className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4 text-xs text-slate-750"
                         >
                           <div>
                             <div className="flex items-center gap-2">
-                              <span className="font-bold text-white">{s.companyName}</span>
+                              <span className="font-bold text-slate-850">{s.companyName}</span>
                               <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded border ${
                                 s.status === 'SCHEDULED'
-                                  ? 'bg-blue-500/10 border-blue-500/20 text-blue-400'
+                                  ? 'bg-blue-550 border border-blue-200 text-[#0073C2]'
                                   : s.status === 'COMPLETED'
-                                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
-                                  : 'bg-red-500/10 border-red-500/20 text-red-400'
+                                  ? 'bg-emerald-50 border border-emerald-200 text-emerald-700'
+                                  : 'bg-red-50 border border-red-200 text-red-700'
                               }`}>
                                 {s.status}
                               </span>
                             </div>
-                            <p className="text-[10px] text-slate-400 mt-1">
+                            <p className="text-[10px] text-slate-500 mt-1">
                               Tanggal: {s.date} · Jam: {s.timeSlot} WIB · Pendamping: {s.picInternal}
                             </p>
-                            <span className="inline-block text-[9px] bg-slate-900 text-slate-400 border border-slate-850 px-1.5 py-0.5 rounded font-mono mt-1.5">
+                            <span className="inline-block text-[9px] bg-white text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded font-mono mt-1.5">
                               Jumlah Peserta: {s.guestCount} orang
                             </span>
                           </div>
@@ -2648,13 +2646,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             <div className="flex gap-1">
                               <button
                                 onClick={() => handleUpdateSurvey(s.id, 'COMPLETED')}
-                                className="px-2.5 py-1 rounded bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-600 transition-colors"
+                                className="px-2.5 py-1 rounded bg-emerald-600 text-white font-bold hover:bg-emerald-700 transition-colors shadow-sm"
                               >
                                 Selesai
                               </button>
                               <button
                                 onClick={() => handleUpdateSurvey(s.id, 'CANCELLED')}
-                                className="px-2.5 py-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 font-bold border border-red-500/20 transition-colors"
+                                className="px-2.5 py-1 rounded bg-red-50 hover:bg-red-100 text-red-650 font-bold border border-red-200 transition-colors"
                               >
                                 Batal
                               </button>
@@ -2667,8 +2665,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 </div>
 
                 {/* Closed Slots Panel */}
-                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
-                  <h2 className="text-sm font-bold text-white">Daftar Slot Kunjungan Ditutup</h2>
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
+                  <h2 className="text-sm font-bold text-slate-800">Daftar Slot Kunjungan Ditutup</h2>
                   {closedSlots.length === 0 ? (
                     <p className="text-xs text-slate-500 italic py-4">Tidak ada slot standar yang ditutup.</p>
                   ) : (
@@ -2676,17 +2674,17 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       {closedSlots.map((slot) => (
                         <div
                           key={slot.id}
-                          className="p-3 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between gap-4 text-xs"
+                          className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4 text-xs text-slate-700"
                         >
                           <div>
-                            <span className="font-bold text-red-400">{slot.date}</span>
-                            <span className="text-slate-400 ml-2">Jam: {slot.timeSlot} WIB</span>
-                            <p className="text-[10px] text-slate-500 mt-1 italic">&quot;{slot.reason}&quot;</p>
+                            <span className="font-bold text-red-600">{slot.date}</span>
+                            <span className="text-slate-500 ml-2">Jam: {slot.timeSlot} WIB</span>
+                            <p className="text-[10px] text-slate-400 mt-1 italic">&quot;{slot.reason}&quot;</p>
                           </div>
                           {role === 'PENGINPUT' && (
                             <button
                               onClick={() => handleOpenSlot(slot.id)}
-                              className="text-xs font-bold text-amber-500 hover:text-amber-400"
+                              className="text-xs font-bold text-[#0073C2] hover:underline"
                             >
                               Buka Slot
                             </button>
@@ -2702,26 +2700,26 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
           {/* TAB 3: DOKUMEN OPERASIONAL */}
           {activeTab === 'documents' && (
-            <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-6">
+            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm text-slate-700">
               <div className="mb-6">
-                <h2 className="text-base font-bold text-white">Pusat Dokumen Operasional</h2>
-                <p className="text-xs text-slate-400 mt-1">Unduh berkas resmi operasional penyewaan Gedung A.A. Maramis. Data diperbarui berkala sesuai versi terbaru.</p>
+                <h2 className="text-base font-bold text-slate-800">Pusat Dokumen Operasional</h2>
+                <p className="text-xs text-slate-500 mt-1">Unduh berkas resmi operasional penyewaan Gedung A.A. Maramis. Data diperbarui berkala sesuai versi terbaru.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {documentsList.map((doc, idx) => (
                   <div
                     key={idx}
-                    className="p-4 bg-slate-950/60 border border-slate-850 hover:border-amber-500/20 rounded-xl flex items-center justify-between gap-4 transition-all duration-300 group"
+                    className="p-4 bg-slate-50 border border-slate-200 hover:border-[#0073C2]/45 rounded-xl flex items-center justify-between gap-4 transition-all duration-300 group"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="p-2.5 bg-slate-900 border border-slate-800 rounded-lg text-slate-400 group-hover:text-amber-500 transition-colors mt-0.5">
+                      <div className="p-2.5 bg-white border border-slate-200 rounded-lg text-slate-400 group-hover:text-[#0073C2] transition-colors mt-0.5">
                         <FileText className="h-5 w-5" />
                       </div>
                       <div>
-                        <h4 className="text-xs font-bold text-slate-200 group-hover:text-white transition-colors">{doc.name}</h4>
+                        <h4 className="text-xs font-bold text-slate-700 group-hover:text-slate-900 transition-colors">{doc.name}</h4>
                         <p className="text-[10px] text-slate-500 mt-0.5 leading-normal">{doc.desc}</p>
-                        <span className="inline-block text-[9px] bg-slate-900 text-slate-400 border border-slate-850 px-1.5 py-0.5 rounded font-semibold mt-2.5">
+                        <span className="inline-block text-[9px] bg-white text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded font-semibold mt-2.5">
                           Versi: {doc.version}
                         </span>
                       </div>
@@ -2729,7 +2727,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     
                     <button
                       onClick={() => alert(`Simulasi mengunduh berkas: ${doc.name} (${doc.type})`)}
-                      className="px-3 py-1.5 bg-slate-900 hover:bg-amber-500 hover:text-slate-950 border border-slate-800 hover:border-transparent rounded-lg text-[10px] font-bold text-slate-300 transition-all shrink-0"
+                      className="px-3 py-1.5 bg-white hover:bg-[#0073C2] hover:text-white border border-slate-200 rounded-lg text-[10px] font-bold text-slate-700 transition-all shrink-0 shadow-sm"
                     >
                       Unduh {doc.type}
                     </button>
