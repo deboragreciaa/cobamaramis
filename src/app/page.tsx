@@ -1033,7 +1033,6 @@ export default function Home() {
   }, [primaryRooms, selectedRoomCodes]);
 
   const toggleSelectAllPrimary = () => {
-    setSelectedPackageIds([]); // clear package selection!
     const primaryCodes = primaryRooms.map((r) => r.code);
     if (isAllPrimarySelected) {
       // Deselect all primary rooms
@@ -1041,6 +1040,8 @@ export default function Home() {
     } else {
       // Select all primary rooms, avoiding duplicates
       setSelectedRoomCodes((prev) => Array.from(new Set([...prev, ...primaryCodes])));
+      // Deselect Total Lantai 2 package
+      setSelectedPackageIds((prevIds) => prevIds.filter((id) => id !== 'L2-Total'));
     }
   };
 
@@ -1050,7 +1051,6 @@ export default function Home() {
   }, [filteredRooms, selectedRoomCodes]);
 
   const toggleSelectAllFiltered = () => {
-    setSelectedPackageIds([]); // clear package selection!
     const filteredCodes = filteredRooms.map((room) => room.code);
     if (isAllFilteredSelected) {
       // Deselect all filtered rooms
@@ -1058,6 +1058,17 @@ export default function Home() {
     } else {
       // Select all filtered rooms, avoiding duplicates
       setSelectedRoomCodes((prev) => Array.from(new Set([...prev, ...filteredCodes])));
+      // Deselect Total Lantai packages for any floor represented in the selected rooms
+      const floorsToDeselect = Array.from(new Set(filteredRooms.map((r) => r.floor)));
+      setSelectedPackageIds((prevIds) =>
+        prevIds.filter((id) => {
+          if (id.endsWith('-Total')) {
+            const f = parseInt(id.charAt(1));
+            return !floorsToDeselect.includes(f);
+          }
+          return true;
+        })
+      );
     }
   };
 
@@ -1085,7 +1096,17 @@ export default function Home() {
       }
       return nextSelected;
     });
-    setSelectedRoomCodes([]); // clear individual room selections!
+
+    // If we are selecting a new Total Lantai X package, deselect individual rooms on that floor
+    if (!selectedPackageIds.includes(pkgId) && pkgId.endsWith('-Total')) {
+      const floor = parseInt(pkgId.charAt(1)); // "L1-Total" -> 1
+      setSelectedRoomCodes((prevCodes) =>
+        prevCodes.filter((code) => {
+          const r = rooms.find((room) => room.code === code);
+          return r ? r.floor !== floor : true;
+        })
+      );
+    }
   };
 
   // F2: Calculator Operations
@@ -1214,10 +1235,19 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
   // Toggle selection for individual room
   const toggleRoomSelection = (code: string) => {
-    setSelectedPackageIds([]); // clear package selection!
+    const isSelecting = !selectedRoomCodes.includes(code);
     setSelectedRoomCodes((prev) =>
       prev.includes(code) ? prev.filter((c) => c !== code) : [...prev, code]
     );
+
+    if (isSelecting) {
+      const room = rooms.find((r) => r.code === code);
+      if (room) {
+        // Deselect the Total package for this room's floor
+        const totalId = `L${room.floor}-Total`;
+        setSelectedPackageIds((prevIds) => prevIds.filter((id) => id !== totalId));
+      }
+    }
   };
 
   // F10: Documents list with versions
