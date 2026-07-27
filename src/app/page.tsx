@@ -1071,15 +1071,15 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               
               {/* LEFT COLUMN: PRIMARY ROOMS WIDGET */}
               <div className="lg:col-span-1">
-                <div className="backdrop-blur-md bg-amber-500/[0.02] border border-amber-500/20 rounded-xl p-5 shadow-lg relative overflow-hidden flex flex-col gap-4 h-full min-h-[460px]">
-                  <div className="absolute top-0 right-0 p-2 bg-amber-500/10 border-b border-l border-amber-500/20 rounded-bl-xl text-amber-400 text-[8px] font-bold tracking-wider uppercase select-none">
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm relative overflow-hidden flex flex-col gap-4 h-full min-h-[460px]">
+                  <div className="absolute top-0 right-0 p-2 bg-sky-100 border-b border-l border-sky-200 rounded-bl-xl text-[#0073C2] text-[8px] font-extrabold tracking-wider uppercase select-none">
                     6 RUANG UTAMA (GD. C LT. 2)
                   </div>
                   <div>
-                    <h2 className="text-sm font-bold text-amber-400 flex items-center gap-1.5 mb-2">
-                      <Sparkles className="h-4 w-4 shrink-0 animate-pulse" /> Aula Utama C Lt. 2
+                    <h2 className="text-sm font-bold text-[#0073C2] flex items-center gap-1.5 mb-2">
+                      <Sparkles className="h-4 w-4 shrink-0 text-[#f59e0b] animate-pulse" /> Aula Utama C Lt. 2
                     </h2>
-                    <p className="text-[11px] text-slate-400 leading-relaxed mb-4">
+                    <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
                       Enam aula acara bernama di Gedung C lantai 2 (Mataram, Sriwijaya, Bone, Ternate, Majapahit, Kutai). Bila digabung, total luasnya <strong>1.180 m²</strong> (satu lantai penuh).
                     </p>
                     
@@ -1087,8 +1087,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       onClick={toggleSelectAllPrimary}
                       className={`w-full py-2 mb-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                         isAllPrimarySelected
-                          ? 'bg-amber-500 text-slate-950 shadow-md'
-                          : 'bg-slate-900 hover:bg-slate-800 text-slate-200 border border-slate-800'
+                          ? 'bg-[#0073C2] text-white shadow-md'
+                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
                       }`}
                     >
                       {isAllPrimarySelected ? <CheckSquare className="h-3.5 w-3.5" /> : <Square className="h-3.5 w-3.5" />}
@@ -1098,7 +1098,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                   <div className="grid grid-cols-2 gap-2">
                     {primaryRooms.length === 0 ? (
-                      <p className="text-[10px] text-slate-500 col-span-full py-2">Memuat data...</p>
+                      <p className="text-[10px] text-slate-400 col-span-full py-2">Memuat data...</p>
                     ) : (
                       primaryRooms.map((room) => {
                         const isSelected = selectedRoomCodes.includes(room.code);
@@ -1108,20 +1108,20 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             onClick={() => toggleRoomSelection(room.code)}
                             className={`p-2.5 rounded-lg border cursor-pointer select-none transition-all flex flex-col justify-between ${
                               isSelected
-                                ? 'bg-amber-500/10 border-amber-500/60 shadow-md'
-                                : 'bg-slate-950 hover:bg-slate-900 border-slate-900'
+                                ? 'bg-sky-50 border-[#0073C2]/60 shadow-sm'
+                                : 'bg-white hover:bg-slate-50 border-slate-200'
                             }`}
                           >
                             <div className="flex justify-between items-center mb-1">
-                              <span className="text-[9px] text-slate-500 font-bold">{room.code}</span>
+                              <span className="text-[9px] text-[#0073C2] font-extrabold">{room.code}</span>
                               <div className={`h-2.5 w-2.5 rounded-sm border flex items-center justify-center ${
-                                isSelected ? 'bg-amber-500 border-amber-500 text-slate-950' : 'border-slate-850 bg-slate-950'
+                                isSelected ? 'bg-[#0073C2] border-[#0073C2] text-white' : 'border-slate-350 bg-white'
                               }`}>
                                 {isSelected && <Check className="h-1.5 w-1.5 stroke-[3]" />}
                               </div>
                             </div>
-                            <div className="font-bold text-[10px] text-slate-200 truncate">{room.name}</div>
-                            <div className="text-[8px] text-slate-500 mt-0.5">{room.areaSqm} m²</div>
+                            <div className="font-bold text-[10px] text-slate-800 truncate">{room.name}</div>
+                            <div className="text-[8px] text-slate-400 mt-0.5">{room.areaSqm} m²</div>
                           </div>
                         );
                       })
@@ -1134,18 +1134,18 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               <div className="lg:col-span-3 flex flex-col gap-6">
                 
                 {/* QUICK PACKAGES (EXCEL SALEABLE AREA TOTALS) */}
-                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg relative overflow-hidden">
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm relative overflow-hidden">
                   <div className="flex justify-between items-center mb-4">
                     <div>
-                      <h2 className="text-sm font-bold text-white flex items-center gap-1.5">
-                        <Layers className="h-4 w-4 text-amber-500" /> Paket Ruang Cepat (Saleable Area Total)
+                      <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                        <Layers className="h-4 w-4 text-[#0073C2]" /> Paket Ruang Cepat (Saleable Area Total)
                       </h2>
-                      <p className="text-[11px] text-slate-400 mt-1">Pilih cepat berdasarkan luas gedung & lantai dari data Excel (Pilihan ini terpisah dari list di bawah)</p>
+                      <p className="text-[11px] text-slate-500 mt-1">Pilih cepat berdasarkan luas gedung & lantai dari data Excel (Pilihan ini terpisah dari list di bawah)</p>
                     </div>
                     {selectedPackageIds.length > 0 && (
                       <button
                         onClick={() => setSelectedPackageIds([])}
-                        className="text-xs font-bold text-red-400 hover:text-red-300 transition-colors"
+                        className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors"
                       >
                         Batal Pilih Paket ({selectedPackageIds.length})
                       </button>
@@ -1154,8 +1154,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Lantai 1 */}
-                    <div className="p-3 bg-slate-950/60 border border-slate-900/60 rounded-xl flex flex-col gap-2">
-                      <h3 className="text-[10px] font-extrabold text-slate-400 mb-1 border-b border-slate-900 pb-1 uppercase tracking-wider">Lantai 1 (Total: 3.220 m²)</h3>
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col gap-2">
+                      <h3 className="text-[10px] font-extrabold text-[#0073C2] mb-1 border-b border-slate-200 pb-1 uppercase tracking-wider">Lantai 1 (Total: 3.220 m²)</h3>
                       <div className="grid grid-cols-2 gap-2">
                         {EXCEL_PACKAGES.filter(p => p.floor === 1).map(pkg => {
                           const isSelected = selectedPackageIds.includes(pkg.id);
@@ -1165,12 +1165,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               onClick={() => applyQuickPackage(pkg.id)}
                               className={`p-2 rounded text-left transition-all border flex flex-col justify-between ${
                                 isSelected
-                                  ? 'bg-amber-500/10 border-amber-500/60 text-amber-400 font-bold shadow-md'
-                                  : 'bg-slate-900 hover:bg-slate-850 border-slate-850 text-slate-300'
+                                  ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] font-bold shadow-sm'
+                                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
                               }`}
                             >
                               <span className="text-[10px] truncate">{pkg.label}</span>
-                              <span className="font-mono text-[9px] text-slate-500 mt-0.5">{pkg.areaSqm} m²</span>
+                              <span className="font-mono text-[9px] text-slate-400 mt-0.5">{pkg.areaSqm} m²</span>
                             </button>
                           );
                         })}
@@ -1178,8 +1178,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </div>
 
                     {/* Lantai 2 */}
-                    <div className="p-3 bg-slate-950/60 border border-slate-900/60 rounded-xl flex flex-col gap-2">
-                      <h3 className="text-[10px] font-extrabold text-slate-400 mb-1 border-b border-slate-900 pb-1 uppercase tracking-wider">Lantai 2 (Total: 2.624 m²)</h3>
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col gap-2">
+                      <h3 className="text-[10px] font-extrabold text-[#0073C2] mb-1 border-b border-slate-200 pb-1 uppercase tracking-wider">Lantai 2 (Total: 2.624 m²)</h3>
                       <div className="grid grid-cols-2 gap-2">
                         {EXCEL_PACKAGES.filter(p => p.floor === 2).map(pkg => {
                           const isSelected = selectedPackageIds.includes(pkg.id);
@@ -1189,12 +1189,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               onClick={() => applyQuickPackage(pkg.id)}
                               className={`p-2 rounded text-left transition-all border flex flex-col justify-between ${
                                 isSelected
-                                  ? 'bg-amber-500/10 border-amber-500/60 text-amber-400 font-bold shadow-md'
-                                  : 'bg-slate-900 hover:bg-slate-850 border-slate-850 text-slate-300'
+                                  ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] font-bold shadow-sm'
+                                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
                               }`}
                             >
                               <span className="text-[10px] truncate">{pkg.label}</span>
-                              <span className="font-mono text-[9px] text-slate-500 mt-0.5">{pkg.areaSqm} m²</span>
+                              <span className="font-mono text-[9px] text-slate-400 mt-0.5">{pkg.areaSqm} m²</span>
                             </button>
                           );
                         })}
@@ -1202,8 +1202,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </div>
 
                     {/* Lantai 3 */}
-                    <div className="p-3 bg-slate-950/60 border border-slate-900/60 rounded-xl flex flex-col gap-2">
-                      <h3 className="text-[10px] font-extrabold text-slate-400 mb-1 border-b border-slate-900 pb-1 uppercase tracking-wider">Lantai 3 (Total: 3.342 m²)</h3>
+                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col gap-2">
+                      <h3 className="text-[10px] font-extrabold text-[#0073C2] mb-1 border-b border-slate-200 pb-1 uppercase tracking-wider">Lantai 3 (Total: 3.342 m²)</h3>
                       <div className="flex flex-col gap-2">
                         <div className="grid grid-cols-2 gap-2">
                           {EXCEL_PACKAGES.filter(p => p.floor === 3 && p.id !== 'L3-Total').map(pkg => {
@@ -1214,12 +1214,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                 onClick={() => applyQuickPackage(pkg.id)}
                                 className={`p-2 rounded text-left transition-all border flex flex-col justify-between ${
                                   isSelected
-                                    ? 'bg-amber-500/10 border-amber-500/60 text-amber-400 font-bold shadow-md'
-                                    : 'bg-slate-900 hover:bg-slate-850 border-slate-850 text-slate-300'
+                                    ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] font-bold shadow-sm'
+                                    : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
                                 }`}
                               >
                                 <span className="text-[10px] truncate">{pkg.label}</span>
-                                <span className="font-mono text-[9px] text-slate-500 mt-0.5">{pkg.areaSqm} m²</span>
+                                <span className="font-mono text-[9px] text-slate-400 mt-0.5">{pkg.areaSqm} m²</span>
                               </button>
                             );
                           })}
@@ -1232,12 +1232,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               onClick={() => applyQuickPackage(pkg.id)}
                               className={`p-2 rounded text-center transition-all border flex justify-between items-center ${
                                 isSelected
-                                  ? 'bg-amber-500/10 border-amber-500/60 text-amber-400 font-bold shadow-md'
-                                  : 'bg-slate-900 hover:bg-slate-850 border-slate-850 text-slate-300'
+                                  ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] font-bold shadow-sm'
+                                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
                               }`}
                             >
                               <span className="text-[10px]">{pkg.label}</span>
-                              <span className="font-mono text-[9px] text-slate-500">{pkg.areaSqm} m²</span>
+                              <span className="font-mono text-[9px] text-slate-400">{pkg.areaSqm} m²</span>
                             </button>
                           );
                         })}
