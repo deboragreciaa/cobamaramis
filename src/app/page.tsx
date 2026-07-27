@@ -151,7 +151,6 @@ export default function Home() {
   // F3 Client Form States
   const [clientCompanyName, setClientCompanyName] = useState('');
   const [clientPicName, setClientPicName] = useState('');
-  const [clientPicEmail, setClientPicEmail] = useState('');
   const [clientPicPhone, setClientPicPhone] = useState('');
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [editingClientId, setEditingClientId] = useState<string | null>(null);
@@ -232,7 +231,7 @@ export default function Home() {
   // F3 Client Handlers
   const handleCreateClient = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!clientCompanyName || !clientPicName || !clientPicEmail || !clientPicPhone) {
+    if (!clientCompanyName || !clientPicName || !clientPicPhone) {
       alert('Semua field wajib diisi.');
       return;
     }
@@ -240,14 +239,12 @@ export default function Home() {
       const newClient = await createClient({
         companyName: clientCompanyName,
         picName: clientPicName,
-        picEmail: clientPicEmail,
         picPhone: clientPicPhone,
       });
       setClients((prev) => [...prev, newClient].sort((a, b) => a.companyName.localeCompare(b.companyName)));
       // Reset form
       setClientCompanyName('');
       setClientPicName('');
-      setClientPicEmail('');
       setClientPicPhone('');
       alert('Klien baru berhasil ditambahkan!');
     } catch (err) {
@@ -259,7 +256,7 @@ export default function Home() {
   const handleUpdateClient = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingClientId) return;
-    if (!clientCompanyName || !clientPicName || !clientPicEmail || !clientPicPhone) {
+    if (!clientCompanyName || !clientPicName || !clientPicPhone) {
       alert('Semua field wajib diisi.');
       return;
     }
@@ -267,7 +264,6 @@ export default function Home() {
       const success = await updateClient(editingClientId, {
         companyName: clientCompanyName,
         picName: clientPicName,
-        picEmail: clientPicEmail,
         picPhone: clientPicPhone,
       });
       if (success) {
@@ -282,7 +278,6 @@ export default function Home() {
                   ...c,
                   companyName: clientCompanyName,
                   picName: clientPicName,
-                  picEmail: clientPicEmail,
                   picPhone: clientPicPhone,
                 }
               : c
@@ -291,7 +286,6 @@ export default function Home() {
         // Reset form
         setClientCompanyName('');
         setClientPicName('');
-        setClientPicEmail('');
         setClientPicPhone('');
         setEditingClientId(null);
         alert('Perubahan data klien berhasil disimpan!');
@@ -1908,17 +1902,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
-                      <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Email PIC profesional</label>
-                        <input
-                          type="email"
-                          required
-                          value={clientPicEmail}
-                          onChange={(e) => setClientPicEmail(e.target.value)}
-                          placeholder="e.g., budi@instansi.co.id"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
-                        />
-                      </div>
+
                       <div>
                         <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Telepon PIC</label>
                         <input
@@ -1953,7 +1937,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               setEditingClientId(null);
                               setClientCompanyName('');
                               setClientPicName('');
-                              setClientPicEmail('');
                               setClientPicPhone('');
                             }}
                             className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-xs transition-colors"
@@ -1995,8 +1978,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               <td className="p-3 font-bold text-slate-800">{c.companyName}</td>
                               <td className="p-3 text-slate-600">{c.picName}</td>
                               <td className="p-3 text-slate-500">
-                                <div>{c.picEmail}</div>
-                                <div className="text-[10px] mt-0.5">{c.picPhone}</div>
+                                <div>{c.picPhone}</div>
                               </td>
                               <td className="p-3 text-right">
                                 <div className="flex flex-wrap justify-end gap-1.5">
@@ -2014,7 +1996,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                           setEditingClientId(c.id);
                                           setClientCompanyName(c.companyName);
                                           setClientPicName(c.picName);
-                                          setClientPicEmail(c.picEmail);
                                           setClientPicPhone(c.picPhone);
                                         }}
                                         className="px-2.5 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-bold transition-all text-[10px]"

@@ -2,7 +2,6 @@ export interface Client {
   id: string;
   companyName: string;
   picName: string;
-  picEmail: string;
   picPhone: string;
   createdAt: string;
   isActive?: boolean;
