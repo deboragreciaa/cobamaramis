@@ -1752,7 +1752,10 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         })}
                       </div>
                     </div>
-                               {/* FILTER BAR - Clean Full-width Search + 4 Inline Controls below */}
+                  </div>
+                </div>
+
+                {/* FILTER BAR - Clean Full-width Search + 4 Inline Controls below */}
                 <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-4">
                   {/* Top Row: Full-width Search Bar */}
                   <div className="relative w-full">
@@ -1836,7 +1839,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
                     </div>
                   </div>
-                </div>                </div>
+                </div>
 
                 {/* COMPACT ROOMS LIST (TABLE) */}
                 <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm p-5">
@@ -1947,7 +1950,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </table>
                     </div>
                   )}
-                </div>
                 </div>
 
               </div>
