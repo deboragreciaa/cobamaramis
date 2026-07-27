@@ -3209,10 +3209,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
       {/* FOOTER BAR - Satu Kemenkeu style */}
       <footer className="border-t border-slate-200 bg-white py-3 px-6 text-slate-400 text-[10px] flex justify-between items-center select-none shadow-sm z-10 shrink-0">
         <div>© 2026 Lembaga Manajemen Aset Negara (LMAN). Hak Cipta Dilindungi.</div>
-        <div className="flex items-center gap-1.5 font-semibold text-slate-500">
-          <span>Digital Signature Supported By BSSN</span>
-          <div className="h-4 w-4 bg-[#0073C2] rounded-full flex items-center justify-center text-[7px] text-white font-extrabold">B</div>
-        </div>
       </footer>
     </div>
   );
