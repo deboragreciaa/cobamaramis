@@ -1752,52 +1752,52 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         })}
                       </div>
                     </div>
-                               {/* FILTER BAR - Redesigned Grid Layout */}
-                <div className="bg-white border border-slate-200 rounded-xl p-4.5 shadow-sm space-y-4">
-                  {/* Top Row: Search and Sort */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4 items-center">
-                    {/* Search */}
-                    <div className="md:col-span-2 relative w-full">
-                      <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
-                      <input
-                        type="text"
-                        placeholder="Cari kode atau nama ruang..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="w-full bg-white border border-slate-200 rounded-lg py-2 pl-9 pr-4 text-slate-800 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#0073C2] transition-colors shadow-sm"
-                      />
-                    </div>
-
-                    {/* Sort */}
-                    <div className="flex items-center gap-2 w-full justify-end">
-                      <span className="text-[11px] text-slate-500 shrink-0 font-bold">Urutkan:</span>
-                      <select
-                        value={sortBy}
-                        onChange={(e) => setSortBy(e.target.value as any)}
-                        className="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-[#0073C2] font-semibold w-full md:w-auto shadow-sm"
-                      >
-                        <option value="capacity">Kapasitas</option>
-                        <option value="rate">Tarif Booklet</option>
-                        <option value="area">Luas Ruang</option>
-                      </select>
-                      <button
-                        onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
-                        className="p-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-650 hover:text-slate-900 rounded-lg text-xs transition-colors shadow-sm font-bold flex items-center justify-center shrink-0 w-8 h-8"
-                        title={sortOrder === 'asc' ? 'Urutkan Naik' : 'Urutkan Turun'}
-                      >
-                        {sortOrder === 'asc' ? '▲' : '▼'}
-                      </button>
-                    </div>
+                               {/* FILTER BAR - Clean Full-width Search + 4 Inline Controls below */}
+                <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-4">
+                  {/* Top Row: Full-width Search Bar */}
+                  <div className="relative w-full">
+                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                    <input
+                      type="text"
+                      placeholder="Cari kode atau nama ruang..."
+                      value={searchQuery}
+                      onChange={(e) => setSearchQuery(e.target.value)}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-9 pr-4 text-slate-800 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#0073C2] transition-colors focus:bg-white"
+                    />
                   </div>
 
-                  {/* Bottom Row: Filters (Gedung, Lantai, Kapasitas) */}
-                  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-3 border-t border-slate-100">
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] text-slate-500 font-bold shrink-0 min-w-[50px] sm:min-w-0">Gedung:</span>
+                  {/* Bottom Row: 4 Controls (Grid layout that stacks on mobile, columns on desktop) */}
+                  <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
+                    {/* Control 1: Urutkan */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Urutkan</label>
+                      <div className="flex gap-1.5">
+                        <select
+                          value={sortBy}
+                          onChange={(e) => setSortBy(e.target.value as any)}
+                          className="flex-1 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-[#0073C2]"
+                        >
+                          <option value="capacity">Kapasitas</option>
+                          <option value="rate">Tarif Booklet</option>
+                          <option value="area">Luas Ruang</option>
+                        </select>
+                        <button
+                          onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
+                          className="px-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-650 hover:text-slate-900 rounded-lg text-xs transition-colors font-bold"
+                          title={sortOrder === 'asc' ? 'Urutkan Naik' : 'Urutkan Turun'}
+                        >
+                          {sortOrder === 'asc' ? '▲' : '▼'}
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Control 2: Gedung */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Gedung</label>
                       <select
                         value={filterBuilding}
                         onChange={(e) => setFilterBuilding(e.target.value)}
-                        className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-[#0073C2] font-semibold w-full shadow-sm"
+                        className="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-[#0073C2] w-full"
                       >
                         <option value="all">Semua Gedung</option>
                         <option value="A">Gedung A</option>
@@ -1805,12 +1805,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </select>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] text-slate-500 font-bold shrink-0 min-w-[50px] sm:min-w-0">Lantai:</span>
+                    {/* Control 3: Lantai */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Lantai</label>
                       <select
                         value={filterFloor}
                         onChange={(e) => setFilterFloor(e.target.value)}
-                        className="bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-[#0073C2] font-semibold w-full shadow-sm"
+                        className="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-[#0073C2] w-full"
                       >
                         <option value="all">Semua Lantai</option>
                         <option value="1">Lantai 1</option>
@@ -1819,16 +1820,17 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </select>
                     </div>
 
-                    <div className="flex items-center gap-2">
-                      <span className="text-[11px] text-slate-500 font-bold shrink-0 min-w-[50px] sm:min-w-0">Kapasitas:</span>
-                      <div className="relative w-full flex items-center">
+                    {/* Control 4: Kapasitas */}
+                    <div className="flex flex-col gap-1">
+                      <label className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Kapasitas minimal</label>
+                      <div className="relative flex items-center">
                         <span className="absolute left-2.5 text-slate-400 text-xs font-semibold">&ge;</span>
                         <input
                           type="number"
                           min="0"
                           value={filterMinCapacity}
                           onChange={(e) => setFilterMinCapacity(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 pl-6 pr-3 text-xs text-slate-750 font-semibold focus:outline-none focus:border-[#0073C2] shadow-sm"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 pl-6 pr-3 text-xs text-slate-750 focus:outline-none focus:border-[#0073C2]"
                           placeholder="0"
                         />
                       </div>
