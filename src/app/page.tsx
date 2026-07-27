@@ -3677,9 +3677,15 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       element.click();
                       document.body.removeChild(element);
                     }}
-                    className="px-4 py-2 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-xs font-bold transition-colors shadow-sm"
+                    className="px-4 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-xs font-bold text-slate-700 transition-colors shadow-sm"
                   >
                     Unduh File LOI (.txt)
+                  </button>
+                  <button
+                    onClick={() => handleDownloadLoiDocx(activeLoiSubmission)}
+                    className="px-4 py-2 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-xs font-bold transition-colors shadow-sm"
+                  >
+                    Unduh Word (.docx)
                   </button>
                 </div>
               </div>
