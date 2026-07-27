@@ -874,21 +874,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             <Clock className="h-4 w-4 text-sky-200" />
             <span>{timeStr}</span>
           </div>
-          <button
-            onClick={() => alert('Simulasi Clock In Pegawai LMAN Berhasil!')}
-            className="bg-[#f59e0b] hover:bg-[#d97706] text-black font-extrabold py-1.5 px-6 rounded-full text-xs transition-colors shadow-sm"
-          >
-            Clock In
-          </button>
-          <div className="h-8 w-8 rounded-full bg-white/20 border border-white/30 flex items-center justify-center font-bold text-xs text-white overflow-hidden" title={user?.email || ''}>
-            <span className="uppercase">{user?.email?.substring(0, 2) || 'LM'}</span>
-          </div>
-          <button className="text-sky-100 hover:text-white transition-colors" title="Pengaturan">
-            <Settings className="h-4.5 w-4.5" />
-          </button>
-          <button className="text-sky-100 hover:text-white transition-colors" title="Aplikasi Lain">
-            <Layers className="h-4.5 w-4.5" />
-          </button>
         </div>
       </header>
 
@@ -1249,30 +1234,28 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
                     </div>
                   </div>
-                </div>
-
-                {/* FILTER BAR */}
-                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-4 flex flex-col md:flex-row gap-4 items-center">
+                        {/* FILTER BAR */}
+                <div className="bg-white border border-slate-200 rounded-xl p-4 flex flex-col md:flex-row gap-4 items-center shadow-sm">
                   {/* Search */}
                   <div className="relative w-full md:w-64">
-                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-500" />
+                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
                     <input
                       type="text"
                       placeholder="Cari kode atau nama ruang..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-slate-950 border border-slate-800 rounded-lg py-2 pl-9 pr-4 text-slate-200 text-xs placeholder:text-slate-600 focus:outline-none focus:border-amber-500/40"
+                      className="w-full bg-white border border-slate-200 rounded-lg py-2 pl-9 pr-4 text-slate-800 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#0073C2] transition-colors"
                     />
                   </div>
 
                   {/* Filters */}
                   <div className="flex flex-wrap items-center gap-3 w-full md:w-auto">
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[11px] text-slate-500">Gedung:</span>
+                      <span className="text-[11px] text-slate-500 font-medium">Gedung:</span>
                       <select
                         value={filterBuilding}
                         onChange={(e) => setFilterBuilding(e.target.value)}
-                        className="bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none"
+                        className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-[#0073C2]"
                       >
                         <option value="all">Semua</option>
                         <option value="A">Gedung A</option>
@@ -1281,11 +1264,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[11px] text-slate-500">Lantai:</span>
+                      <span className="text-[11px] text-slate-500 font-medium">Lantai:</span>
                       <select
                         value={filterFloor}
                         onChange={(e) => setFilterFloor(e.target.value)}
-                        className="bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none"
+                        className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-[#0073C2]"
                       >
                         <option value="all">Semua</option>
                         <option value="1">Lantai 1</option>
@@ -1295,24 +1278,24 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </div>
 
                     <div className="flex items-center gap-1.5">
-                      <span className="text-[11px] text-slate-500">Kapasitas &ge;:</span>
+                      <span className="text-[11px] text-slate-500 font-medium">Kapasitas &ge;:</span>
                       <input
                         type="number"
                         min="0"
                         value={filterMinCapacity}
                         onChange={(e) => setFilterMinCapacity(e.target.value)}
-                        className="w-16 bg-slate-950 border border-slate-800 rounded px-2.5 py-1 text-xs text-slate-300 focus:outline-none"
+                        className="w-16 bg-white border border-slate-200 rounded px-2.5 py-1 text-xs text-slate-700 focus:outline-none focus:border-[#0073C2]"
                       />
                     </div>
                   </div>
 
                   {/* Sort */}
                   <div className="md:ml-auto flex items-center gap-2 w-full md:w-auto">
-                    <span className="text-[11px] text-slate-500 shrink-0">Urutkan:</span>
+                    <span className="text-[11px] text-slate-500 shrink-0 font-medium">Urutkan:</span>
                     <select
                       value={sortBy}
                       onChange={(e) => setSortBy(e.target.value as any)}
-                      className="bg-slate-950 border border-slate-800 rounded px-2.5 py-1.5 text-xs text-slate-300 focus:outline-none"
+                      className="bg-white border border-slate-200 rounded px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-[#0073C2]"
                     >
                       <option value="capacity">Kapasitas</option>
                       <option value="rate">Tarif Booklet</option>
@@ -1320,7 +1303,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </select>
                     <button
                       onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
-                      className="p-1.5 bg-slate-950 border border-slate-800 hover:border-slate-700 text-slate-300 hover:text-white rounded text-xs transition-colors"
+                      className="p-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-600 hover:text-slate-900 rounded text-xs transition-colors"
                     >
                       {sortOrder === 'asc' ? '▲' : '▼'}
                     </button>
@@ -1328,18 +1311,18 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 </div>
 
                 {/* COMPACT ROOMS LIST (TABLE) */}
-                <div className="backdrop-blur-md bg-slate-900/40 border border-slate-900 rounded-xl overflow-hidden shadow-lg p-5">
+                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm p-5">
                   <div className="flex justify-between items-center mb-4">
                     <div>
-                      <h3 className="text-sm font-bold text-slate-300 flex items-center gap-2">
-                        <Building className="h-4 w-4 text-slate-500" /> Daftar Ruangan Individual (Opsional)
+                      <h3 className="text-sm font-bold text-[#0073C2] flex items-center gap-2">
+                        <Building className="h-4 w-4 text-[#0073C2]" /> Daftar Ruangan Individual (Opsional)
                       </h3>
                       <p className="text-[11px] text-slate-500 mt-1">Pilih ruangan secara manual di bawah jika penyewa ingin menyewa ruangan tertentu, bukan satu gedung penuh.</p>
                     </div>
                     {selectedRoomCodes.length > 0 && (
                       <button
                         onClick={() => setSelectedRoomCodes([])}
-                        className="text-xs font-bold text-red-400 hover:text-red-355 transition-colors flex items-center gap-1 bg-slate-950 border border-slate-850 hover:bg-slate-900 hover:border-slate-800 px-3 py-1 rounded-lg"
+                        className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors flex items-center gap-1 bg-white border border-red-200 hover:bg-red-50 px-3 py-1 rounded-lg"
                       >
                         Batal Pilih Semua Ruang ({selectedRoomCodes.length})
                       </button>
@@ -1347,27 +1330,27 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </div>
                   
                   {dbLoading ? (
-                    <div className="py-12 text-center text-slate-500 text-sm">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-amber-500 mx-auto mb-3"></div>
+                    <div className="py-12 text-center text-slate-400 text-sm">
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0073C2] mx-auto mb-3"></div>
                       Memuat katalog ruangan...
                     </div>
                   ) : filteredRooms.length === 0 ? (
-                    <div className="py-12 text-center text-slate-600 text-sm border border-dashed border-slate-900 rounded-xl">
+                    <div className="py-12 text-center text-slate-500 text-sm border border-dashed border-slate-200 rounded-xl">
                       Tidak ada ruangan yang cocok dengan filter.
                     </div>
                   ) : (
-                    <div className="overflow-x-auto border border-slate-950 rounded-lg">
+                    <div className="overflow-x-auto border border-slate-200 rounded-lg">
                       <table className="w-full text-left border-collapse text-xs">
                         <thead>
-                          <tr className="bg-slate-950/80 border-b border-slate-900 text-slate-400 font-semibold select-none">
+                          <tr className="bg-slate-50 border-b border-slate-200 text-slate-700 font-extrabold select-none">
                             <th className="p-3.5 w-12 text-center" onClick={(e) => e.stopPropagation()}>
                               <button
                                 onClick={toggleSelectAllFiltered}
                                 className={`mx-auto h-4 w-4 rounded border flex items-center justify-center transition-colors ${
                                   isAllFilteredSelected
-                                    ? 'bg-amber-500 border-amber-500 text-slate-950'
-                                    : 'border-slate-800 bg-slate-950 text-transparent hover:border-slate-600'
-                                }`}
+                                    ? 'bg-[#0073C2] border-[#0073C2] text-white'
+                                    : 'border-slate-300 bg-white text-transparent hover:border-slate-400'
+                                  }`}
                                 title={isAllFilteredSelected ? "Deselect All" : "Select All"}
                               >
                                 <Check className="h-2.5 w-2.5 stroke-[3]" />
@@ -1383,15 +1366,15 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             <th className="p-3.5 text-center">Status</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-950">
+                        <tbody className="divide-y divide-slate-100">
                           {filteredRooms.map((room) => {
                             const isSelected = selectedRoomCodes.includes(room.code);
                             return (
                               <tr
                                 key={room.code}
                                 onClick={() => toggleRoomSelection(room.code)}
-                                className={`hover:bg-slate-900/60 cursor-pointer transition-colors ${
-                                  isSelected ? 'bg-amber-500/[0.03]' : ''
+                                className={`hover:bg-slate-50 cursor-pointer transition-colors ${
+                                  isSelected ? 'bg-sky-50/50' : 'bg-white'
                                 }`}
                               >
                                 <td className="p-3.5 text-center" onClick={(e) => e.stopPropagation()}>
@@ -1399,31 +1382,31 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                     onClick={() => toggleRoomSelection(room.code)}
                                     className={`mx-auto h-4 w-4 rounded border flex items-center justify-center transition-colors ${
                                       isSelected
-                                        ? 'bg-amber-500 border-amber-500 text-slate-950'
-                                        : 'border-slate-800 bg-slate-950 text-transparent hover:border-slate-600'
+                                        ? 'bg-[#0073C2] border-[#0073C2] text-white'
+                                        : 'border-slate-300 bg-white text-transparent hover:border-slate-400'
                                     }`}
                                   >
                                     <Check className="h-2.5 w-2.5 stroke-[3]" />
                                   </button>
                                 </td>
-                                <td className="p-3.5 font-bold text-white tracking-wide">{room.code}</td>
-                                <td className="p-3.5 text-slate-250 font-medium">{room.name || '—'}</td>
-                                <td className="p-3.5 text-slate-400">Gedung {room.building}</td>
-                                <td className="p-3.5 text-center text-slate-400">{room.floor}</td>
-                                <td className="p-3.5 text-right text-slate-300 font-mono">{room.areaSqm} m²</td>
-                                <td className="p-3.5 text-right text-slate-300 font-mono">{room.capacity} pax</td>
-                                <td className="p-3.5 text-right font-extrabold text-amber-500 font-mono">
+                                <td className="p-3.5 font-extrabold text-slate-800 tracking-wide">{room.code}</td>
+                                <td className="p-3.5 text-slate-650 font-semibold">{room.name || '—'}</td>
+                                <td className="p-3.5 text-slate-500">Gedung {room.building}</td>
+                                <td className="p-3.5 text-center text-slate-500">{room.floor}</td>
+                                <td className="p-3.5 text-right text-slate-600 font-semibold font-mono">{room.areaSqm} m²</td>
+                                <td className="p-3.5 text-right text-slate-600 font-semibold font-mono">{room.capacity} pax</td>
+                                <td className="p-3.5 text-right font-extrabold text-[#f59e0b] font-mono">
                                   {formatRupiah(room.dailyRate)}
                                 </td>
                                 <td className="p-3.5 text-center">
                                   <div className="flex justify-center gap-1.5">
                                     {room.needsVerification && (
-                                      <span className="text-[9px] bg-red-550/15 text-red-400 border border-red-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                                      <span className="text-[9px] bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
                                         Belum Verifikasi
                                       </span>
                                     )}
                                     {room.isPrimary && (
-                                      <span className="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                                      <span className="text-[9px] bg-[#fef3c7] text-[#92400e] border border-[#fde68a] px-2 py-0.5 rounded font-bold uppercase tracking-wider">
                                         Utama
                                       </span>
                                     )}
@@ -1436,6 +1419,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </table>
                     </div>
                   )}
+                </div>
                 </div>
 
               </div>
