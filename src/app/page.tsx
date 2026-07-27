@@ -1369,7 +1369,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
       {/* DASHBOARD BODY CONTAINER (Sidebar + Content) */}
       <div className="flex-1 flex overflow-hidden relative">
         {/* SIDEBAR NAVIGATION - Satu Kemenkeu style */}
-        <aside className={`bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-[calc(100vh-53px)] sticky top-[53px] transition-all duration-300 ${isSidebarCollapsed ? 'w-0 overflow-hidden border-r-0' : 'w-72'}`}>
+        <aside className={`bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-full transition-all duration-300 ${isSidebarCollapsed ? 'w-0 overflow-hidden border-r-0' : 'w-72'}`}>
           <div className="flex flex-col overflow-y-auto">
             {/* User Profile Header Blue Card */}
             <div className="p-4 bg-[#0073C2] text-white relative flex items-center justify-between gap-3 shadow-md select-none">
