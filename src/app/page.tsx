@@ -1889,9 +1889,9 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             </th>
                             <th className="p-3.5">Kode Ruang</th>
                             <th className="p-3.5">Nama Ruang</th>
-                            <th className="p-3.5">Gedung</th>
+                            <th className="p-3.5 text-center">Gedung</th>
                             <th className="p-3.5 text-center">Lantai</th>
-                            <th className="p-3.5 text-right">Luas (m²)</th>
+                            <th className="p-3.5 text-center">Luas (m²)</th>
                             <th className="p-3.5 text-right">Kapasitas</th>
                             <th className="p-3.5 text-right">Tarif Booklet (Acuan)</th>
                             <th className="p-3.5 text-center">Status</th>
@@ -1922,9 +1922,9 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                 </td>
                                 <td className="p-3.5 font-extrabold text-slate-800 tracking-wide">{room.code}</td>
                                 <td className="p-3.5 text-slate-650 font-semibold">{room.name || '—'}</td>
-                                <td className="p-3.5 text-slate-500">{room.building}</td>
+                                <td className="p-3.5 text-center text-slate-500">{room.building}</td>
                                 <td className="p-3.5 text-center text-slate-500">{room.floor}</td>
-                                <td className="p-3.5 text-right text-slate-600 font-semibold font-mono">{room.areaSqm}</td>
+                                <td className="p-3.5 text-center text-slate-600 font-semibold font-mono">{room.areaSqm}</td>
                                 <td className="p-3.5 text-right text-slate-600 font-semibold font-mono">{room.capacity} pax</td>
                                 <td className="p-3.5 text-right font-extrabold text-[#f59e0b] font-mono">
                                   {formatRupiah(room.dailyRate)}
