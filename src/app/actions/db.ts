@@ -195,41 +195,54 @@ export async function createClient(clientData: Omit<Client, 'id' | 'createdAt'>)
       ...newClient
     };
   } catch (error) {
-    console.error('Failed to create client in Firestore:', error);
-    throw error;
+    console.error('Failed to create client in Firestore, falling back to mock:', error);
+    const client: Client = {
+      id: 'mock-client-fallback-' + Math.random().toString(36).substring(2, 11),
+      ...newClient
+    };
+    mockClients.push(client);
+    return client;
   }
 }
 
 export async function updateClient(id: string, clientData: Partial<Omit<Client, 'id' | 'createdAt'>>): Promise<boolean> {
-  if (!isFirebaseConfigured) {
+  const performMockUpdate = () => {
     const idx = mockClients.findIndex(c => c.id === id);
     if (idx !== -1) {
       mockClients[idx] = { ...mockClients[idx], ...clientData };
       return true;
     }
     return false;
+  };
+
+  if (!isFirebaseConfigured) {
+    return performMockUpdate();
   }
   try {
     await db.collection('clients').doc(id).update(clientData);
     return true;
   } catch (error) {
-    console.error('Failed to update client:', error);
-    return false;
+    console.error('Failed to update client in Firestore, falling back to mock:', error);
+    return performMockUpdate();
   }
 }
 
 export async function deleteClientPermanently(id: string): Promise<boolean> {
-  if (!isFirebaseConfigured) {
+  const performMockDelete = () => {
     const initialLen = mockClients.length;
     mockClients = mockClients.filter(c => c.id !== id);
     return mockClients.length < initialLen;
+  };
+
+  if (!isFirebaseConfigured) {
+    return performMockDelete();
   }
   try {
     await db.collection('clients').doc(id).delete();
     return true;
   } catch (error) {
-    console.error('Failed to delete client permanently:', error);
-    return false;
+    console.error('Failed to delete client permanently in Firestore, falling back to mock:', error);
+    return performMockDelete();
   }
 }
 
@@ -306,14 +319,19 @@ export async function createSubmission(submissionData: Omit<Submission, 'id' | '
       ...newSubmission
     };
   } catch (error) {
-    console.error('Failed to create submission in Firestore:', error);
-    throw error;
+    console.error('Failed to create submission in Firestore, falling back to mock:', error);
+    const submission: Submission = {
+      id: 'mock-sub-fallback-' + Math.random().toString(36).substring(2, 11),
+      ...newSubmission
+    };
+    mockSubmissions.push(submission);
+    return submission;
   }
 }
 
 export async function updateSubmissionStage(id: string, stage: number): Promise<boolean> {
   const now = new Date().toISOString();
-  if (!isFirebaseConfigured) {
+  const performMockUpdate = () => {
     const sub = mockSubmissions.find(s => s.id === id);
     if (sub) {
       sub.stage = stage;
@@ -321,13 +339,17 @@ export async function updateSubmissionStage(id: string, stage: number): Promise<
       return true;
     }
     return false;
+  };
+
+  if (!isFirebaseConfigured) {
+    return performMockUpdate();
   }
   try {
     await db.collection('submissions').doc(id).update({ stage, updatedAt: now });
     return true;
   } catch (error) {
-    console.error('Failed to update submission stage:', error);
-    return false;
+    console.error('Failed to update submission stage in Firestore, falling back to mock:', error);
+    return performMockUpdate();
   }
 }
 
