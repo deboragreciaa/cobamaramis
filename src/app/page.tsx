@@ -912,7 +912,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 }`}
               >
                 <Layers className={`h-4 w-4 shrink-0 ${activeTab === 'catalog' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
-                <span>Katalog Ruangan (F1)</span>
+                <span>Katalog Ruangan</span>
               </button>
 
               <button
@@ -925,7 +925,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               >
                 <div className="flex items-center gap-3">
                   <Calculator className={`h-4 w-4 shrink-0 ${activeTab === 'calculator' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
-                  <span>Kalkulator Sewa (F2)</span>
+                  <span>Kalkulator Sewa</span>
                 </div>
                 {selectedRoomCodes.length > 0 && (
                   <span className="bg-[#0073C2] text-white rounded-full h-4.5 w-4.5 flex items-center justify-center text-[9px] font-extrabold">
@@ -944,7 +944,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               >
                 <div className="flex items-center gap-3">
                   <Users className={`h-4 w-4 shrink-0 ${activeTab === 'clients' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
-                  <span>Basis Data Klien (F3)</span>
+                  <span>Basis Data Klien</span>
                 </div>
                 {clients.length > 0 && (
                   <span className="bg-slate-100 text-slate-500 rounded px-1 text-[9px] font-extrabold">
@@ -963,7 +963,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               >
                 <div className="flex items-center gap-3">
                   <FileText className={`h-4 w-4 shrink-0 ${activeTab === 'submissions' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
-                  <span>Pengajuan Sewa (F4/F9)</span>
+                  <span>Pengajuan Sewa</span>
                 </div>
                 {submissions.length > 0 && (
                   <span className="bg-slate-100 text-slate-500 rounded px-1 text-[9px] font-extrabold">
@@ -981,7 +981,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 }`}
               >
                 <MapPin className={`h-4 w-4 shrink-0 ${activeTab === 'calendar' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
-                <span>Kalender Kegiatan (F5)</span>
+                <span>Kalender Kegiatan</span>
               </button>
 
               <button
@@ -993,7 +993,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 }`}
               >
                 <CheckSquare className={`h-4 w-4 shrink-0 ${activeTab === 'surveys' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
-                <span>Jadwal Survei (F6)</span>
+                <span>Jadwal Survei</span>
               </button>
 
               <button
@@ -1005,7 +1005,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 }`}
               >
                 <BookOpen className={`h-4 w-4 shrink-0 ${activeTab === 'documents' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
-                <span>Pusat Dokumen (F10)</span>
+                <span>Pusat Dokumen</span>
               </button>
             </div>
           </div>
@@ -1940,12 +1940,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       <div className="p-3.5 bg-amber-500/5 border border-amber-500/15 text-amber-400 rounded-lg text-xs flex items-start gap-2">
                         <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                         <span>
-                          <strong>Perhatian:</strong> Silakan pilih ruangan/paket dan set waktu di tab <strong>Kalkulator (F2)</strong> terlebih dahulu untuk menautkan tarif estimasi.
+                          <strong>Perhatian:</strong> Silakan pilih ruangan/paket dan set waktu di tab <strong>Kalkulator</strong> terlebih dahulu untuk menautkan tarif estimasi.
                         </span>
                       </div>
                     ) : (
                       <div className="p-3 bg-slate-950 border border-slate-850 rounded-lg text-[11px] space-y-2">
-                        <div className="font-bold text-slate-400">Data Kalkulator F2 Tertaut:</div>
+                        <div className="font-bold text-slate-400">Data Kalkulator Tertaut:</div>
                         <div className="text-slate-300">Ruangan: <span className="font-semibold text-white">{activePackages.length > 0 ? activePackages.map(p=>p.label).join(', ') : selectedRoomCodes.join(', ')}</span></div>
                         <div className="text-slate-300">Total Luas: <span className="font-semibold text-white">{totalSelectedArea} m²</span></div>
                         <div className="text-slate-300">Estimasi Tarif: <span className="font-semibold text-amber-400">{formatRupiah(calculatorResults.total)}</span></div>
