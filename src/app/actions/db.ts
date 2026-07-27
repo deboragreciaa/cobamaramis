@@ -2,6 +2,8 @@
 
 import { db } from '@/lib/firebase';
 import { Room, staticRooms } from '@/lib/rooms-data';
+import { Client, Submission, Booking, Survey, ClosedSurveySlot } from '@/lib/types';
+import { validateBookingLock } from '@/lib/validation';
 
 export interface SystemSettings {
   fairValuePerSqm: number;
@@ -145,3 +147,339 @@ export async function updateSystemSettings(settings: SystemSettings) {
     return { success: false, error: error.message };
   }
 }
+
+// Server-side mock stores (in-memory) for demo mode
+let mockClients: Client[] = [];
+let mockSubmissions: Submission[] = [];
+let mockBookings: Booking[] = [];
+let mockSurveys: Survey[] = [];
+let mockClosedSlots: ClosedSurveySlot[] = [];
+
+/**
+ * Clients actions
+ */
+export async function getClients(): Promise<Client[]> {
+  if (!isFirebaseConfigured) {
+    return mockClients;
+  }
+  try {
+    const snapshot = await db.collection('clients').orderBy('companyName', 'asc').get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Client));
+  } catch (error) {
+    console.error('Failed to get clients:', error);
+    return mockClients;
+  }
+}
+
+export async function createClient(clientData: Omit<Client, 'id' | 'createdAt'>): Promise<Client> {
+  const newClient: Omit<Client, 'id'> = {
+    ...clientData,
+    createdAt: new Date().toISOString(),
+  };
+
+  if (!isFirebaseConfigured) {
+    const client: Client = {
+      id: 'mock-client-' + Math.random().toString(36).substring(2, 11),
+      ...newClient
+    };
+    mockClients.push(client);
+    return client;
+  }
+
+  const docRef = await db.collection('clients').add(newClient);
+  return {
+    id: docRef.id,
+    ...newClient
+  };
+}
+
+/**
+ * Submissions actions
+ */
+export async function getSubmissions(): Promise<Submission[]> {
+  if (!isFirebaseConfigured) {
+    return mockSubmissions;
+  }
+  try {
+    const snapshot = await db.collection('submissions').orderBy('createdAt', 'desc').get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Submission));
+  } catch (error) {
+    console.error('Failed to get submissions:', error);
+    return mockSubmissions;
+  }
+}
+
+export async function createSubmission(submissionData: Omit<Submission, 'id' | 'createdAt' | 'updatedAt'>): Promise<Submission> {
+  const now = new Date().toISOString();
+  const newSubmission: Omit<Submission, 'id'> = {
+    ...submissionData,
+    createdAt: now,
+    updatedAt: now,
+  };
+
+  if (!isFirebaseConfigured) {
+    const submission: Submission = {
+      id: 'mock-sub-' + Math.random().toString(36).substring(2, 11),
+      ...newSubmission
+    };
+    mockSubmissions.push(submission);
+    return submission;
+  }
+
+  const docRef = await db.collection('submissions').add(newSubmission);
+  return {
+    id: docRef.id,
+    ...newSubmission
+  };
+}
+
+export async function updateSubmissionStage(id: string, stage: number): Promise<boolean> {
+  const now = new Date().toISOString();
+  if (!isFirebaseConfigured) {
+    const sub = mockSubmissions.find(s => s.id === id);
+    if (sub) {
+      sub.stage = stage;
+      sub.updatedAt = now;
+      return true;
+    }
+    return false;
+  }
+  try {
+    await db.collection('submissions').doc(id).update({ stage, updatedAt: now });
+    return true;
+  } catch (error) {
+    console.error('Failed to update submission stage:', error);
+    return false;
+  }
+}
+
+export async function updateSubmission(id: string, data: Partial<Submission>): Promise<boolean> {
+  const now = new Date().toISOString();
+  const updateData = { ...data, updatedAt: now };
+  if (!isFirebaseConfigured) {
+    const idx = mockSubmissions.findIndex(s => s.id === id);
+    if (idx !== -1) {
+      mockSubmissions[idx] = { ...mockSubmissions[idx], ...updateData };
+      return true;
+    }
+    return false;
+  }
+  try {
+    await db.collection('submissions').doc(id).update(updateData);
+    return true;
+  } catch (error) {
+    console.error('Failed to update submission:', error);
+    return false;
+  }
+}
+
+/**
+ * Bookings actions
+ */
+export async function getBookings(): Promise<Booking[]> {
+  if (!isFirebaseConfigured) {
+    return mockBookings;
+  }
+  try {
+    const snapshot = await db.collection('bookings').get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Booking));
+  } catch (error) {
+    console.error('Failed to get bookings:', error);
+    return mockBookings;
+  }
+}
+
+export async function createBooking(bookingData: Omit<Booking, 'id'>): Promise<Booking | { error: string }> {
+  // A4 & F5 Reservation Lock Validation
+  if (bookingData.type === 'CONFIRMED' && bookingData.submissionId) {
+    const sub = await getSubmissionById(bookingData.submissionId);
+    if (sub && !validateBookingLock(bookingData.type, sub.stage)) {
+      return { error: 'Status Terkunci hanya diperbolehkan jika pengajuan mencapai minimal Tahap 5' };
+    }
+  }
+
+  if (!isFirebaseConfigured) {
+    const booking: Booking = {
+      id: 'mock-booking-' + Math.random().toString(36).substring(2, 11),
+      ...bookingData
+    };
+    mockBookings.push(booking);
+    return booking;
+  }
+
+  const docRef = await db.collection('bookings').add(bookingData);
+  return {
+    id: docRef.id,
+    ...bookingData
+  };
+}
+
+export async function updateBooking(id: string, data: Partial<Booking>): Promise<{ success: boolean; error?: string }> {
+  // A4 & F5 Validation if status becomes CONFIRMED
+  if (data.type === 'CONFIRMED') {
+    const submissionId = data.submissionId || (await getBookingById(id))?.submissionId;
+    if (submissionId) {
+      const sub = await getSubmissionById(submissionId);
+      if (sub && !validateBookingLock(data.type, sub.stage)) {
+        return { success: false, error: 'Status Terkunci hanya diperbolehkan jika pengajuan mencapai minimal Tahap 5' };
+      }
+    }
+  }
+
+  if (!isFirebaseConfigured) {
+    const idx = mockBookings.findIndex(b => b.id === id);
+    if (idx !== -1) {
+      mockBookings[idx] = { ...mockBookings[idx], ...data };
+      return { success: true };
+    }
+    return { success: false, error: 'Booking tidak ditemukan' };
+  }
+  try {
+    await db.collection('bookings').doc(id).update(data);
+    return { success: true };
+  } catch (error: any) {
+    console.error('Failed to update booking:', error);
+    return { success: false, error: error.message };
+  }
+}
+
+export async function deleteBooking(id: string): Promise<boolean> {
+  if (!isFirebaseConfigured) {
+    const initialLen = mockBookings.length;
+    mockBookings = mockBookings.filter(b => b.id !== id);
+    return mockBookings.length < initialLen;
+  }
+  try {
+    await db.collection('bookings').doc(id).delete();
+    return true;
+  } catch (error) {
+    console.error('Failed to delete booking:', error);
+    return false;
+  }
+}
+
+// Helpers
+export async function getSubmissionById(id: string): Promise<Submission | null> {
+  if (!isFirebaseConfigured) {
+    return mockSubmissions.find(s => s.id === id) || null;
+  }
+  try {
+    const doc = await db.collection('submissions').doc(id).get();
+    if (doc.exists) {
+      return { id: doc.id, ...doc.data() } as Submission;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+export async function getBookingById(id: string): Promise<Booking | null> {
+  if (!isFirebaseConfigured) {
+    return mockBookings.find(b => b.id === id) || null;
+  }
+  try {
+    const doc = await db.collection('bookings').doc(id).get();
+    if (doc.exists) {
+      return { id: doc.id, ...doc.data() } as Booking;
+    }
+    return null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Surveys actions
+ */
+export async function getSurveys(): Promise<Survey[]> {
+  if (!isFirebaseConfigured) {
+    return mockSurveys;
+  }
+  try {
+    const snapshot = await db.collection('surveys').get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Survey));
+  } catch (error) {
+    console.error('Failed to get surveys:', error);
+    return mockSurveys;
+  }
+}
+
+export async function createSurvey(surveyData: Omit<Survey, 'id'>): Promise<Survey> {
+  if (!isFirebaseConfigured) {
+    const survey: Survey = {
+      id: 'mock-survey-' + Math.random().toString(36).substring(2, 11),
+      ...surveyData
+    };
+    mockSurveys.push(survey);
+    return survey;
+  }
+  const docRef = await db.collection('surveys').add(surveyData);
+  return {
+    id: docRef.id,
+    ...surveyData
+  };
+}
+
+export async function updateSurveyStatus(id: string, status: Survey['status']): Promise<boolean> {
+  if (!isFirebaseConfigured) {
+    const survey = mockSurveys.find(s => s.id === id);
+    if (survey) {
+      survey.status = status;
+      return true;
+    }
+    return false;
+  }
+  try {
+    await db.collection('surveys').doc(id).update({ status });
+    return true;
+  } catch (error) {
+    console.error('Failed to update survey status:', error);
+    return false;
+  }
+}
+
+export async function getClosedSurveySlots(): Promise<ClosedSurveySlot[]> {
+  if (!isFirebaseConfigured) {
+    return mockClosedSlots;
+  }
+  try {
+    const snapshot = await db.collection('closed_survey_slots').get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as ClosedSurveySlot));
+  } catch (error) {
+    console.error('Failed to get closed survey slots:', error);
+    return mockClosedSlots;
+  }
+}
+
+export async function closeSurveySlot(slot: Omit<ClosedSurveySlot, 'id'>): Promise<ClosedSurveySlot> {
+  if (!isFirebaseConfigured) {
+    const newSlot: ClosedSurveySlot = {
+      id: 'mock-closed-' + Math.random().toString(36).substring(2, 11),
+      ...slot
+    };
+    mockClosedSlots.push(newSlot);
+    return newSlot;
+  }
+  const docRef = await db.collection('closed_survey_slots').add(slot);
+  return {
+    id: docRef.id,
+    ...slot
+  };
+}
+
+export async function openSurveySlot(id: string): Promise<boolean> {
+  if (!isFirebaseConfigured) {
+    const initialLen = mockClosedSlots.length;
+    mockClosedSlots = mockClosedSlots.filter(s => s.id !== id);
+    return mockClosedSlots.length < initialLen;
+  }
+  try {
+    await db.collection('closed_survey_slots').doc(id).delete();
+    return true;
+  } catch (error) {
+    console.error('Failed to delete closed slot:', error);
+    return false;
+  }
+}
+

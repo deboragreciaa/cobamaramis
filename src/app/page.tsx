@@ -2,9 +2,30 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { useAuth, UserRole } from '@/context/AuthContext';
-import { getRooms, getSystemSettings, SystemSettings } from '@/app/actions/db';
+import {
+  getRooms,
+  getSystemSettings,
+  SystemSettings,
+  getClients,
+  createClient,
+  getSubmissions,
+  createSubmission,
+  updateSubmissionStage,
+  updateSubmission,
+  getBookings,
+  createBooking,
+  updateBooking,
+  deleteBooking,
+  getSurveys,
+  createSurvey,
+  updateSurveyStatus,
+  getClosedSurveySlots,
+  closeSurveySlot,
+  openSurveySlot
+} from '@/app/actions/db';
 import { Room, getQuickPackages, QuickPackage } from '@/lib/rooms-data';
 import { calculatePenawaran, formatRupiah, PURPOSE_OPTIONS, PurposeOption } from '@/lib/calculator';
+import { Client, Submission, Booking, Survey, ClosedSurveySlot, BookingType } from '@/lib/types';
 import {
   Search,
   Filter,
@@ -64,11 +85,17 @@ export default function Home() {
   // App States
   const [emailInput, setEmailInput] = useState('team@maramis.go.id');
   const [passwordInput, setPasswordInput] = useState('');
-  const [activeTab, setActiveTab] = useState<'catalog' | 'calculator' | 'documents'>('catalog');
+  const [activeTab, setActiveTab] = useState<'catalog' | 'calculator' | 'clients' | 'submissions' | 'calendar' | 'surveys' | 'documents'>('catalog');
   const [selectedPackageIds, setSelectedPackageIds] = useState<string[]>([]);
   
   // Database States
   const [rooms, setRooms] = useState<Room[]>([]);
+  const [clients, setClients] = useState<Client[]>([]);
+  const [submissions, setSubmissions] = useState<Submission[]>([]);
+  const [bookings, setBookings] = useState<Booking[]>([]);
+  const [surveys, setSurveys] = useState<Survey[]>([]);
+  const [closedSlots, setClosedSlots] = useState<ClosedSurveySlot[]>([]);
+  
   const [systemSettings, setSystemSettings] = useState<SystemSettings>({
     fairValuePerSqm: 50000,
     loadingFactor: 0.30,
@@ -102,15 +129,67 @@ export default function Home() {
   const [manualLoading, setManualLoading] = useState<string>('');
   const [manualPPNLoading, setManualPPNLoading] = useState<string>('');
   const [copySuccess, setCopySuccess] = useState(false);
+  
+  // F3 Client Form States
+  const [clientCompanyName, setClientCompanyName] = useState('');
+  const [clientPicName, setClientPicName] = useState('');
+  const [clientPicEmail, setClientPicEmail] = useState('');
+  const [clientPicPhone, setClientPicPhone] = useState('');
+  const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
+  
+  // F4 Submission Form States
+  const [subClientId, setSubClientId] = useState('');
+  const [subActivityName, setSubActivityName] = useState('');
+  const [subPicInternal, setSubPicInternal] = useState('Tim LMAN');
+  const [subNotes, setSubNotes] = useState('');
+  const [selectedSubmissionId, setSelectedSubmissionId] = useState<string | null>(null);
+  
+  // F5 Booking Form States
+  const [bookingType, setBookingType] = useState<BookingType>('TENTATIVE');
+  const [bookingRoomCodes, setBookingRoomCodes] = useState<string[]>([]);
+  const [bookingStartDate, setBookingStartDate] = useState('');
+  const [bookingEndDate, setBookingEndDate] = useState('');
+  const [bookingActivityName, setBookingActivityName] = useState('');
+  const [bookingNotes, setBookingNotes] = useState('');
+  const [bookingSubmissionId, setBookingSubmissionId] = useState('');
+  
+  // F6 Survey Form States
+  const [surveySubmissionId, setSurveySubmissionId] = useState('');
+  const [surveyDate, setSurveyDate] = useState('');
+  const [surveyTimeSlot, setSurveyTimeSlot] = useState<'10:00' | '14:00'>('10:00');
+  const [surveyPicInternal, setSurveyPicInternal] = useState('Tim LMAN');
+  const [surveyGuestCount, setSurveyGuestCount] = useState('5');
+  
+  // F6 Close Slot States
+  const [closeSlotDate, setCloseSlotDate] = useState('');
+  const [closeSlotTimeSlot, setCloseSlotTimeSlot] = useState<'10:00' | '14:00'>('10:00');
+  const [closeSlotReason, setCloseSlotReason] = useState('');
+
+  // Calendar Month Navigation
+  const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
+  const [currentMonth, setCurrentMonth] = useState(new Date().getMonth()); // 0-11
 
   // Fetch Rooms and Settings on mount/auth
   useEffect(() => {
     if (user && role) {
       setDbLoading(true);
-      Promise.all([getRooms(), getSystemSettings()])
-        .then(([fetchedRooms, fetchedSettings]) => {
+      Promise.all([
+        getRooms(),
+        getSystemSettings(),
+        getClients(),
+        getSubmissions(),
+        getBookings(),
+        getSurveys(),
+        getClosedSurveySlots()
+      ])
+        .then(([fetchedRooms, fetchedSettings, fetchedClients, fetchedSubmissions, fetchedBookings, fetchedSurveys, fetchedClosedSlots]) => {
           setRooms(fetchedRooms);
           setSystemSettings(fetchedSettings);
+          setClients(fetchedClients);
+          setSubmissions(fetchedSubmissions);
+          setBookings(fetchedBookings);
+          setSurveys(fetchedSurveys);
+          setClosedSlots(fetchedClosedSlots);
           
           // Seed the calculator factors with default settings
           setCustomReturnRate((fetchedSettings.returnRate * 100).toString());
@@ -125,6 +204,255 @@ export default function Home() {
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     await login(passwordInput, emailInput);
+  };
+
+  // F3 Client Handlers
+  const handleCreateClient = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!clientCompanyName || !clientPicName || !clientPicEmail || !clientPicPhone) {
+      alert('Semua field wajib diisi.');
+      return;
+    }
+    try {
+      const newClient = await createClient({
+        companyName: clientCompanyName,
+        picName: clientPicName,
+        picEmail: clientPicEmail,
+        picPhone: clientPicPhone,
+      });
+      setClients((prev) => [...prev, newClient].sort((a, b) => a.companyName.localeCompare(b.companyName)));
+      // Reset form
+      setClientCompanyName('');
+      setClientPicName('');
+      setClientPicEmail('');
+      setClientPicPhone('');
+      alert('Klien baru berhasil ditambahkan!');
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menambahkan klien.');
+    }
+  };
+
+  // F4 Submission Handlers
+  const handleCreateSubmission = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!subClientId || !subActivityName) {
+      alert('Pilih klien dan masukkan nama kegiatan.');
+      return;
+    }
+    const client = clients.find((c) => c.id === subClientId);
+    if (!client) return;
+
+    // Use current F2 calculator settings
+    const currentCost = calculatorResults.total;
+    const currentRooms = activePackages.length > 0
+      ? EXCEL_PACKAGES.filter((pkg) => selectedPackageIds.includes(pkg.id)).map((p) => p.label)
+      : selectedRoomCodes;
+
+    if (currentRooms.length === 0) {
+      alert('Silakan pilih minimal 1 ruangan atau paket di tab Kalkulator/Katalog terlebih dahulu.');
+      return;
+    }
+
+    try {
+      const newSub = await createSubmission({
+        clientId: subClientId,
+        companyName: client.companyName,
+        activityName: subActivityName,
+        stage: 1, // Start at stage 1
+        roomCodes: currentRooms,
+        totalAreaSqm: totalSelectedArea,
+        eventDays: parseInt(eventDays) || 1,
+        loadingDays: parseInt(loadingDays) || 0,
+        estimatedCost: currentCost,
+        notes: subNotes,
+        picInternal: subPicInternal,
+      });
+      setSubmissions((prev) => [newSub, ...prev]);
+      setSubClientId('');
+      setSubActivityName('');
+      setSubNotes('');
+      alert('Pengajuan sewa baru berhasil dicatat!');
+      setActiveTab('submissions'); // Switch tab to view it
+    } catch (err) {
+      console.error(err);
+      alert('Gagal membuat pengajuan.');
+    }
+  };
+
+  const handleUpdateStage = async (subId: string, newStage: number) => {
+    try {
+      const success = await updateSubmissionStage(subId, newStage);
+      if (success) {
+        setSubmissions((prev) =>
+          prev.map((sub) => (sub.id === subId ? { ...sub, stage: newStage, updatedAt: new Date().toISOString() } : sub))
+        );
+        alert(`Tahap berhasil diperbarui menjadi: Tahap ${newStage}`);
+      } else {
+        alert('Gagal memperbarui tahap.');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // F5 Booking Handlers
+  const handleCreateBooking = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!bookingStartDate || !bookingEndDate || !bookingActivityName) {
+      alert('Isi tanggal mulai, tanggal selesai, dan nama kegiatan.');
+      return;
+    }
+
+    const roomsToBook = bookingRoomCodes.length > 0 ? bookingRoomCodes : selectedRoomCodes;
+    if (roomsToBook.length === 0 && bookingType !== 'UNAVAILABLE') {
+      alert('Pilih minimal satu ruangan.');
+      return;
+    }
+
+    // F5 Conflict Detection (Warnings only, does not block booking except for locked)
+    const isConflict = bookings.some((b) => {
+      const startCollide = bookingStartDate <= b.endDate && bookingStartDate >= b.startDate;
+      const endCollide = bookingEndDate <= b.endDate && bookingEndDate >= b.startDate;
+      const wrapCollide = bookingStartDate <= b.startDate && bookingEndDate >= b.endDate;
+      const hasOverlap = startCollide || endCollide || wrapCollide;
+      if (!hasOverlap) return false;
+      
+      // If room overlaps
+      return roomsToBook.some((rCode) => b.roomCodes.includes(rCode));
+    });
+
+    if (isConflict) {
+      const proceed = window.confirm('Peringatan: Jadwal bentrok dengan booking yang sudah ada. Tetap lanjutkan?');
+      if (!proceed) return;
+    }
+
+    try {
+      const res = await createBooking({
+        submissionId: bookingSubmissionId || undefined,
+        type: bookingType,
+        roomCodes: roomsToBook,
+        startDate: bookingStartDate,
+        endDate: bookingEndDate,
+        activityName: bookingActivityName,
+        notes: bookingNotes,
+      });
+
+      if ('error' in res) {
+        alert(`Error: ${res.error}`);
+        return;
+      }
+
+      setBookings((prev) => [...prev, res]);
+      // Reset form
+      setBookingStartDate('');
+      setBookingEndDate('');
+      setBookingActivityName('');
+      setBookingNotes('');
+      setBookingSubmissionId('');
+      setBookingRoomCodes([]);
+      alert('Pemesanan tanggal berhasil dicatat!');
+    } catch (err) {
+      console.error(err);
+      alert('Gagal mencatat pemesanan.');
+    }
+  };
+
+  const handleDeleteBooking = async (bId: string) => {
+    if (!window.confirm('Apakah Anda yakin ingin menghapus booking ini?')) return;
+    try {
+      const success = await deleteBooking(bId);
+      if (success) {
+        setBookings((prev) => prev.filter((b) => b.id !== bId));
+        alert('Booking berhasil dihapus.');
+      } else {
+        alert('Gagal menghapus booking.');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  // F6 Survey Handlers
+  const handleCreateSurvey = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!surveySubmissionId || !surveyDate) {
+      alert('Pilih pengajuan dan tanggal survei.');
+      return;
+    }
+
+    const sub = submissions.find((s) => s.id === surveySubmissionId);
+    if (!sub) return;
+
+    // Check if slot is closed
+    const isClosed = closedSlots.some((slot) => slot.date === surveyDate && slot.timeSlot === surveyTimeSlot);
+    if (isClosed) {
+      alert('Slot ini telah ditutup untuk kunjungan survei (ada kegiatan internal LMAN). Silakan pilih slot lain.');
+      return;
+    }
+
+    try {
+      const newSurvey = await createSurvey({
+        submissionId: surveySubmissionId,
+        companyName: sub.companyName,
+        date: surveyDate,
+        timeSlot: surveyTimeSlot,
+        picInternal: surveyPicInternal,
+        guestCount: parseInt(surveyGuestCount) || 0,
+        status: 'SCHEDULED',
+      });
+
+      setSurveys((prev) => [...prev, newSurvey]);
+      setSurveyDate('');
+      alert('Jadwal survei berhasil dicatat!');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleUpdateSurvey = async (sId: string, status: Survey['status']) => {
+    try {
+      const success = await updateSurveyStatus(sId, status);
+      if (success) {
+        setSurveys((prev) => prev.map((s) => (s.id === sId ? { ...s, status } : s)));
+        alert(`Status survei berhasil diperbarui ke: ${status}`);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleCloseSlot = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!closeSlotDate) {
+      alert('Masukkan tanggal slot.');
+      return;
+    }
+    try {
+      const newSlot = await closeSurveySlot({
+        date: closeSlotDate,
+        timeSlot: closeSlotTimeSlot,
+        reason: closeSlotReason || 'Kegiatan Internal LMAN',
+      });
+      setClosedSlots((prev) => [...prev, newSlot]);
+      setCloseSlotDate('');
+      setCloseSlotReason('');
+      alert('Slot berhasil ditutup.');
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleOpenSlot = async (slotId: string) => {
+    try {
+      const success = await openSurveySlot(slotId);
+      if (success) {
+        setClosedSlots((prev) => prev.filter((s) => s.id !== slotId));
+        alert('Slot dibuka kembali untuk umum.');
+      }
+    } catch (err) {
+      console.error(err);
+    }
   };
 
   // Helper: Use Demo Password
@@ -564,7 +892,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
       <main className="flex-1 max-w-7xl w-full mx-auto p-6 flex flex-col gap-6">
         
         {/* NAV TABS */}
-        <div className="flex border-b border-slate-900">
+        <div className="flex border-b border-slate-900 overflow-x-auto whitespace-nowrap scrollbar-none">
           <button
             onClick={() => setActiveTab('catalog')}
             className={`px-4 py-2 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
@@ -573,7 +901,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Layers className="h-4 w-4" />
+            <Layers className="h-4 w-4 shrink-0" />
             Katalog Ruangan (F1)
           </button>
           <button
@@ -584,13 +912,67 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            <Calculator className="h-4 w-4" />
-            Kalkulator Penawaran (F2)
+            <Calculator className="h-4 w-4 shrink-0" />
+            Kalkulator (F2)
             {selectedRoomCodes.length > 0 && (
               <span className="bg-amber-500 text-slate-950 rounded-full h-5 w-5 flex items-center justify-center text-[10px] font-bold">
                 {selectedRoomCodes.length}
               </span>
             )}
+          </button>
+          <button
+            onClick={() => setActiveTab('clients')}
+            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
+              activeTab === 'clients'
+                ? 'border-amber-500 text-amber-500'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <Users className="h-4 w-4 shrink-0" />
+            Klien (F3)
+            {clients.length > 0 && (
+              <span className="bg-slate-800 text-slate-400 rounded-full px-1.5 py-0.5 text-[9px] font-semibold">
+                {clients.length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('submissions')}
+            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
+              activeTab === 'submissions'
+                ? 'border-amber-500 text-amber-500'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <FileText className="h-4 w-4 shrink-0" />
+            Pengajuan (F4/F9)
+            {submissions.length > 0 && (
+              <span className="bg-slate-800 text-slate-400 rounded-full px-1.5 py-0.5 text-[9px] font-semibold">
+                {submissions.length}
+              </span>
+            )}
+          </button>
+          <button
+            onClick={() => setActiveTab('calendar')}
+            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
+              activeTab === 'calendar'
+                ? 'border-amber-500 text-amber-500'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <MapPin className="h-4 w-4 shrink-0" />
+            Kalender (F5)
+          </button>
+          <button
+            onClick={() => setActiveTab('surveys')}
+            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
+              activeTab === 'surveys'
+                ? 'border-amber-500 text-amber-500'
+                : 'border-transparent text-slate-400 hover:text-slate-200'
+            }`}
+          >
+            <CheckSquare className="h-4 w-4 shrink-0" />
+            Survei (F6)
           </button>
           <button
             onClick={() => setActiveTab('documents')}
@@ -600,8 +982,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 : 'border-transparent text-slate-400 hover:text-slate-200'
             }`}
           >
-            <BookOpen className="h-4 w-4" />
-            Dokumen Operasional (F10)
+            <BookOpen className="h-4 w-4 shrink-0" />
+            Dokumen (F10)
           </button>
           
           {role === 'PENGINPUT' && (
@@ -1315,6 +1697,947 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </div>
                 </div>
 
+              </div>
+            </div>
+          )}
+
+          {/* TAB: CLIENTS (F3) */}
+          {activeTab === 'clients' && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
+              {/* LEFT: Client Form (Penginput Only) */}
+              <div className="lg:col-span-1">
+                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
+                  <h2 className="text-sm font-bold text-white flex items-center gap-1.5 border-b border-slate-950 pb-2">
+                    <Users className="h-4 w-4 text-amber-500" />
+                    Tambah Klien Baru
+                  </h2>
+                  {role !== 'PENGINPUT' ? (
+                    <p className="text-xs text-slate-500 italic">Peran Pereview hanya memiliki akses baca (Read-only).</p>
+                  ) : (
+                    <form onSubmit={handleCreateClient} className="space-y-4">
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Nama Instansi / Badan Usaha</label>
+                        <input
+                          type="text"
+                          required
+                          value={clientCompanyName}
+                          onChange={(e) => setClientCompanyName(e.target.value)}
+                          placeholder="e.g., PT. Media Nusantara"
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Nama PIC Kontak</label>
+                        <input
+                          type="text"
+                          required
+                          value={clientPicName}
+                          onChange={(e) => setClientPicName(e.target.value)}
+                          placeholder="e.g., Budi Santoso"
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Email PIC profesional</label>
+                        <input
+                          type="email"
+                          required
+                          value={clientPicEmail}
+                          onChange={(e) => setClientPicEmail(e.target.value)}
+                          placeholder="e.g., budi@instansi.co.id"
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Nomor Telepon PIC</label>
+                        <input
+                          type="text"
+                          required
+                          value={clientPicPhone}
+                          onChange={(e) => setClientPicPhone(e.target.value)}
+                          placeholder="e.g., 08123456789"
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        />
+                      </div>
+                      <div className="p-2.5 bg-blue-500/5 border border-blue-500/10 text-blue-400 rounded-lg text-[9px] leading-relaxed">
+                        ⚠️ <strong>Perlindungan Data Klien (A3)</strong>: Dilarang keras menginput identitas pribadi sensitif seperti NIK, data KTP, paspor, tanggal lahir, atau alamat pribadi.
+                      </div>
+                      <button
+                        type="submit"
+                        className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 rounded-lg text-xs transition-colors shadow-lg"
+                      >
+                        Simpan Data Klien
+                      </button>
+                    </form>
+                  )}
+                </div>
+              </div>
+
+              {/* RIGHT: Client List & Submission History */}
+              <div className="lg:col-span-2 flex flex-col gap-6">
+                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
+                  <h2 className="text-sm font-bold text-white">Daftar Instansi Klien</h2>
+                  {clients.length === 0 ? (
+                    <p className="text-xs text-slate-500 italic py-8 text-center">Belum ada data klien terdaftar.</p>
+                  ) : (
+                    <div className="border border-slate-950 rounded-lg overflow-hidden bg-slate-950/20">
+                      <table className="w-full text-xs text-left border-collapse">
+                        <thead>
+                          <tr className="bg-slate-950 text-slate-400 font-bold border-b border-slate-900">
+                            <th className="p-3">Nama Instansi</th>
+                            <th className="p-3">Nama PIC</th>
+                            <th className="p-3">Kontak</th>
+                            <th className="p-3 text-right">Aksi</th>
+                          </tr>
+                        </thead>
+                        <tbody className="divide-y divide-slate-950">
+                          {clients.map((c) => (
+                            <tr
+                              key={c.id}
+                              className={`hover:bg-slate-900/40 transition-colors ${
+                                selectedClientId === c.id ? 'bg-amber-500/[0.02]' : ''
+                              }`}
+                            >
+                              <td className="p-3 font-bold text-white">{c.companyName}</td>
+                              <td className="p-3 text-slate-300">{c.picName}</td>
+                              <td className="p-3 text-slate-400">
+                                <div>{c.picEmail}</div>
+                                <div className="text-[10px] mt-0.5">{c.picPhone}</div>
+                              </td>
+                              <td className="p-3 text-right">
+                                <button
+                                  onClick={() => setSelectedClientId(c.id === selectedClientId ? null : c.id)}
+                                  className="px-2.5 py-1 rounded bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 hover:text-white font-bold"
+                                >
+                                  {selectedClientId === c.id ? 'Tutup Riwayat' : 'Lihat Riwayat'}
+                                </button>
+                              </td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+                  )}
+                </div>
+
+                {/* Submissions History for Selected Client */}
+                {selectedClientId && (() => {
+                  const client = clients.find((c) => c.id === selectedClientId);
+                  const clientSubs = submissions.filter((s) => s.clientId === selectedClientId);
+                  return (
+                    <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg animate-fadeIn">
+                      <h3 className="text-xs font-bold text-amber-400 mb-3">
+                        Riwayat Pengajuan Sewa: {client?.companyName}
+                      </h3>
+                      {clientSubs.length === 0 ? (
+                        <p className="text-xs text-slate-500 italic py-4">Belum ada pengajuan sewa tercatat untuk instansi ini.</p>
+                      ) : (
+                        <div className="space-y-3">
+                          {clientSubs.map((sub) => (
+                            <div
+                              key={sub.id}
+                              className="p-3.5 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between gap-4"
+                            >
+                              <div>
+                                <h4 className="text-xs font-bold text-white">{sub.activityName}</h4>
+                                <p className="text-[10px] text-slate-400 mt-1">
+                                  Ruang: {sub.roomCodes.join(', ')} · Durasi: {sub.eventDays} hari (Loading: {sub.loadingDays} hari)
+                                </p>
+                                <div className="text-[9px] text-slate-500 mt-0.5">
+                                  Dibuat pada: {new Date(sub.createdAt).toLocaleDateString('id-ID')}
+                                </div>
+                              </div>
+                              <div className="text-right">
+                                <div className="text-xs font-mono font-bold text-amber-500">
+                                  {formatRupiah(sub.estimatedCost)}
+                                </div>
+                                <span className="inline-block text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-0.5 rounded font-bold mt-1.5">
+                                  Tahap {sub.stage}
+                                </span>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                      )}
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
+
+          {/* TAB: SUBMISSIONS (F4 & F9) */}
+          {activeTab === 'submissions' && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
+              {/* LEFT COLUMN: Record New Submission (Penginput only) / Statistics (Pereview) */}
+              <div className="lg:col-span-1">
+                {role === 'PENGINPUT' ? (
+                  <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
+                    <h2 className="text-sm font-bold text-white flex items-center gap-1.5 border-b border-slate-950 pb-2">
+                      <FileText className="h-4 w-4 text-amber-500" />
+                      Catat Pengajuan Sewa Baru
+                    </h2>
+                    
+                    {selectedRoomCodes.length === 0 && selectedPackageIds.length === 0 ? (
+                      <div className="p-3.5 bg-amber-500/5 border border-amber-500/15 text-amber-400 rounded-lg text-xs flex items-start gap-2">
+                        <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
+                        <span>
+                          <strong>Perhatian:</strong> Silakan pilih ruangan/paket dan set waktu di tab <strong>Kalkulator (F2)</strong> terlebih dahulu untuk menautkan tarif estimasi.
+                        </span>
+                      </div>
+                    ) : (
+                      <div className="p-3 bg-slate-950 border border-slate-850 rounded-lg text-[11px] space-y-2">
+                        <div className="font-bold text-slate-400">Data Kalkulator F2 Tertaut:</div>
+                        <div className="text-slate-300">Ruangan: <span className="font-semibold text-white">{activePackages.length > 0 ? activePackages.map(p=>p.label).join(', ') : selectedRoomCodes.join(', ')}</span></div>
+                        <div className="text-slate-300">Total Luas: <span className="font-semibold text-white">{totalSelectedArea} m²</span></div>
+                        <div className="text-slate-300">Estimasi Tarif: <span className="font-semibold text-amber-400">{formatRupiah(calculatorResults.total)}</span></div>
+                      </div>
+                    )}
+
+                    <form onSubmit={handleCreateSubmission} className="space-y-4">
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Pilih Klien Instansi</label>
+                        <select
+                          required
+                          value={subClientId}
+                          onChange={(e) => setSubClientId(e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        >
+                          <option value="">-- Pilih Instansi --</option>
+                          {clients.map((c) => (
+                            <option key={c.id} value={c.id}>
+                              {c.companyName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Nama Kegiatan (Acara)</label>
+                        <input
+                          type="text"
+                          required
+                          value={subActivityName}
+                          onChange={(e) => setSubActivityName(e.target.value)}
+                          placeholder="e.g., Produksi Film / Rapat Umum"
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">PIC Internal Pendamping</label>
+                        <input
+                          type="text"
+                          required
+                          value={subPicInternal}
+                          onChange={(e) => setSubPicInternal(e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Catatan Tambahan</label>
+                        <textarea
+                          value={subNotes}
+                          onChange={(e) => setSubNotes(e.target.value)}
+                          rows={3}
+                          placeholder="e.g., Kebutuhan khusus kelistrikan, detail panggung."
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        disabled={selectedRoomCodes.length === 0 && selectedPackageIds.length === 0}
+                        className="w-full bg-amber-500 disabled:bg-slate-800 disabled:text-slate-600 hover:bg-amber-600 text-slate-950 font-bold py-2 rounded-lg text-xs transition-colors shadow-lg"
+                      >
+                        Buat Pengajuan Sewa
+                      </button>
+                    </form>
+                  </div>
+                ) : (
+                  // Pereview Board Statistics Dashboard
+                  <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
+                    <h2 className="text-sm font-bold text-white flex items-center gap-1.5 border-b border-slate-950 pb-2">
+                      <Layers className="h-4 w-4 text-blue-400" />
+                      Statistik Papan Pemantauan
+                    </h2>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div className="p-3 bg-slate-950 border border-slate-850 rounded-xl">
+                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wide">Total Klien</span>
+                        <div className="text-xl font-bold text-white mt-1">{clients.length}</div>
+                      </div>
+                      <div className="p-3 bg-slate-950 border border-slate-850 rounded-xl">
+                        <span className="text-[9px] font-bold text-slate-500 uppercase tracking-wide">Total Pengajuan</span>
+                        <div className="text-xl font-bold text-white mt-1">{submissions.length}</div>
+                      </div>
+                    </div>
+
+                    <div className="space-y-2 mt-2">
+                      <h4 className="text-[10px] font-bold text-slate-400 uppercase tracking-wide">Sebaran Pengajuan Per Tahap</h4>
+                      {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((t) => {
+                        const count = submissions.filter((s) => s.stage === t).length;
+                        const percent = submissions.length > 0 ? (count / submissions.length) * 100 : 0;
+                        return (
+                          <div key={t} className="text-[10px] space-y-1">
+                            <div className="flex justify-between font-mono text-slate-400">
+                              <span>Tahap {t}</span>
+                              <span className="font-bold text-slate-300">{count} pengajuan</span>
+                            </div>
+                            <div className="w-full bg-slate-950 h-1.5 rounded overflow-hidden border border-slate-900">
+                              <div className="bg-blue-500 h-full rounded" style={{ width: `${percent}%` }}></div>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+              </div>
+
+              {/* RIGHT COLUMN: Submissions List & Checklist Detail */}
+              <div className="lg:col-span-2 flex flex-col gap-6">
+                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
+                  <h2 className="text-sm font-bold text-white">Daftar Aktif Pengajuan Sewa</h2>
+                  {submissions.length === 0 ? (
+                    <p className="text-xs text-slate-500 italic py-8 text-center">Belum ada pengajuan sewa tercatat.</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {submissions.map((sub) => {
+                        const lastUpdate = new Date(sub.updatedAt);
+                        const diffTime = Math.abs(new Date().getTime() - lastUpdate.getTime());
+                        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+                        const isStalled = diffDays > 14;
+
+                        return (
+                          <div
+                            key={sub.id}
+                            className={`p-4 bg-slate-950/60 border rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 ${
+                              selectedSubmissionId === sub.id
+                                ? 'border-amber-500/60 bg-amber-500/[0.01]'
+                                : 'border-slate-850 hover:border-slate-800'
+                            }`}
+                          >
+                            <div className="space-y-1.5">
+                              <div className="flex items-center flex-wrap gap-2">
+                                <span className="font-extrabold text-xs text-white">{sub.companyName}</span>
+                                {isStalled && (
+                                  <span className="text-[8px] bg-red-500/10 text-red-400 border border-red-500/20 px-1.5 py-0.5 rounded font-extrabold flex items-center gap-1 animate-pulse">
+                                    ⚠️ TERSENDAT ({diffDays} HARI)
+                                  </span>
+                                )}
+                              </div>
+                              <div className="text-xs text-slate-300 font-medium">{sub.activityName}</div>
+                              <p className="text-[10px] text-slate-500 leading-normal">
+                                Ruang: {sub.roomCodes.join(', ')} · Estimasi: <span className="font-mono font-bold text-slate-400">{formatRupiah(sub.estimatedCost)}</span>
+                              </p>
+                              <div className="text-[9px] text-slate-500 font-mono">
+                                Diperbarui: {lastUpdate.toLocaleDateString('id-ID')}
+                              </div>
+                            </div>
+
+                            <div className="flex items-center gap-2 shrink-0">
+                              <div className="flex flex-col gap-1.5">
+                                <span className="text-[9px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-1 rounded font-bold text-center">
+                                  Tahap {sub.stage}/9
+                                </span>
+                                {role === 'PENGINPUT' && (
+                                  <select
+                                    value={sub.stage}
+                                    onChange={(e) => handleUpdateStage(sub.id, parseInt(e.target.value))}
+                                    className="bg-slate-900 border border-slate-880 text-[10px] py-1 px-1.5 rounded text-slate-300 focus:outline-none font-bold"
+                                  >
+                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((s) => (
+                                      <option key={s} value={s}>
+                                        Set Tahap {s}
+                                      </option>
+                                    ))}
+                                  </select>
+                                )}
+                              </div>
+                              
+                              <button
+                                onClick={() => setSelectedSubmissionId(sub.id === selectedSubmissionId ? null : sub.id)}
+                                className="px-3 py-2 rounded bg-slate-900 hover:bg-slate-800 border border-slate-800 text-xs font-bold text-slate-200"
+                              >
+                                {selectedSubmissionId === sub.id ? 'Tutup Detail' : 'Tampilkan Checklist'}
+                              </button>
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+
+                {/* F9 Checklist visualizer */}
+                {selectedSubmissionId && (() => {
+                  const sub = submissions.find((s) => s.id === selectedSubmissionId);
+                  if (!sub) return null;
+
+                  // Sample date warnings
+                  const bookedDates = bookings.filter(b => b.submissionId === sub.id);
+                  const firstBook = bookedDates.length > 0 ? bookedDates[0] : null;
+                  const showTMWarning = sub.stage === 7 && firstBook && (() => {
+                    const eventStart = new Date(firstBook.startDate);
+                    const tmDate = new Date(eventStart.getTime() - 7 * 24 * 60 * 60 * 1000);
+                    return new Date() >= tmDate;
+                  })();
+
+                  const stagesInfo = [
+                    { t: 1, label: 'Konsultasi Awal', desc: 'Melakukan diskusi awal perihal kebutuhan ruangan, kapasitas, dan tanggal acara.' },
+                    { t: 2, label: 'Perhitungan Tarif & Penawaran', desc: 'Mempersiapkan rincian tarif menggunakan rumus PMK 144.' },
+                    { t: 3, label: 'Penerbitan Letter of Intent (LOI)', desc: 'Menerbitkan LOI minat pemanfaatan ruang.' },
+                    { t: 4, label: 'Survei Lokasi', desc: 'Penjadwalan survei lapangan bersama perwakilan instansi.' },
+                    { t: 5, label: 'Surat Permohonan Resmi', desc: 'Menerima surat permohonan resmi pemohon (Syarat utama Tanggal Terkunci).' },
+                    { t: 6, label: 'Perjanjian Sewa Guna', desc: 'Penyusunan draf kontrak perjanjian kerjasama pemanfaatan.' },
+                    { t: 7, label: 'Technical Meeting (H-7)', desc: 'Koordinasi operasional loading, kelistrikan, & rundown acara.' },
+                    { t: 8, label: 'Pembayaran & Pelaksanaan Kegiatan', desc: 'Verifikasi pelunasan PNBP sewa dan pelaksanaan hari-H acara.' },
+                    { t: 9, label: 'Dokumentasi & Evaluasi', desc: 'Pemberesan pasca acara, evaluasi kebersihan, dan pengarsipan.' },
+                  ];
+
+                  return (
+                    <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg animate-fadeIn flex flex-col gap-4">
+                      <div className="flex justify-between items-start border-b border-slate-950 pb-2">
+                        <div>
+                          <h3 className="text-xs font-bold text-amber-400">
+                            F9: Daftar Periksa 9-Tahap Pengajuan
+                          </h3>
+                          <p className="text-[10px] text-slate-400 mt-0.5">Pengajuan: {sub.activityName} ({sub.companyName})</p>
+                        </div>
+                        {showTMWarning && (
+                          <div className="p-2 bg-red-500/10 border border-red-500/20 text-red-400 rounded-lg text-[9px] font-bold animate-pulse">
+                            ⚠️ H-7 TECHNICAL MEETING JATUH TEMPO
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="space-y-3 mt-1">
+                        {stagesInfo.map((st) => {
+                          const isDone = sub.stage >= st.t;
+                          const isActive = sub.stage === st.t;
+                          return (
+                            <div
+                              key={st.t}
+                              className={`p-3 rounded-lg flex items-start gap-3 border transition-colors ${
+                                isActive
+                                  ? 'bg-amber-500/[0.02] border-amber-500/30'
+                                  : isDone
+                                  ? 'bg-slate-950/40 border-slate-900 text-slate-400'
+                                  : 'bg-slate-950/20 border-slate-950 text-slate-600'
+                              }`}
+                            >
+                              <div className={`mt-0.5 h-5 w-5 rounded-full flex items-center justify-center border font-bold text-[10px] ${
+                                isDone 
+                                  ? 'bg-amber-500 border-amber-500 text-slate-950'
+                                  : 'border-slate-800'
+                              }`}>
+                                {isDone ? '✓' : st.t}
+                              </div>
+                              <div>
+                                <h4 className={`text-[11px] font-bold ${isActive ? 'text-amber-400' : isDone ? 'text-slate-300' : 'text-slate-500'}`}>
+                                  {st.label}
+                                </h4>
+                                <p className="text-[10px] mt-0.5 leading-normal">{st.desc}</p>
+                              </div>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  );
+                })()}
+              </div>
+            </div>
+          )}
+
+          {/* TAB: CALENDAR (F5) */}
+          {activeTab === 'calendar' && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
+              {/* LEFT COLUMN: Reserve Date Form (Penginput only) */}
+              <div className="lg:col-span-1">
+                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
+                  <h2 className="text-sm font-bold text-white flex items-center gap-1.5 border-b border-slate-950 pb-2">
+                    <MapPin className="h-4 w-4 text-amber-500" />
+                    Pencatatan Booking Tanggal
+                  </h2>
+
+                  {role !== 'PENGINPUT' ? (
+                    <p className="text-xs text-slate-500 italic">Peran Pereview hanya memiliki akses baca (Read-only).</p>
+                  ) : (
+                    <form onSubmit={handleCreateBooking} className="space-y-4">
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Pilih Pengajuan Terkait (Opsional)</label>
+                        <select
+                          value={bookingSubmissionId}
+                          onChange={(e) => setBookingSubmissionId(e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        >
+                          <option value="">-- Tidak Dikaitkan (e.g. UNAVAILABLE) --</option>
+                          {submissions.map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {s.companyName} - {s.activityName} (Tahap {s.stage})
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Status Reservasi</label>
+                        <select
+                          value={bookingType}
+                          onChange={(e) => setBookingType(e.target.value as BookingType)}
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        >
+                          <option value="TENTATIVE">Tentatif (Tahap 1-4)</option>
+                          <option value="CONFIRMED">Terkunci / Confirmed (Tahap 5+)</option>
+                          <option value="UNAVAILABLE">Tidak Tersedia / Internal</option>
+                        </select>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[10px] font-semibold text-slate-400 block mb-1">Tanggal Mulai</label>
+                          <input
+                            type="date"
+                            required
+                            value={bookingStartDate}
+                            onChange={(e) => setBookingStartDate(e.target.value)}
+                            className="w-full bg-slate-950 border border-slate-850 rounded-lg py-1.5 px-2.5 text-xs text-white focus:outline-none"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold text-slate-400 block mb-1">Tanggal Selesai</label>
+                          <input
+                            type="date"
+                            required
+                            value={bookingEndDate}
+                            onChange={(e) => setBookingEndDate(e.target.value)}
+                            className="w-full bg-slate-950 border border-slate-850 rounded-lg py-1.5 px-2.5 text-xs text-white focus:outline-none"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Nama Kegiatan (Acara)</label>
+                        <input
+                          type="text"
+                          required
+                          value={bookingActivityName}
+                          onChange={(e) => setBookingActivityName(e.target.value)}
+                          placeholder="e.g., Shooting Film / Rapat Kerja"
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Ruangan Di-Booking</label>
+                        {selectedRoomCodes.length > 0 ? (
+                          <div className="p-2 bg-slate-950 border border-slate-850 rounded text-[10px] text-white">
+                            {selectedRoomCodes.join(', ')}
+                          </div>
+                        ) : (
+                          <div className="p-2 bg-slate-950 border border-slate-850 rounded text-[10px] text-slate-500 italic">
+                            Belum ada ruang dipilih. Silakan klik ruang di tab Kalkulator/Katalog.
+                          </div>
+                        )}
+                      </div>
+
+                      <div className="p-2.5 bg-yellow-500/5 border border-yellow-500/10 text-yellow-500 rounded-lg text-[9.5px] leading-normal">
+                        🚨 <strong>Validasi F5</strong>: Status *Terkunci* wajib divalidasi sistem. Tanggal tidak dapat dikonfirmasi/dikunci jika pengajuan belum mencapai minimal Tahap 5 (Surat Resmi Diterima).
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 rounded-lg text-xs transition-colors shadow-lg"
+                      >
+                        Catat Booking Tanggal
+                      </button>
+                    </form>
+                  )}
+                </div>
+              </div>
+
+              {/* RIGHT COLUMN: Grid Calendar View */}
+              <div className="lg:col-span-2 flex flex-col gap-6">
+                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
+                  {/* Calendar Month Selector Header */}
+                  <div className="flex justify-between items-center border-b border-slate-950 pb-3">
+                    <h2 className="text-sm font-bold text-white">Grid Kalender Pemakaian</h2>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => {
+                          if (currentMonth === 0) {
+                            setCurrentMonth(11);
+                            setCurrentYear(c => c - 1);
+                          } else {
+                            setCurrentMonth(m => m - 1);
+                          }
+                        }}
+                        className="p-1 bg-slate-950 border border-slate-850 rounded hover:bg-slate-900 text-slate-300 font-bold"
+                      >
+                        &larr;
+                      </button>
+                      <span className="text-xs font-extrabold text-white uppercase tracking-wider font-mono">
+                        {new Date(currentYear, currentMonth).toLocaleString('id-ID', { month: 'long', year: 'numeric' })}
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (currentMonth === 11) {
+                            setCurrentMonth(0);
+                            setCurrentYear(c => c + 1);
+                          } else {
+                            setCurrentMonth(m => m + 1);
+                          }
+                        }}
+                        className="p-1 bg-slate-950 border border-slate-850 rounded hover:bg-slate-900 text-slate-300 font-bold"
+                      >
+                        &rarr;
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* Calendar Grid */}
+                  {(() => {
+                    // Calculate calendar days
+                    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay(); // 0 (Sunday) to 6 (Saturday)
+                    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+                    
+                    const daysArray = [];
+                    // Pad previous month days
+                    const daysToPad = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1; // start week on Monday
+                    for (let i = 0; i < daysToPad; i++) {
+                      daysArray.push(null);
+                    }
+                    // Current month days
+                    for (let i = 1; i <= daysInMonth; i++) {
+                      daysArray.push(i);
+                    }
+
+                    const weekDays = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+
+                    return (
+                      <div className="space-y-4">
+                        <div className="grid grid-cols-7 gap-1.5 text-center text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                          {weekDays.map((wd) => (
+                            <div key={wd} className="py-1 bg-slate-950/20 rounded">{wd}</div>
+                          ))}
+                        </div>
+
+                        <div className="grid grid-cols-7 gap-1.5">
+                          {daysArray.map((day, idx) => {
+                            if (day === null) {
+                              return <div key={`empty-${idx}`} className="aspect-square bg-slate-950/5 rounded-lg border border-transparent"></div>;
+                            }
+
+                            const padZero = (n: number) => n.toString().padStart(2, '0');
+                            const dateStr = `${currentYear}-${padZero(currentMonth + 1)}-${padZero(day)}`;
+                            
+                            // Find bookings that fall on this day
+                            const dayBookings = bookings.filter((b) => dateStr >= b.startDate && dateStr <= b.endDate);
+
+                            return (
+                              <div
+                                key={`day-${day}`}
+                                className="aspect-square p-1 bg-slate-950/60 border border-slate-850 rounded-lg flex flex-col justify-between overflow-hidden"
+                              >
+                                <span className="text-[10px] font-bold text-slate-400 font-mono">{day}</span>
+                                <div className="flex flex-col gap-0.5 mt-1 overflow-y-auto scrollbar-none">
+                                  {dayBookings.map((b) => {
+                                    const color = b.type === 'CONFIRMED'
+                                      ? 'bg-emerald-500/20 text-emerald-400 border-emerald-500/30'
+                                      : b.type === 'TENTATIVE'
+                                      ? 'bg-amber-500/20 text-amber-400 border-amber-500/30'
+                                      : 'bg-red-500/20 text-red-400 border-red-500/30';
+                                    return (
+                                      <div
+                                        key={b.id}
+                                        title={`${b.activityName} (${b.roomCodes.join(', ')})`}
+                                        className={`text-[7.5px] px-1 py-0.5 rounded border leading-none font-medium truncate ${color}`}
+                                      >
+                                        {b.activityName}
+                                      </div>
+                                    );
+                                  })}
+                                </div>
+                              </div>
+                            );
+                          })}
+                        </div>
+                      </div>
+                    );
+                  })()}
+
+                  {/* Calendar Bookings List View */}
+                  <div className="mt-4 pt-4 border-t border-slate-950">
+                    <h4 className="text-xs font-bold text-slate-400 mb-3">Daftar Aktif Booking Tanggal</h4>
+                    {bookings.length === 0 ? (
+                      <p className="text-xs text-slate-500 italic py-2">Belum ada booking terdaftar.</p>
+                    ) : (
+                      <div className="space-y-2 max-h-60 overflow-y-auto">
+                        {bookings.map((b) => (
+                          <div
+                            key={b.id}
+                            className="p-3 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between gap-4 text-xs"
+                          >
+                            <div className="space-y-1">
+                              <div className="flex items-center gap-2">
+                                <span className="font-bold text-white">{b.activityName}</span>
+                                <span className={`text-[8px] border px-1.5 py-0.5 rounded font-extrabold ${
+                                  b.type === 'CONFIRMED'
+                                    ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                                    : b.type === 'TENTATIVE'
+                                    ? 'bg-amber-500/10 border-amber-500/20 text-amber-400'
+                                    : 'bg-red-500/10 border-red-500/20 text-red-400'
+                                }`}>
+                                  {b.type}
+                                </span>
+                              </div>
+                              <p className="text-[10px] text-slate-400">
+                                Ruang: {b.roomCodes.join(', ')} | Periode: {b.startDate} s/d {b.endDate}
+                              </p>
+                              {b.notes && <p className="text-[9px] text-slate-500 italic mt-1">&quot;{b.notes}&quot;</p>}
+                            </div>
+
+                            {role === 'PENGINPUT' && (
+                              <button
+                                onClick={() => handleDeleteBooking(b.id)}
+                                className="text-[10px] text-red-400 hover:text-red-300 font-bold"
+                              >
+                                Hapus
+                              </button>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* TAB: SURVEYS (F6) */}
+          {activeTab === 'surveys' && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
+              {/* LEFT COLUMN: Schedule Survey Form (Penginput only) */}
+              <div className="lg:col-span-1">
+                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
+                  <h2 className="text-sm font-bold text-white flex items-center gap-1.5 border-b border-slate-950 pb-2">
+                    <CheckSquare className="h-4 w-4 text-amber-500" />
+                    Jadwalkan Survei Baru
+                  </h2>
+                  {role !== 'PENGINPUT' ? (
+                    <p className="text-xs text-slate-500 italic">Peran Pereview hanya memiliki akses baca (Read-only).</p>
+                  ) : (
+                    <form onSubmit={handleCreateSurvey} className="space-y-4">
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Pilih Pengajuan Terkait</label>
+                        <select
+                          required
+                          value={surveySubmissionId}
+                          onChange={(e) => setSurveySubmissionId(e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        >
+                          <option value="">-- Pilih Pengajuan --</option>
+                          {submissions.map((s) => (
+                            <option key={s.id} value={s.id}>
+                              {s.companyName} - {s.activityName}
+                            </option>
+                          ))}
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Tanggal Survei (Standard: Selasa / Kamis)</label>
+                        <input
+                          type="date"
+                          required
+                          value={surveyDate}
+                          onChange={(e) => setSurveyDate(e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-1.5 px-2.5 text-xs text-white focus:outline-none"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Waktu Slot Kunjungan</label>
+                        <select
+                          value={surveyTimeSlot}
+                          onChange={(e) => setSurveyTimeSlot(e.target.value as '10:00' | '14:00')}
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        >
+                          <option value="10:00">10:00 WIB (Pagi)</option>
+                          <option value="14:00">14:00 WIB (Siang)</option>
+                        </select>
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">PIC Internal Pendamping LMAN</label>
+                        <input
+                          type="text"
+                          required
+                          value={surveyPicInternal}
+                          onChange={(e) => setSurveyPicInternal(e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Jumlah Peserta Survei</label>
+                        <input
+                          type="number"
+                          required
+                          min="1"
+                          value={surveyGuestCount}
+                          onChange={(e) => setSurveyGuestCount(e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none focus:border-amber-500/40"
+                        />
+                      </div>
+
+                      <button
+                        type="submit"
+                        className="w-full bg-amber-500 hover:bg-amber-600 text-slate-950 font-bold py-2 rounded-lg text-xs transition-colors shadow-lg"
+                      >
+                        Simpan Jadwal Survei
+                      </button>
+                    </form>
+                  )}
+                </div>
+
+                {/* Close Standard Survey Slots (Penginput only) */}
+                {role === 'PENGINPUT' && (
+                  <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4 mt-6">
+                    <h2 className="text-sm font-bold text-white border-b border-slate-950 pb-2">Tutup Slot Survei Standard</h2>
+                    <form onSubmit={handleCloseSlot} className="space-y-4">
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Tanggal</label>
+                        <input
+                          type="date"
+                          required
+                          value={closeSlotDate}
+                          onChange={(e) => setCloseSlotDate(e.target.value)}
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-1.5 px-2.5 text-xs text-white focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Waktu</label>
+                        <select
+                          value={closeSlotTimeSlot}
+                          onChange={(e) => setCloseSlotTimeSlot(e.target.value as '10:00' | '14:00')}
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none"
+                        >
+                          <option value="10:00">10:00 WIB</option>
+                          <option value="14:00">14:00 WIB</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-400 block mb-1">Alasan Penutupan</label>
+                        <input
+                          type="text"
+                          required
+                          value={closeSlotReason}
+                          onChange={(e) => setCloseSlotReason(e.target.value)}
+                          placeholder="e.g. Rapat Koordinasi Internal LMAN"
+                          className="w-full bg-slate-950 border border-slate-850 rounded-lg py-2 px-3 text-xs text-white focus:outline-none"
+                        />
+                      </div>
+                      <button
+                        type="submit"
+                        className="w-full bg-red-500 hover:bg-red-600 text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-lg"
+                      >
+                        Tutup Slot Ini
+                      </button>
+                    </form>
+                  </div>
+                )}
+              </div>
+
+              {/* RIGHT COLUMN: Surveys List & Closed Slots */}
+              <div className="lg:col-span-2 flex flex-col gap-6">
+                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
+                  <h2 className="text-sm font-bold text-white">Jadwal Kunjungan Survei</h2>
+                  {surveys.length === 0 ? (
+                    <p className="text-xs text-slate-500 italic py-8 text-center">Belum ada survei terjadwal.</p>
+                  ) : (
+                    <div className="space-y-3">
+                      {surveys.map((s) => (
+                        <div
+                          key={s.id}
+                          className="p-3.5 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between gap-4 text-xs"
+                        >
+                          <div>
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-white">{s.companyName}</span>
+                              <span className={`text-[8px] font-extrabold px-1.5 py-0.5 rounded border ${
+                                s.status === 'SCHEDULED'
+                                  ? 'bg-blue-500/10 border-blue-500/20 text-blue-400'
+                                  : s.status === 'COMPLETED'
+                                  ? 'bg-emerald-500/10 border-emerald-500/20 text-emerald-400'
+                                  : 'bg-red-500/10 border-red-500/20 text-red-400'
+                              }`}>
+                                {s.status}
+                              </span>
+                            </div>
+                            <p className="text-[10px] text-slate-400 mt-1">
+                              Tanggal: {s.date} · Jam: {s.timeSlot} WIB · Pendamping: {s.picInternal}
+                            </p>
+                            <span className="inline-block text-[9px] bg-slate-900 text-slate-400 border border-slate-850 px-1.5 py-0.5 rounded font-mono mt-1.5">
+                              Jumlah Peserta: {s.guestCount} orang
+                            </span>
+                          </div>
+
+                          {role === 'PENGINPUT' && s.status === 'SCHEDULED' && (
+                            <div className="flex gap-1">
+                              <button
+                                onClick={() => handleUpdateSurvey(s.id, 'COMPLETED')}
+                                className="px-2.5 py-1 rounded bg-emerald-500 text-slate-950 font-bold hover:bg-emerald-600 transition-colors"
+                              >
+                                Selesai
+                              </button>
+                              <button
+                                onClick={() => handleUpdateSurvey(s.id, 'CANCELLED')}
+                                className="px-2.5 py-1 rounded bg-red-500/10 hover:bg-red-500/20 text-red-400 font-bold border border-red-500/20 transition-colors"
+                              >
+                                Batal
+                              </button>
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {/* Closed Slots Panel */}
+                <div className="bg-slate-900/60 border border-slate-900 rounded-xl p-5 shadow-lg flex flex-col gap-4">
+                  <h2 className="text-sm font-bold text-white">Daftar Slot Kunjungan Ditutup</h2>
+                  {closedSlots.length === 0 ? (
+                    <p className="text-xs text-slate-500 italic py-4">Tidak ada slot standar yang ditutup.</p>
+                  ) : (
+                    <div className="space-y-2">
+                      {closedSlots.map((slot) => (
+                        <div
+                          key={slot.id}
+                          className="p-3 bg-slate-950/60 border border-slate-850 rounded-xl flex items-center justify-between gap-4 text-xs"
+                        >
+                          <div>
+                            <span className="font-bold text-red-400">{slot.date}</span>
+                            <span className="text-slate-400 ml-2">Jam: {slot.timeSlot} WIB</span>
+                            <p className="text-[10px] text-slate-500 mt-1 italic">&quot;{slot.reason}&quot;</p>
+                          </div>
+                          {role === 'PENGINPUT' && (
+                            <button
+                              onClick={() => handleOpenSlot(slot.id)}
+                              className="text-xs font-bold text-amber-500 hover:text-amber-400"
+                            >
+                              Buka Slot
+                            </button>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
           )}
