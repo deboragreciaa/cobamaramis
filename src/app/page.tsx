@@ -257,20 +257,37 @@ export default function Home() {
           setSystemSettings(fetchedSettings);
           
           // Merge fetched database items with current client-side state
-          setClients(prev => {
-            const merged = [...prev];
-            fetchedClients.forEach(c => {
-              if (!merged.some(m => m.id === c.id)) merged.push(c);
-            });
-            return merged;
-          });
-
+          let finalSubs: Submission[] = [];
           setSubmissions(prev => {
             const merged = [...prev];
             fetchedSubmissions.forEach(s => {
               if (!merged.some(m => m.id === s.id)) merged.push(s);
             });
+            finalSubs = merged;
             return merged;
+          });
+
+          setClients(prev => {
+            const merged = [...prev];
+            fetchedClients.forEach(c => {
+              if (!merged.some(m => m.id === c.id)) merged.push(c);
+            });
+            
+            // Reconstruct missing clients from submissions list
+            finalSubs.forEach(sub => {
+              if (sub.clientId && !merged.some(c => c.id === sub.clientId)) {
+                merged.push({
+                  id: sub.clientId,
+                  companyName: sub.companyName,
+                  picName: 'PIC Kontak ' + sub.companyName,
+                  picPhone: '08123456789',
+                  createdAt: sub.createdAt || new Date().toISOString(),
+                  isActive: true
+                });
+              }
+            });
+            
+            return merged.sort((a, b) => a.companyName.localeCompare(b.companyName));
           });
 
           setBookings(prev => {
