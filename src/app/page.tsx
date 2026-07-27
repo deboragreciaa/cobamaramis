@@ -1268,9 +1268,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               {/* LEFT COLUMN: PRIMARY ROOMS WIDGET */}
               <div className="lg:col-span-1">
                 <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm relative overflow-hidden flex flex-col gap-4 h-full min-h-[460px]">
-                  <div className="absolute top-0 right-0 p-2 bg-sky-100 border-b border-l border-sky-200 rounded-bl-xl text-[#0073C2] text-[8px] font-extrabold tracking-wider uppercase select-none">
-                    6 RUANG UTAMA (GD. C LT. 2)
-                  </div>
                   <div>
                     <h2 className="text-sm font-bold text-[#0073C2] flex items-center gap-1.5 mb-2">
                       <Sparkles className="h-4 w-4 shrink-0 text-[#f59e0b] animate-pulse" /> Aula Utama C Lt. 2
