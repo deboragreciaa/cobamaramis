@@ -188,11 +188,16 @@ export async function createClient(clientData: Omit<Client, 'id' | 'createdAt'>)
     return client;
   }
 
-  const docRef = await db.collection('clients').add(newClient);
-  return {
-    id: docRef.id,
-    ...newClient
-  };
+  try {
+    const docRef = await db.collection('clients').add(newClient);
+    return {
+      id: docRef.id,
+      ...newClient
+    };
+  } catch (error) {
+    console.error('Failed to create client in Firestore:', error);
+    throw error;
+  }
 }
 
 export async function updateClient(id: string, clientData: Partial<Omit<Client, 'id' | 'createdAt'>>): Promise<boolean> {
@@ -245,11 +250,20 @@ export async function createAuditLog(action: string, details: string): Promise<A
     return newLog;
   }
   
-  const docRef = await db.collection('audit_logs').add(log);
-  return {
-    id: docRef.id,
-    ...log
-  };
+  try {
+    const docRef = await db.collection('audit_logs').add(log);
+    return {
+      id: docRef.id,
+      ...log
+    };
+  } catch (error) {
+    console.error('Failed to create audit log in Firestore:', error);
+    // Return fallback log instead of throwing to prevent crashing main client flows
+    return {
+      id: 'mock-log-fallback-' + Math.random().toString(36).substring(2, 11),
+      ...log
+    };
+  }
 }
 
 /**
@@ -285,11 +299,16 @@ export async function createSubmission(submissionData: Omit<Submission, 'id' | '
     return submission;
   }
 
-  const docRef = await db.collection('submissions').add(newSubmission);
-  return {
-    id: docRef.id,
-    ...newSubmission
-  };
+  try {
+    const docRef = await db.collection('submissions').add(newSubmission);
+    return {
+      id: docRef.id,
+      ...newSubmission
+    };
+  } catch (error) {
+    console.error('Failed to create submission in Firestore:', error);
+    throw error;
+  }
 }
 
 export async function updateSubmissionStage(id: string, stage: number): Promise<boolean> {
