@@ -210,9 +210,8 @@ export async function updateClient(id: string, clientData: Partial<Omit<Client, 
     const idx = mockClients.findIndex(c => c.id === id);
     if (idx !== -1) {
       mockClients[idx] = { ...mockClients[idx], ...clientData };
-      return true;
     }
-    return false;
+    return true;
   };
 
   if (!isFirebaseConfigured) {
@@ -229,9 +228,8 @@ export async function updateClient(id: string, clientData: Partial<Omit<Client, 
 
 export async function deleteClientPermanently(id: string): Promise<boolean> {
   const performMockDelete = () => {
-    const initialLen = mockClients.length;
     mockClients = mockClients.filter(c => c.id !== id);
-    return mockClients.length < initialLen;
+    return true;
   };
 
   if (!isFirebaseConfigured) {
@@ -336,9 +334,8 @@ export async function updateSubmissionStage(id: string, stage: number): Promise<
     if (sub) {
       sub.stage = stage;
       sub.updatedAt = now;
-      return true;
     }
-    return false;
+    return true;
   };
 
   if (!isFirebaseConfigured) {
@@ -360,9 +357,8 @@ export async function updateSubmission(id: string, data: Partial<Submission>): P
     const idx = mockSubmissions.findIndex(s => s.id === id);
     if (idx !== -1) {
       mockSubmissions[idx] = { ...mockSubmissions[idx], ...updateData };
-      return true;
     }
-    return false;
+    return true;
   };
 
   if (!isFirebaseConfigured) {
@@ -552,9 +548,8 @@ export async function updateSurveyStatus(id: string, status: Survey['status']): 
     const survey = mockSurveys.find(s => s.id === id);
     if (survey) {
       survey.status = status;
-      return true;
     }
-    return false;
+    return true;
   };
 
   if (!isFirebaseConfigured) {
