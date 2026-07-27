@@ -919,9 +919,9 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
   // Render Spinner
   if (loading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center bg-slate-950 text-slate-200">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
-        <p className="mt-4 text-slate-400 text-sm">Memuat autentikasi...</p>
+      <div className="flex-1 flex flex-col items-center justify-center bg-[#f4f6f9] text-[#0073C2] font-sans">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0073C2] mb-4"></div>
+        <p className="text-slate-600 text-xs font-bold uppercase tracking-wider">Memuat Autentikasi...</p>
       </div>
     );
   }
