@@ -191,6 +191,37 @@ export default function Home() {
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth()); // 0-11
 
+  // Save states to localStorage when they change to survive refreshes/restarts
+  useEffect(() => {
+    if (typeof window !== 'undefined' && clients.length > 0) {
+      localStorage.setItem('maramis_clients', JSON.stringify(clients));
+    }
+  }, [clients]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && submissions.length > 0) {
+      localStorage.setItem('maramis_submissions', JSON.stringify(submissions));
+    }
+  }, [submissions]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && bookings.length > 0) {
+      localStorage.setItem('maramis_bookings', JSON.stringify(bookings));
+    }
+  }, [bookings]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && surveys.length > 0) {
+      localStorage.setItem('maramis_surveys', JSON.stringify(surveys));
+    }
+  }, [surveys]);
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && closedSlots.length > 0) {
+      localStorage.setItem('maramis_closed_slots', JSON.stringify(closedSlots));
+    }
+  }, [closedSlots]);
+
   // Fetch Rooms and Settings on mount/auth
   useEffect(() => {
     if (user && role) {
@@ -207,11 +238,67 @@ export default function Home() {
         .then(([fetchedRooms, fetchedSettings, fetchedClients, fetchedSubmissions, fetchedBookings, fetchedSurveys, fetchedClosedSlots]) => {
           setRooms(fetchedRooms);
           setSystemSettings(fetchedSettings);
-          setClients(fetchedClients);
-          setSubmissions(fetchedSubmissions);
-          setBookings(fetchedBookings);
-          setSurveys(fetchedSurveys);
-          setClosedSlots(fetchedClosedSlots);
+          
+          // Merge with localStorage values to persist mock data
+          const localClients = localStorage.getItem('maramis_clients');
+          if (localClients) {
+            const parsed = JSON.parse(localClients);
+            const merged = [...parsed];
+            fetchedClients.forEach(c => {
+              if (!merged.some(m => m.id === c.id)) merged.push(c);
+            });
+            setClients(merged);
+          } else {
+            setClients(fetchedClients);
+          }
+
+          const localSubs = localStorage.getItem('maramis_submissions');
+          if (localSubs) {
+            const parsed = JSON.parse(localSubs);
+            const merged = [...parsed];
+            fetchedSubmissions.forEach(s => {
+              if (!merged.some(m => m.id === s.id)) merged.push(s);
+            });
+            setSubmissions(merged);
+          } else {
+            setSubmissions(fetchedSubmissions);
+          }
+
+          const localBookings = localStorage.getItem('maramis_bookings');
+          if (localBookings) {
+            const parsed = JSON.parse(localBookings);
+            const merged = [...parsed];
+            fetchedBookings.forEach(b => {
+              if (!merged.some(m => m.id === b.id)) merged.push(b);
+            });
+            setBookings(merged);
+          } else {
+            setBookings(fetchedBookings);
+          }
+
+          const localSurveys = localStorage.getItem('maramis_surveys');
+          if (localSurveys) {
+            const parsed = JSON.parse(localSurveys);
+            const merged = [...parsed];
+            fetchedSurveys.forEach(s => {
+              if (!merged.some(m => m.id === s.id)) merged.push(s);
+            });
+            setSurveys(merged);
+          } else {
+            setSurveys(fetchedSurveys);
+          }
+
+          const localClosed = localStorage.getItem('maramis_closed_slots');
+          if (localClosed) {
+            const parsed = JSON.parse(localClosed);
+            const merged = [...parsed];
+            fetchedClosedSlots.forEach(s => {
+              if (!merged.some(m => m.id === s.id)) merged.push(s);
+            });
+            setClosedSlots(merged);
+          } else {
+            setClosedSlots(fetchedClosedSlots);
+          }
           
           // Seed the calculator factors with default settings
           setCustomReturnRate((fetchedSettings.returnRate * 100).toString());
