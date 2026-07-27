@@ -256,39 +256,37 @@ export default function Home() {
           setRooms(fetchedRooms);
           setSystemSettings(fetchedSettings);
           
-          // Merge fetched database items with current client-side state
-          let finalSubs: Submission[] = [];
-          setSubmissions(prev => {
-            const merged = [...prev];
-            fetchedSubmissions.forEach(s => {
-              if (!merged.some(m => m.id === s.id)) merged.push(s);
-            });
-            finalSubs = merged;
-            return merged;
+          // Merge fetched database items with current client-side state synchronously
+          const localSubs = typeof window !== 'undefined' ? localStorage.getItem('maramis_submissions') : null;
+          const currentSubs: Submission[] = localSubs ? JSON.parse(localSubs) : [];
+          const mergedSubs = [...currentSubs];
+          fetchedSubmissions.forEach(s => {
+            if (!mergedSubs.some(m => m.id === s.id)) mergedSubs.push(s);
+          });
+          setSubmissions(mergedSubs);
+
+          const localClients = typeof window !== 'undefined' ? localStorage.getItem('maramis_clients') : null;
+          const currentClients: Client[] = localClients ? JSON.parse(localClients) : [];
+          const mergedClients = [...currentClients];
+          fetchedClients.forEach(c => {
+            if (!mergedClients.some(m => m.id === c.id)) mergedClients.push(c);
           });
 
-          setClients(prev => {
-            const merged = [...prev];
-            fetchedClients.forEach(c => {
-              if (!merged.some(m => m.id === c.id)) merged.push(c);
-            });
-            
-            // Reconstruct missing clients from submissions list
-            finalSubs.forEach(sub => {
-              if (sub.clientId && !merged.some(c => c.id === sub.clientId)) {
-                merged.push({
-                  id: sub.clientId,
-                  companyName: sub.companyName,
-                  picName: 'PIC Kontak ' + sub.companyName,
-                  picPhone: '08123456789',
-                  createdAt: sub.createdAt || new Date().toISOString(),
-                  isActive: true
-                });
-              }
-            });
-            
-            return merged.sort((a, b) => a.companyName.localeCompare(b.companyName));
+          // Reconstruct missing clients from submissions list
+          mergedSubs.forEach(sub => {
+            if (sub.clientId && !mergedClients.some(c => c.id === sub.clientId)) {
+              mergedClients.push({
+                id: sub.clientId,
+                companyName: sub.companyName,
+                picName: 'PIC Kontak ' + sub.companyName,
+                picPhone: '08123456789',
+                createdAt: sub.createdAt || new Date().toISOString(),
+                isActive: true
+              });
+            }
           });
+          
+          setClients(mergedClients.sort((a, b) => a.companyName.localeCompare(b.companyName)));
 
           setBookings(prev => {
             const merged = [...prev];
