@@ -199,6 +199,21 @@ export default function Home() {
   const [loiNomorSuratPemohon, setLoiNomorSuratPemohon] = useState('');
   const [loiNamaPenandatangan, setLoiNamaPenandatangan] = useState('Tim LMAN');
   const [loiJabatanPenandatangan, setLoiJabatanPenandatangan] = useState('Divisi Pengembangan dan Pendayagunaan Properti 1');
+  const [loiTautanPerjanjian, setLoiTautanPerjanjian] = useState('');
+  const [loiTautanTataTertib, setLoiTautanTataTertib] = useState('s.kemenkeu.go.id/TataTertibMaramis');
+
+  useEffect(() => {
+    if (activeLoiSubmission) {
+      const client = clients.find(c => c.id === activeLoiSubmission.clientId);
+      const subBookings = bookings.filter(b => b.submissionId === activeLoiSubmission.id);
+      const startDate = subBookings.length > 0 ? subBookings[0].startDate : '2026-01-30';
+      const cleanDate = startDate.replace(/-/g, '');
+      const cleanCompany = client ? client.companyName.replace(/\s+/g, '') : 'Summerland';
+      
+      setLoiTautanPerjanjian(`s.kemenkeu.go.id/${cleanCompany.toLowerCase()}${cleanDate}`);
+      setLoiTautanTataTertib('s.kemenkeu.go.id/TataTertibMaramis');
+    }
+  }, [activeLoiSubmission, clients, bookings]);
 
   const [activeAgreementSubmission, setActiveAgreementSubmission] = useState<Submission | null>(null);
   const [agreementNomor, setAgreementNomor] = useState('');
@@ -222,13 +237,13 @@ export default function Home() {
       nomorSurat: loiNomorSurat || '001/LMAN-P3/2026',
       tanggalSurat: new Date().toISOString().split('T')[0],
       namaPemohon: client.picName,
-      jabatanPemohon: 'Pimpinan / Perwakilan Instansi',
+      jabatanPemohon: 'Pimpinan / Perwakilan ' + client.companyName,
       instansiPemohon: client.companyName,
       nomorSuratPemohon: loiNomorSuratPemohon || '123/EXT/2026',
       tanggalSuratPemohon: activeLoiSubmission.createdAt.split('T')[0],
       perihalSuratPemohon: 'Permohonan Pemanfaatan Gedung A.A. Maramis',
-      objekPemanfaatan: 'Ruang Acara Gedung A.A. Maramis (' + activeLoiSubmission.roomCodes.join(', ') + ')',
-      luasAreaSqm: activeLoiSubmission.roomCodes.length * 150,
+      objekPemanfaatan: activeLoiSubmission.roomCodes.join(', '),
+      luasAreaSqm: activeLoiSubmission.totalAreaSqm,
       peruntukan: activeLoiSubmission.activityName,
       tanggalMulai: startDate,
       tanggalSelesai: endDate,
@@ -236,12 +251,23 @@ export default function Home() {
       ppn: ppn,
       totalTarif: activeLoiSubmission.estimatedCost,
       ppnRatePersen: systemSettings.ppnRate * 100,
-      tautanPerjanjian: 'https://cobamaramis.vercel.app/template-perjanjian',
-      tautanTataTertib: 'https://cobamaramis.vercel.app/tata-tertib',
+      tautanPerjanjian: loiTautanPerjanjian || `s.kemenkeu.go.id/${client.companyName.replace(/\s+/g, '').toLowerCase()}${startDate.replace(/-/g, '')}`,
+      tautanTataTertib: loiTautanTataTertib || 's.kemenkeu.go.id/TataTertibMaramis',
       namaPenandatangan: loiNamaPenandatangan,
       jabatanPenandatangan: loiJabatanPenandatangan
     });
-  }, [activeLoiSubmission, clients, bookings, systemSettings, loiNomorSurat, loiNomorSuratPemohon, loiNamaPenandatangan, loiJabatanPenandatangan]);
+  }, [
+    activeLoiSubmission,
+    clients,
+    bookings,
+    systemSettings,
+    loiNomorSurat,
+    loiNomorSuratPemohon,
+    loiNamaPenandatangan,
+    loiJabatanPenandatangan,
+    loiTautanPerjanjian,
+    loiTautanTataTertib
+  ]);
 
   const agreementTextGenerated = useMemo(() => {
     if (!activeAgreementSubmission) return '';
@@ -599,9 +625,9 @@ export default function Home() {
         loiTanggalSuratPemohon: formatTanggalIndo(sub.createdAt.split('T')[0]),
         loiPerihalSuratPemohon: 'Permohonan Pemanfaatan Gedung A.A. Maramis',
         loiPemohon: client ? client.picName : 'Razka Robby Ertanto',
-        loiObjekPemanfaatan: 'Ruangan pada Gedung A.A. Maramis (' + sub.roomCodes.join(', ') + ')',
+        loiObjekPemanfaatan: sub.roomCodes.join(', '),
         loiAlamatAset: 'Jalan Lapangan Banteng Timur nomor 2 - 4, Kelurahan Pasar baru, Kecamatan Sawah Besar, Kota Jakarta Pusat',
-        loiLuasArea: `±${sub.roomCodes.length * 150} m2`,
+        loiLuasArea: `±${new Intl.NumberFormat('id-ID').format(sub.totalAreaSqm)} m2`,
         loiPeruntukan: sub.activityName,
         loiJangkaWaktu: formatJangkaWaktu(startDate, endDate),
         loiTarifDpp: 'Rp' + new Intl.NumberFormat('id-ID').format(Math.floor(dpp)),
@@ -610,8 +636,8 @@ export default function Home() {
         loiPpnTerbilang: terbilang(ppn) + ' rupiah',
         loiTotalTarif: 'Rp' + new Intl.NumberFormat('id-ID').format(sub.estimatedCost),
         loiTotalTarifTerbilang: terbilang(sub.estimatedCost) + ' rupiah',
-        loiTautanPerjanjian: `s.kemenkeu.go.id/${client ? client.companyName.replace(/\s+/g, '') : 'Summerland'}${startDate.replace(/-/g, '')}`,
-        loiTautanTataTertib: 's.kemenkeu.go.id/TataTertibMaramis',
+        loiTautanPerjanjian: loiTautanPerjanjian || `s.kemenkeu.go.id/${client ? client.companyName.replace(/\s+/g, '').toLowerCase() : 'summerland'}${startDate.replace(/-/g, '')}`,
+        loiTautanTataTertib: loiTautanTataTertib || 's.kemenkeu.go.id/TataTertibMaramis',
         loiNamaPenandatangan: loiNamaPenandatangan || 'Mahdi'
       };
 
@@ -3635,6 +3661,26 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="text"
                           value={loiJabatanPenandatangan}
                           onChange={(e) => setLoiJabatanPenandatangan(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tautan Perjanjian (10.a)</label>
+                        <input
+                          type="text"
+                          value={loiTautanPerjanjian}
+                          onChange={(e) => setLoiTautanPerjanjian(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tautan Tata Tertib (10.b)</label>
+                        <input
+                          type="text"
+                          value={loiTautanTataTertib}
+                          onChange={(e) => setLoiTautanTataTertib(e.target.value)}
                           className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
