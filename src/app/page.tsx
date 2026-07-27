@@ -222,6 +222,23 @@ export default function Home() {
     }
   }, [closedSlots]);
 
+  // Load from localStorage immediately on mount (before network requests resolve)
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const localClients = localStorage.getItem('maramis_clients');
+      const localSubs = localStorage.getItem('maramis_submissions');
+      const localBookings = localStorage.getItem('maramis_bookings');
+      const localSurveys = localStorage.getItem('maramis_surveys');
+      const localClosedSlots = localStorage.getItem('maramis_closed_slots');
+
+      if (localClients) setClients(JSON.parse(localClients));
+      if (localSubs) setSubmissions(JSON.parse(localSubs));
+      if (localBookings) setBookings(JSON.parse(localBookings));
+      if (localSurveys) setSurveys(JSON.parse(localSurveys));
+      if (localClosedSlots) setClosedSlots(JSON.parse(localClosedSlots));
+    }
+  }, []);
+
   // Fetch Rooms and Settings on mount/auth
   useEffect(() => {
     if (user && role) {
@@ -239,66 +256,46 @@ export default function Home() {
           setRooms(fetchedRooms);
           setSystemSettings(fetchedSettings);
           
-          // Merge with localStorage values to persist mock data
-          const localClients = localStorage.getItem('maramis_clients');
-          if (localClients) {
-            const parsed = JSON.parse(localClients);
-            const merged = [...parsed];
+          // Merge fetched database items with current client-side state
+          setClients(prev => {
+            const merged = [...prev];
             fetchedClients.forEach(c => {
               if (!merged.some(m => m.id === c.id)) merged.push(c);
             });
-            setClients(merged);
-          } else {
-            setClients(fetchedClients);
-          }
+            return merged;
+          });
 
-          const localSubs = localStorage.getItem('maramis_submissions');
-          if (localSubs) {
-            const parsed = JSON.parse(localSubs);
-            const merged = [...parsed];
+          setSubmissions(prev => {
+            const merged = [...prev];
             fetchedSubmissions.forEach(s => {
               if (!merged.some(m => m.id === s.id)) merged.push(s);
             });
-            setSubmissions(merged);
-          } else {
-            setSubmissions(fetchedSubmissions);
-          }
+            return merged;
+          });
 
-          const localBookings = localStorage.getItem('maramis_bookings');
-          if (localBookings) {
-            const parsed = JSON.parse(localBookings);
-            const merged = [...parsed];
+          setBookings(prev => {
+            const merged = [...prev];
             fetchedBookings.forEach(b => {
               if (!merged.some(m => m.id === b.id)) merged.push(b);
             });
-            setBookings(merged);
-          } else {
-            setBookings(fetchedBookings);
-          }
+            return merged;
+          });
 
-          const localSurveys = localStorage.getItem('maramis_surveys');
-          if (localSurveys) {
-            const parsed = JSON.parse(localSurveys);
-            const merged = [...parsed];
+          setSurveys(prev => {
+            const merged = [...prev];
             fetchedSurveys.forEach(s => {
               if (!merged.some(m => m.id === s.id)) merged.push(s);
             });
-            setSurveys(merged);
-          } else {
-            setSurveys(fetchedSurveys);
-          }
+            return merged;
+          });
 
-          const localClosed = localStorage.getItem('maramis_closed_slots');
-          if (localClosed) {
-            const parsed = JSON.parse(localClosed);
-            const merged = [...parsed];
+          setClosedSlots(prev => {
+            const merged = [...prev];
             fetchedClosedSlots.forEach(s => {
               if (!merged.some(m => m.id === s.id)) merged.push(s);
             });
-            setClosedSlots(merged);
-          } else {
-            setClosedSlots(fetchedClosedSlots);
-          }
+            return merged;
+          });
           
           // Seed the calculator factors with default settings
           setCustomReturnRate((fetchedSettings.returnRate * 100).toString());
