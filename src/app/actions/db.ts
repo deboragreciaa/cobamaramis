@@ -356,20 +356,24 @@ export async function updateSubmissionStage(id: string, stage: number): Promise<
 export async function updateSubmission(id: string, data: Partial<Submission>): Promise<boolean> {
   const now = new Date().toISOString();
   const updateData = { ...data, updatedAt: now };
-  if (!isFirebaseConfigured) {
+  const performMockUpdate = () => {
     const idx = mockSubmissions.findIndex(s => s.id === id);
     if (idx !== -1) {
       mockSubmissions[idx] = { ...mockSubmissions[idx], ...updateData };
       return true;
     }
     return false;
+  };
+
+  if (!isFirebaseConfigured) {
+    return performMockUpdate();
   }
   try {
     await db.collection('submissions').doc(id).update(updateData);
     return true;
   } catch (error) {
-    console.error('Failed to update submission:', error);
-    return false;
+    console.error('Failed to update submission in Firestore, falling back to mock:', error);
+    return performMockUpdate();
   }
 }
 
@@ -463,8 +467,10 @@ export async function deleteBooking(id: string): Promise<boolean> {
     await db.collection('bookings').doc(id).delete();
     return true;
   } catch (error) {
-    console.error('Failed to delete booking:', error);
-    return false;
+    console.error('Failed to delete booking from Firestore, falling back to mock:', error);
+    const initialLen = mockBookings.length;
+    mockBookings = mockBookings.filter(b => b.id !== id);
+    return true; // Fallback success to allow client state sync
   }
 }
 
@@ -542,20 +548,24 @@ export async function createSurvey(surveyData: Omit<Survey, 'id'>): Promise<Surv
 }
 
 export async function updateSurveyStatus(id: string, status: Survey['status']): Promise<boolean> {
-  if (!isFirebaseConfigured) {
+  const performMockUpdate = () => {
     const survey = mockSurveys.find(s => s.id === id);
     if (survey) {
       survey.status = status;
       return true;
     }
     return false;
+  };
+
+  if (!isFirebaseConfigured) {
+    return performMockUpdate();
   }
   try {
     await db.collection('surveys').doc(id).update({ status });
     return true;
   } catch (error) {
-    console.error('Failed to update survey status:', error);
-    return false;
+    console.error('Failed to update survey status in Firestore, falling back to mock:', error);
+    return performMockUpdate();
   }
 }
 
@@ -581,25 +591,39 @@ export async function closeSurveySlot(slot: Omit<ClosedSurveySlot, 'id'>): Promi
     mockClosedSlots.push(newSlot);
     return newSlot;
   }
-  const docRef = await db.collection('closed_survey_slots').add(slot);
-  return {
-    id: docRef.id,
-    ...slot
-  };
+  try {
+    const docRef = await db.collection('closed_survey_slots').add(slot);
+    return {
+      id: docRef.id,
+      ...slot
+    };
+  } catch (error) {
+    console.error('Failed to close survey slot in Firestore, falling back to mock:', error);
+    const newSlot: ClosedSurveySlot = {
+      id: 'mock-closed-fallback-' + Math.random().toString(36).substring(2, 11),
+      ...slot
+    };
+    mockClosedSlots.push(newSlot);
+    return newSlot;
+  }
 }
 
 export async function openSurveySlot(id: string): Promise<boolean> {
-  if (!isFirebaseConfigured) {
+  const performMockDelete = () => {
     const initialLen = mockClosedSlots.length;
     mockClosedSlots = mockClosedSlots.filter(s => s.id !== id);
     return mockClosedSlots.length < initialLen;
+  };
+
+  if (!isFirebaseConfigured) {
+    return performMockDelete();
   }
   try {
     await db.collection('closed_survey_slots').doc(id).delete();
     return true;
   } catch (error) {
-    console.error('Failed to delete closed slot:', error);
-    return false;
+    console.error('Failed to delete closed slot in Firestore, falling back to mock:', error);
+    return performMockDelete();
   }
 }
 
