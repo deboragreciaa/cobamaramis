@@ -860,8 +860,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               <div className="absolute left-0 top-0 bottom-0 w-1 bg-white"></div>
               <div className="w-1.5 h-3 bg-white/20 rounded-sm"></div>
             </div>
-            <span className="text-lg font-normal tracking-tight text-[#334155] flex items-center gap-1.5 select-none">
-              satu <strong className="font-extrabold text-[#0073C2]">maramis</strong>
+            <span className="text-base font-extrabold tracking-tight text-[#0073C2] select-none">
+              Gedung AA Maramis
             </span>
           </div>
         </div>
