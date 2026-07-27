@@ -49,7 +49,8 @@ import {
   RefreshCw,
   Sparkles,
   Clock,
-  ChevronLeft
+  ChevronLeft,
+  ChevronRight
 } from 'lucide-react';
 
 interface QuickPackageNew {
@@ -100,6 +101,7 @@ export default function Home() {
   const [passwordInput, setPasswordInput] = useState('');
   const [activeTab, setActiveTab] = useState<'catalog' | 'calculator' | 'clients' | 'submissions' | 'calendar' | 'surveys' | 'documents'>('catalog');
   const [selectedPackageIds, setSelectedPackageIds] = useState<string[]>([]);
+  const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   
   // Database States
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -851,16 +853,16 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
   // SCREEN 3: MAIN APPLICATION DASHBOARD
   return (
     <div className="flex-1 flex flex-col bg-[#f8fafc] text-slate-800 font-sans min-h-screen">
-      {/* HEADER BANNER - Satu Kemenkeu style */}
-      <header className="border-b border-slate-200 bg-white sticky top-0 z-50 px-6 py-3 flex items-center justify-between shadow-sm">
+      {/* HEADER BANNER - Blue Kemenkeu style */}
+      <header className="border-b border-[#0060a3] bg-[#0073C2] text-white sticky top-0 z-50 px-6 py-3 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            {/* Logo Satu Kemenkeu style: Blue door/book shape */}
-            <div className="h-7 w-6 bg-[#0073C2] rounded-r-md flex items-center justify-center relative shadow-sm">
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-white"></div>
-              <div className="w-1.5 h-3 bg-white/20 rounded-sm"></div>
+            {/* Logo style: White door/book shape */}
+            <div className="h-7 w-6 bg-white rounded-r-md flex items-center justify-center relative shadow-sm">
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#0073C2]"></div>
+              <div className="w-1.5 h-3 bg-[#0073C2]/20 rounded-sm"></div>
             </div>
-            <span className="text-base font-extrabold tracking-tight text-[#0073C2] select-none">
+            <span className="text-base font-extrabold tracking-tight text-white select-none">
               Gedung AA Maramis
             </span>
           </div>
@@ -868,32 +870,32 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
         {/* User Session Info / Controls */}
         <div className="flex items-center gap-5">
-          <div className="flex items-center gap-1 text-slate-600 font-semibold font-mono text-sm">
-            <Clock className="h-4 w-4 text-slate-400" />
+          <div className="flex items-center gap-1 text-sky-100 font-semibold font-mono text-sm">
+            <Clock className="h-4 w-4 text-sky-200" />
             <span>{timeStr}</span>
           </div>
           <button
             onClick={() => alert('Simulasi Clock In Pegawai LMAN Berhasil!')}
-            className="bg-[#f59e0b] hover:bg-[#d97706] text-white font-bold py-1.5 px-6 rounded-full text-xs transition-colors shadow-sm"
+            className="bg-[#f59e0b] hover:bg-[#d97706] text-black font-extrabold py-1.5 px-6 rounded-full text-xs transition-colors shadow-sm"
           >
             Clock In
           </button>
-          <div className="h-8 w-8 rounded-full bg-sky-100 border border-sky-200 flex items-center justify-center font-bold text-xs text-[#0073C2] overflow-hidden" title={user?.email || ''}>
+          <div className="h-8 w-8 rounded-full bg-white/20 border border-white/30 flex items-center justify-center font-bold text-xs text-white overflow-hidden" title={user?.email || ''}>
             <span className="uppercase">{user?.email?.substring(0, 2) || 'LM'}</span>
           </div>
-          <button className="text-slate-400 hover:text-slate-600" title="Pengaturan">
+          <button className="text-sky-100 hover:text-white transition-colors" title="Pengaturan">
             <Settings className="h-4.5 w-4.5" />
           </button>
-          <button className="text-slate-400 hover:text-slate-600" title="Aplikasi Lain">
+          <button className="text-sky-100 hover:text-white transition-colors" title="Aplikasi Lain">
             <Layers className="h-4.5 w-4.5" />
           </button>
         </div>
       </header>
 
       {/* DASHBOARD BODY CONTAINER (Sidebar + Content) */}
-      <div className="flex-1 flex overflow-hidden">
+      <div className="flex-1 flex overflow-hidden relative">
         {/* SIDEBAR NAVIGATION - Satu Kemenkeu style */}
-        <aside className="w-72 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-[calc(100vh-53px)] sticky top-[53px]">
+        <aside className={`bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-[calc(100vh-53px)] sticky top-[53px] transition-all duration-300 ${isSidebarCollapsed ? 'w-0 overflow-hidden border-r-0' : 'w-72'}`}>
           <div className="flex flex-col overflow-y-auto">
             {/* User Profile Header Blue Card */}
             <div className="p-4 bg-[#0073C2] text-white relative flex items-center justify-between gap-3 shadow-md select-none">
@@ -908,9 +910,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   di Seksi Pengembangan & Pendayagunaan Aset Negara, LMAN Kanwil AA Maramis.
                 </div>
               </div>
-              <button className="h-6 w-6 rounded-full bg-white text-[#0073C2] flex items-center justify-center shadow hover:bg-slate-100 transition-colors">
-                <ChevronLeft className="h-3.5 w-3.5" />
-              </button>
             </div>
 
             {/* Nav list */}
@@ -1028,10 +1027,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
           {/* Sidebar footer */}
           <div className="p-4 border-t border-slate-100 flex flex-col gap-3 select-none">
-            <div className="text-[10px] text-slate-400 font-medium">
-              <div>Powered by <strong className="text-slate-600 font-bold">Pusintek</strong></div>
-              <div className="text-[9px] mt-0.5">Versi 2.7.0 | <span className="text-[#f59e0b] font-bold">Aplikasi Versi 1.0.0</span></div>
-            </div>
             <button
               onClick={logout}
               className="w-full py-1.5 border border-red-200 hover:bg-red-50 text-red-500 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5"
@@ -1041,6 +1036,16 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             </button>
           </div>
         </aside>
+
+        {/* Collapsible toggle button */}
+        <button
+          onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
+          className="absolute top-6 h-7 w-7 rounded-full bg-white border border-slate-200 text-[#0073C2] flex items-center justify-center shadow-md hover:bg-slate-50 transition-all duration-300 z-50"
+          style={{ left: isSidebarCollapsed ? '12px' : '274px' }}
+          title={isSidebarCollapsed ? 'Buka Menu' : 'Sembunyikan Menu'}
+        >
+          {isSidebarCollapsed ? <ChevronRight className="h-4 w-4" /> : <ChevronLeft className="h-4 w-4" />}
+        </button>
 
         {/* MAIN PANEL CONTENT - White scrollable area */}
         <main className="flex-1 bg-[#f8fafc] overflow-y-auto p-6 flex flex-col gap-6">
