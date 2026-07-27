@@ -2671,24 +2671,30 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             // Find surveys on this day
                             const daySurveys = surveys.filter((s) => s.date === dateStr && s.status !== 'CANCELLED');
 
+                            let cellBg = 'bg-white border-slate-200 hover:border-slate-350';
+                            let numColor = 'text-slate-400';
+                            
+                            if (dayBookings.length > 0) {
+                              cellBg = 'bg-[#e0f2fe] border-sky-300 text-sky-950 hover:bg-sky-200';
+                              numColor = 'text-sky-700 font-extrabold';
+                            } else if (daySurveys.length > 0) {
+                              cellBg = 'bg-[#fef08a] border-yellow-350 text-yellow-950 hover:bg-yellow-200';
+                              numColor = 'text-yellow-750 font-extrabold';
+                            }
+
                             return (
                               <div
                                 key={`day-${day}`}
-                                className="aspect-square p-1 bg-white border border-slate-200 rounded-lg flex flex-col justify-between overflow-hidden shadow-sm hover:border-slate-350 transition-colors"
+                                className={`aspect-square p-1 border rounded-lg flex flex-col justify-between overflow-hidden shadow-sm transition-all ${cellBg}`}
                               >
-                                <span className="text-[10px] font-bold text-slate-400 font-mono">{day}</span>
+                                <span className={`text-[10px] font-mono ${numColor}`}>{day}</span>
                                 <div className="flex flex-col gap-0.5 mt-1 overflow-y-auto scrollbar-none">
                                   {dayBookings.map((b) => {
-                                    const color = b.type === 'CONFIRMED'
-                                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                                      : b.type === 'TENTATIVE'
-                                      ? 'bg-amber-50 text-amber-700 border-amber-250'
-                                      : 'bg-red-50 text-red-700 border-red-200';
                                     return (
                                       <div
                                         key={b.id}
                                         title={`${b.activityName} (${b.roomCodes.join(', ')})`}
-                                        className={`text-[7.5px] px-1 py-0.5 rounded border leading-none font-bold truncate ${color}`}
+                                        className="text-[7.5px] px-1 py-0.5 rounded border border-sky-200/50 bg-white/80 text-sky-900 leading-none font-bold truncate"
                                       >
                                         {b.activityName}
                                       </div>
@@ -2699,9 +2705,9 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                     <div
                                       key={s.id}
                                       title={`Survei: ${s.companyName} (Status: ${s.status})`}
-                                      className="text-[7.5px] px-1 py-0.5 rounded border leading-none font-bold truncate bg-indigo-50 text-indigo-700 border-indigo-200"
+                                      className="text-[7.5px] px-1 py-0.5 rounded border border-yellow-250 bg-white/80 text-yellow-900 leading-none font-bold truncate"
                                     >
-                                      🕵️ Survei: {s.companyName}
+                                      🕵️ {s.companyName}
                                     </div>
                                   ))}
                                 </div>
