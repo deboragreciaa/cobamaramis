@@ -2530,7 +2530,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                 </h4>
                                 <p className="text-[10px] mt-0.5 leading-normal">{st.desc}</p>
                                 
-                                {st.t === 3 && isDone && (
+                                {st.t === 3 && (
                                   <button
                                     onClick={() => {
                                       setLoiNomorSurat('');
@@ -2544,7 +2544,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                   </button>
                                 )}
 
-                                {st.t === 6 && isDone && (
+                                {st.t === 6 && (
                                   <button
                                     onClick={() => {
                                       setAgreementNomor('');
