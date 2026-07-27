@@ -1887,13 +1887,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                 <Check className="h-2.5 w-2.5 stroke-[3]" />
                               </button>
                             </th>
-                            <th className="p-3.5">Kode Ruang</th>
-                            <th className="p-3.5">Nama Ruang</th>
+                            <th className="p-3.5 text-center">Kode Ruang</th>
+                            <th className="p-3.5 text-center">Nama Ruang</th>
                             <th className="p-3.5 text-center">Gedung</th>
                             <th className="p-3.5 text-center">Lantai</th>
                             <th className="p-3.5 text-center">Luas (m²)</th>
-                            <th className="p-3.5 text-right">Kapasitas</th>
-                            <th className="p-3.5 text-right">Tarif Booklet (Acuan)</th>
+                            <th className="p-3.5 text-center">Kapasitas</th>
+                            <th className="p-3.5 text-center">Tarif Booklet (Acuan)</th>
                             <th className="p-3.5 text-center">Status</th>
                           </tr>
                         </thead>
@@ -1920,13 +1920,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                     <Check className="h-2.5 w-2.5 stroke-[3]" />
                                   </button>
                                 </td>
-                                <td className="p-3.5 font-extrabold text-slate-800 tracking-wide">{room.code}</td>
-                                <td className="p-3.5 text-slate-650 font-semibold">{room.name || '—'}</td>
+                                <td className="p-3.5 text-center font-extrabold text-slate-800 tracking-wide">{room.code}</td>
+                                <td className="p-3.5 text-center text-slate-650 font-semibold">{room.name || '—'}</td>
                                 <td className="p-3.5 text-center text-slate-500">{room.building}</td>
                                 <td className="p-3.5 text-center text-slate-500">{room.floor}</td>
                                 <td className="p-3.5 text-center text-slate-600 font-semibold font-mono">{room.areaSqm}</td>
-                                <td className="p-3.5 text-right text-slate-600 font-semibold font-mono">{room.capacity} pax</td>
-                                <td className="p-3.5 text-right font-extrabold text-[#f59e0b] font-mono">
+                                <td className="p-3.5 text-center text-slate-600 font-semibold font-mono">{room.capacity} pax</td>
+                                <td className="p-3.5 text-center font-extrabold text-[#f59e0b] font-mono">
                                   {formatRupiah(room.dailyRate)}
                                 </td>
                                 <td className="p-3.5 text-center">
