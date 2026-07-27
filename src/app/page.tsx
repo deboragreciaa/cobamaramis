@@ -27,7 +27,9 @@ import {
   openSurveySlot
 } from '@/app/actions/db';
 import { Room, getQuickPackages, QuickPackage } from '@/lib/rooms-data';
-import { buildLoiText, buildPerjanjianText } from '@/lib/documents';
+import { buildLoiText, buildPerjanjianText, formatTanggalIndo, formatJangkaWaktu, terbilang } from '@/lib/documents';
+import PizZip from 'pizzip';
+import Docxtemplater from 'docxtemplater';
 import { calculatePenawaran, formatRupiah, PURPOSE_OPTIONS, PurposeOption } from '@/lib/calculator';
 import { Client, Submission, Booking, Survey, ClosedSurveySlot, BookingType } from '@/lib/types';
 import {
@@ -531,6 +533,186 @@ export default function Home() {
         console.error(err);
         alert('Gagal menghapus klien.');
       }
+    }
+  };
+
+  // F7 & F8 DOCX Download Handlers
+  const handleDownloadLoiDocx = async (sub: Submission) => {
+    try {
+      const client = clients.find(c => c.id === sub.clientId);
+      const subBookings = bookings.filter(b => b.submissionId === sub.id);
+      const startDate = subBookings.length > 0 ? subBookings[0].startDate : new Date().toISOString().split('T')[0];
+      const endDate = subBookings.length > 0 ? subBookings[subBookings.length - 1].endDate : new Date().toISOString().split('T')[0];
+
+      const dpp = sub.estimatedCost / (1 + systemSettings.ppnRate);
+      const ppn = sub.estimatedCost - dpp;
+
+      const response = await fetch('/loi_template.docx');
+      const arrayBuffer = await response.arrayBuffer();
+      const zip = new PizZip(arrayBuffer);
+      let docXml = zip.file('word/document.xml').asText();
+
+      // Replace hardcoded Summerland text with dynamic placeholders in document.xml
+      docXml = docXml.replaceAll('S-229/LMAN/LMAN.4/2026', '{loiNomorSurat}');
+      docXml = docXml.replaceAll('22 Mei 2026', '{loiTanggalSurat}');
+      docXml = docXml.replaceAll('Sdr. Razka Robby Ertanto', '{loiNamaPemohon}');
+      docXml = docXml.replaceAll('Producer Summerland', '{loiJabatanPemohon}');
+      docXml = docXml.replaceAll('SPL/017/140126/ROSE/SUMMERLAND', '{loiNomorSuratPemohon}');
+      docXml = docXml.replaceAll('28 Januari 2026', '{loiTanggalSuratPemohon}');
+      docXml = docXml.replaceAll('Surat Permohonan Perizinan Lokasi Syuting', '{loiPerihalSuratPemohon}');
+      docXml = docXml.replaceAll('Razka Robby Ertanto', '{loiPemohon}');
+      docXml = docXml.replaceAll('Ruangan pada Gedung A.A. Maramis', '{loiObjekPemanfaatan}');
+      docXml = docXml.replaceAll('Jalan Lapangan Banteng Timur nomor 2 - 4, Kelurahan Pasar baru, Kecamatan Sawah Besar, Kota Jakarta Pusat', '{loiAlamatAset}');
+      docXml = docXml.replaceAll('±1.182 m2', '{loiLuasArea}');
+      docXml = docXml.replaceAll('Produksi Film Rose Pandanwangi', '{loiPeruntukan}');
+      docXml = docXml.replaceAll('30 Januari 2026', '{loiJangkaWaktu}');
+      
+      docXml = docXml.replaceAll('Rp9.459.459', '{loiTarifDpp}');
+      docXml = docXml.replaceAll('sembilan juta empat ratus lima puluh sembilan ribu empat ratus lima puluh sembilan rupiah', '{loiTarifDppTerbilang}');
+      
+      docXml = docXml.replaceAll('Rp1.040.541', '{loiPpn}');
+      docXml = docXml.replaceAll('satu juta empat puluh ribu lima ratus empat puluh satu rupiah', '{loiPpnTerbilang}');
+      
+      docXml = docXml.replaceAll('Rp10.500.000', '{loiTotalTarif}');
+      docXml = docXml.replaceAll('sepuluh juta lima ratus ribu rupiah', '{loiTotalTarifTerbilang}');
+      
+      docXml = docXml.replaceAll('s.kemenkeu.go.id/FilmRosePandanwangi30Januari2026', '{loiTautanPerjanjian}');
+      docXml = docXml.replaceAll('s.kemenkeu.go.id/TataTertibMaramis', '{loiTautanTataTertib}');
+      docXml = docXml.replaceAll('Mahdi', '{loiNamaPenandatangan}');
+
+      zip.file('word/document.xml', docXml);
+
+      const doc = new Docxtemplater(zip, {
+        paragraphLoop: true,
+        linebreaks: true,
+      });
+
+      const inputData = {
+        loiNomorSurat: loiNomorSurat || 'S-229/LMAN/LMAN.4/2026',
+        loiTanggalSurat: formatTanggalIndo(new Date().toISOString().split('T')[0]),
+        loiNamaPemohon: client ? client.picName : 'Razka Robby Ertanto',
+        loiJabatanPemohon: client ? ('Perwakilan ' + client.companyName) : 'Producer Summerland',
+        loiNomorSuratPemohon: loiNomorSuratPemohon || 'SPL/017/140126/ROSE/SUMMERLAND',
+        loiTanggalSuratPemohon: formatTanggalIndo(sub.createdAt.split('T')[0]),
+        loiPerihalSuratPemohon: 'Permohonan Pemanfaatan Gedung A.A. Maramis',
+        loiPemohon: client ? client.picName : 'Razka Robby Ertanto',
+        loiObjekPemanfaatan: 'Ruangan pada Gedung A.A. Maramis (' + sub.roomCodes.join(', ') + ')',
+        loiAlamatAset: 'Jalan Lapangan Banteng Timur nomor 2 - 4, Kelurahan Pasar baru, Kecamatan Sawah Besar, Kota Jakarta Pusat',
+        loiLuasArea: `±${sub.roomCodes.length * 150} m2`,
+        loiPeruntukan: sub.activityName,
+        loiJangkaWaktu: formatJangkaWaktu(startDate, endDate),
+        loiTarifDpp: 'Rp' + new Intl.NumberFormat('id-ID').format(Math.floor(dpp)),
+        loiTarifDppTerbilang: terbilang(dpp) + ' rupiah',
+        loiPpn: 'Rp' + new Intl.NumberFormat('id-ID').format(Math.floor(ppn)),
+        loiPpnTerbilang: terbilang(ppn) + ' rupiah',
+        loiTotalTarif: 'Rp' + new Intl.NumberFormat('id-ID').format(sub.estimatedCost),
+        loiTotalTarifTerbilang: terbilang(sub.estimatedCost) + ' rupiah',
+        loiTautanPerjanjian: `s.kemenkeu.go.id/${client ? client.companyName.replace(/\s+/g, '') : 'Summerland'}${startDate.replace(/-/g, '')}`,
+        loiTautanTataTertib: 's.kemenkeu.go.id/TataTertibMaramis',
+        loiNamaPenandatangan: loiNamaPenandatangan || 'Mahdi'
+      };
+
+      doc.render(inputData);
+
+      const out = doc.getZip().generate({
+        type: 'blob',
+        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      });
+
+      const url = window.URL.createObjectURL(out);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = `LOI_Gedung_Maramis_${sub.companyName.replace(/\s+/g, '_')}.docx`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error generating DOCX:', err);
+      alert('Gagal membuat file Word: ' + err);
+    }
+  };
+
+  const handleDownloadAgreementDocx = async (sub: Submission) => {
+    try {
+      const client = clients.find(c => c.id === sub.clientId);
+      const subBookings = bookings.filter(b => b.submissionId === sub.id);
+      const startDate = subBookings.length > 0 ? subBookings[0].startDate : new Date().toISOString().split('T')[0];
+      const endDate = subBookings.length > 0 ? subBookings[subBookings.length - 1].endDate : new Date().toISOString().split('T')[0];
+
+      const response = await fetch('/agreement_template.docx');
+      const arrayBuffer = await response.arrayBuffer();
+      const zip = new PizZip(arrayBuffer);
+      let docXml = zip.file('word/document.xml').asText();
+
+      // Replace hardcoded OJK text with dynamic placeholders in document.xml
+      docXml = docXml.replaceAll('PRIN-10/LMAN/2024', '{agrNoOrdinance}');
+      docXml = docXml.replaceAll('9 Oktober 2024', '{agrDateOrdinance}');
+      docXml = docXml.replaceAll('MAHDI', '{agrNamaPihakPertama}');
+      docXml = docXml.replaceAll('Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan', '{agrJabatanPihakPertama}');
+      docXml = docXml.replaceAll('Hudiyanto', '{agrNamaPihakKedua}');
+      docXml = docXml.replaceAll('Kepala Departemen Logistik dan Fasilitas', '{agrJabatanPihakKedua}');
+      docXml = docXml.replaceAll('Otoritas Jasa Keuangan', '{agrInstansiPihakKedua}');
+      docXml = docXml.replaceAll('Gedung Soemitro Djojohadikusumo, Jalan Lapangan Banteng Timur Nomor 2-4, Jakarta Pusat', '{agrAlamatPihakKedua}');
+      docXml = docXml.replaceAll('0811986423', '{agrTeleponPihakKedua}');
+      docXml = docXml.replaceAll('sebagian Gedung A.A. Maramis, Gedung C lantai 2', '{agrObjekDeskripsi}');
+      docXml = docXml.replaceAll('1.089 meter persegi', '{agrLuasArea}');
+      docXml = docXml.replaceAll('Kegiatan Ekspose dan Jumpa Pers Triwulan I OJK', '{agrPeruntukan}');
+      docXml = docXml.replaceAll('1 (satu) hari yaitu tanggal 3 Februari 2026', '{agrJangkaWaktu}');
+      
+      docXml = docXml.replaceAll('Rp45.329.625', '{agrUangSewa}');
+      docXml = docXml.replaceAll('empat puluh lima juta tiga ratus dua puluh sembilan ribu enam ratus dua puluh lima rupiah', '{agrUangSewaTerbilang}');
+      
+      docXml = docXml.replaceAll('9 Februari 2026', '{agrBatasBayar}');
+      docXml = docXml.replaceAll('Rp0', '{agrSecurityDeposit}');
+      docXml = docXml.replaceAll('nol rupiah', '{agrSecurityDepositTerbilang}');
+
+      zip.file('word/document.xml', docXml);
+
+      const doc = new Docxtemplater(zip, {
+        paragraphLoop: true,
+        linebreaks: true,
+      });
+
+      const inputData = {
+        agrNoOrdinance: 'PRIN-10/LMAN/2024',
+        agrDateOrdinance: '9 Oktober 2024',
+        agrNamaPihakPertama: agreementPihakPertama || 'Mahdi',
+        agrJabatanPihakPertama: agreementJabatanPihakPertama || 'Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan',
+        agrNamaPihakKedua: client ? client.picName : 'Hudiyanto',
+        agrJabatanPihakKedua: 'Direktur Utama',
+        agrInstansiPihakKedua: client ? client.companyName : 'Otoritas Jasa Keuangan',
+        agrAlamatPihakKedua: 'Gedung Keuangan Instansi Pihak Kedua',
+        agrTeleponPihakKedua: client ? client.picPhone : '0811986423',
+        agrObjekDeskripsi: 'sebagian Gedung A.A. Maramis (' + sub.roomCodes.join(', ') + ')',
+        agrLuasArea: `${sub.roomCodes.length * 150} meter persegi`,
+        agrPeruntukan: sub.activityName,
+        agrJangkaWaktu: formatJangkaWaktu(startDate, endDate),
+        agrUangSewa: 'Rp' + new Intl.NumberFormat('id-ID').format(sub.estimatedCost),
+        agrUangSewaTerbilang: terbilang(sub.estimatedCost) + ' rupiah',
+        agrBatasBayar: formatTanggalIndo(new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]),
+        agrSecurityDeposit: 'Rp' + new Intl.NumberFormat('id-ID').format(Math.floor(sub.estimatedCost * 0.10)),
+        agrSecurityDepositTerbilang: terbilang(sub.estimatedCost * 0.10) + ' rupiah'
+      };
+
+      doc.render(inputData);
+
+      const out = doc.getZip().generate({
+        type: 'blob',
+        mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+      });
+
+      const url = window.URL.createObjectURL(out);
+      const anchor = document.createElement('a');
+      anchor.href = url;
+      anchor.download = `Kontrak_Perjanjian_Maramis_${sub.companyName.replace(/\s+/g, '_')}.docx`;
+      document.body.appendChild(anchor);
+      anchor.click();
+      document.body.removeChild(anchor);
+      window.URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error('Error generating DOCX:', err);
+      alert('Gagal membuat file Word: ' + err);
     }
   };
 
@@ -3135,9 +3317,15 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             element.click();
                             document.body.removeChild(element);
                           }}
-                          className="px-3 py-1.5 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-[10px] font-bold transition-colors shadow-sm"
+                          className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-[10px] font-bold text-slate-700 transition-colors shadow-sm"
                         >
                           Unduh (.txt)
+                        </button>
+                        <button
+                          onClick={() => handleDownloadLoiDocx(activeLoiSubmission)}
+                          className="px-3 py-1.5 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-[10px] font-bold transition-colors shadow-sm"
+                        >
+                          Unduh Word (.docx)
                         </button>
                       </div>
                     </div>
@@ -3258,9 +3446,15 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             element.click();
                             document.body.removeChild(element);
                           }}
-                          className="px-3 py-1.5 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-[10px] font-bold transition-colors shadow-sm"
+                          className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-[10px] font-bold text-slate-700 transition-colors shadow-sm"
                         >
                           Unduh (.txt)
+                        </button>
+                        <button
+                          onClick={() => handleDownloadAgreementDocx(activeAgreementSubmission)}
+                          className="px-3 py-1.5 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-[10px] font-bold transition-colors shadow-sm"
+                        >
+                          Unduh Word (.docx)
                         </button>
                       </div>
                     </div>
