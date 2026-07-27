@@ -104,9 +104,10 @@ export default function Home() {
   // App States
   const [emailInput, setEmailInput] = useState('team@maramis.go.id');
   const [passwordInput, setPasswordInput] = useState('');
-  const [activeTab, setActiveTab] = useState<'catalog' | 'calculator' | 'clients' | 'submissions' | 'calendar' | 'surveys' | 'documents'>('catalog');
+  const [activeTab, setActiveTab] = useState<'catalog' | 'calculator' | 'clients' | 'submissions' | 'calendar' | 'surveys' | 'documents' | 'doc_loi' | 'doc_prj'>('catalog');
   const [selectedPackageIds, setSelectedPackageIds] = useState<string[]>([]);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
+  const [isDocMenuOpen, setIsDocMenuOpen] = useState(false);
   
   // Database States
   const [rooms, setRooms] = useState<Room[]>([]);
@@ -1286,7 +1287,50 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 <span>Kalender Kegiatan</span>
               </button>
 
-
+              {/* Pembuatan Dokumen collapsible menu */}
+              <div className="mx-2.5 my-0.5">
+                <button
+                  onClick={() => setIsDocMenuOpen(!isDocMenuOpen)}
+                  className={`w-full py-2.5 px-4 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
+                    activeTab === 'doc_loi' || activeTab === 'doc_prj'
+                      ? 'bg-[#e0f2fe] text-[#0073C2]'
+                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <FileText className={`h-4 w-4 shrink-0 ${activeTab === 'doc_loi' || activeTab === 'doc_prj' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                    <span>Pembuatan Dokumen</span>
+                  </div>
+                  <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isDocMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+                
+                {(isDocMenuOpen || activeTab === 'doc_loi' || activeTab === 'doc_prj') && (
+                  <div className="pl-4 pr-1 mt-1 space-y-1 border-l-2 border-[#0073C2]/20 ml-6 flex flex-col">
+                    <button
+                      onClick={() => setActiveTab('doc_loi')}
+                      className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
+                        activeTab === 'doc_loi'
+                          ? 'bg-[#e0f2fe] text-[#0073C2]'
+                          : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+                      }`}
+                    >
+                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'doc_loi' ? 'bg-[#0073C2]' : 'bg-slate-300'}`} />
+                      LOI (Letter of Intent)
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('doc_prj')}
+                      className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
+                        activeTab === 'doc_prj'
+                          ? 'bg-[#e0f2fe] text-[#0073C2]'
+                          : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+                      }`}
+                    >
+                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'doc_prj' ? 'bg-[#0073C2]' : 'bg-slate-300'}`} />
+                      PRJ (Perjanjian)
+                    </button>
+                  </div>
+                )}
+              </div>
 
               <button
                 onClick={() => setActiveTab('documents')}
@@ -2976,6 +3020,263 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </div>
                 ))}
               </div>
+            </div>
+          )}
+
+          {/* TAB: DOC_LOI (F7) */}
+          {activeTab === 'doc_loi' && (
+            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm text-slate-700 animate-fadeIn flex flex-col gap-6">
+              <div>
+                <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-[#0073C2]" />
+                  Pembuatan Surat Penawaran Harga / Letter of Intent (LOI) [F7]
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  Pilih pengajuan sewa aktif di bawah ini untuk mengenerate naskah resmi LOI yang dapat diunduh atau disalin.
+                </p>
+              </div>
+
+              {/* Selection Dropdown */}
+              <div className="max-w-md">
+                <label className="text-[10px] font-semibold text-slate-500 block mb-1">Pilih Pengajuan Sewa Terkait</label>
+                <select
+                  value={activeLoiSubmission?.id || ''}
+                  onChange={(e) => {
+                    const selected = submissions.find(s => s.id === e.target.value);
+                    setActiveLoiSubmission(selected || null);
+                  }}
+                  className="w-full bg-white border border-slate-200 rounded-lg py-2.5 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                >
+                  <option value="">-- Pilih Pengajuan / Acara --</option>
+                  {submissions.map((sub) => (
+                    <option key={sub.id} value={sub.id}>
+                      {sub.companyName} - {sub.activityName} (Tahap {sub.stage})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {activeLoiSubmission ? (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4 border-t border-slate-100">
+                  {/* Left Parameter Panel */}
+                  <div className="lg:col-span-1 space-y-4">
+                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Sesuaikan Parameter LOI</h4>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Surat Penawaran</label>
+                        <input
+                          type="text"
+                          value={loiNomorSurat}
+                          onChange={(e) => setLoiNomorSurat(e.target.value)}
+                          placeholder="e.g. 001/LMAN-P3/2026"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Surat Permohonan Klien</label>
+                        <input
+                          type="text"
+                          value={loiNomorSuratPemohon}
+                          onChange={(e) => setLoiNomorSuratPemohon(e.target.value)}
+                          placeholder="e.g. 123/EXT/2026"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Penandatangan LMAN</label>
+                        <input
+                          type="text"
+                          value={loiNamaPenandatangan}
+                          onChange={(e) => setLoiNamaPenandatangan(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Jabatan Penandatangan LMAN</label>
+                        <input
+                          type="text"
+                          value={loiJabatanPenandatangan}
+                          onChange={(e) => setLoiJabatanPenandatangan(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-yellow-50 border border-yellow-250 text-yellow-800 rounded-lg text-[9px] leading-relaxed">
+                      💡 <strong>Petunjuk F7</strong>: Nomor surat dan tanda tangan elektronik akan dicantumkan secara otomatis pada keluaran naskah dinas LOI di sebelah kanan.
+                    </div>
+                  </div>
+
+                  {/* Right Document Preview Panel */}
+                  <div className="lg:col-span-2 flex flex-col gap-3">
+                    <div className="flex justify-between items-center">
+                      <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Pratinjau Naskah LOI</h4>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(loiTextGenerated);
+                            alert('Naskah LOI berhasil disalin ke clipboard!');
+                          }}
+                          className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-[10px] font-bold text-slate-700 transition-colors shadow-sm"
+                        >
+                          Salin Teks
+                        </button>
+                        <button
+                          onClick={() => {
+                            const element = document.createElement("a");
+                            const file = new Blob([loiTextGenerated], {type: 'text/plain'});
+                            element.href = URL.createObjectURL(file);
+                            element.download = `LOI_Gedung_Maramis_${activeLoiSubmission.companyName.replace(/\s+/g, '_')}.txt`;
+                            document.body.appendChild(element);
+                            element.click();
+                            document.body.removeChild(element);
+                          }}
+                          className="px-3 py-1.5 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-[10px] font-bold transition-colors shadow-sm"
+                        >
+                          Unduh (.txt)
+                        </button>
+                      </div>
+                    </div>
+                    <textarea
+                      readOnly
+                      value={loiTextGenerated}
+                      rows={20}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-[10px] font-mono leading-normal text-slate-800 resize-y focus:outline-none scrollbar-thin"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="p-8 text-center border border-dashed border-slate-250 rounded-xl bg-slate-50/50 text-slate-400 text-xs italic">
+                  Silakan pilih salah satu pengajuan sewa aktif di atas untuk memuat data pratinjau dokumen.
+                </div>
+              )}
+            </div>
+          )}
+
+          {/* TAB: DOC_PRJ (F8) */}
+          {activeTab === 'doc_prj' && (
+            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm text-slate-700 animate-fadeIn flex flex-col gap-6">
+              <div>
+                <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-[#0073C2]" />
+                  Penyusunan Perjanjian Sewa Guna / Kontrak (PRJ) [F8]
+                </h2>
+                <p className="text-xs text-slate-500 mt-1">
+                  Pilih pengajuan sewa aktif di bawah ini untuk mengenerate naskah Perjanjian Sewa Guna 17 Pasal.
+                </p>
+              </div>
+
+              {/* Selection Dropdown */}
+              <div className="max-w-md">
+                <label className="text-[10px] font-semibold text-slate-500 block mb-1">Pilih Pengajuan Sewa Terkait</label>
+                <select
+                  value={activeAgreementSubmission?.id || ''}
+                  onChange={(e) => {
+                    const selected = submissions.find(s => s.id === e.target.value);
+                    setActiveAgreementSubmission(selected || null);
+                  }}
+                  className="w-full bg-white border border-slate-200 rounded-lg py-2.5 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                >
+                  <option value="">-- Pilih Pengajuan / Acara --</option>
+                  {submissions.map((sub) => (
+                    <option key={sub.id} value={sub.id}>
+                      {sub.companyName} - {sub.activityName} (Tahap {sub.stage})
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              {activeAgreementSubmission ? (
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4 border-t border-slate-100">
+                  {/* Left Parameter Panel */}
+                  <div className="lg:col-span-1 space-y-4">
+                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Sesuaikan Ketentuan Kontrak</h4>
+                    
+                    <div className="space-y-3">
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Kontrak Perjanjian</label>
+                        <input
+                          type="text"
+                          value={agreementNomor}
+                          onChange={(e) => setAgreementNomor(e.target.value)}
+                          placeholder="e.g. 002/SPG/LMAN/2026"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Pihak Pertama (LMAN)</label>
+                        <input
+                          type="text"
+                          value={agreementPihakPertama}
+                          onChange={(e) => setAgreementPihakPertama(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Jabatan Pihak Pertama</label>
+                        <input
+                          type="text"
+                          value={agreementJabatanPihakPertama}
+                          onChange={(e) => setAgreementJabatanPihakPertama(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+                    </div>
+
+                    <div className="p-3 bg-yellow-50 border border-yellow-250 text-yellow-800 rounded-lg text-[9px] leading-relaxed">
+                      📑 <strong>Petunjuk F8</strong>: Draf ini memuat 17 pasal standar sewa LMAN termasuk klausul jaminan keamanan (*security deposit* 10%) dan kewajiban denda keterlambatan.
+                    </div>
+                  </div>
+
+                  {/* Right Document Preview Panel */}
+                  <div className="lg:col-span-2 flex flex-col gap-3">
+                    <div className="flex justify-between items-center">
+                      <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Pratinjau Naskah Perjanjian</h4>
+                      <div className="flex gap-2">
+                        <button
+                          onClick={() => {
+                            navigator.clipboard.writeText(agreementTextGenerated);
+                            alert('Naskah Perjanjian berhasil disalin ke clipboard!');
+                          }}
+                          className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-[10px] font-bold text-slate-700 transition-colors shadow-sm"
+                        >
+                          Salin Kontrak
+                        </button>
+                        <button
+                          onClick={() => {
+                            const element = document.createElement("a");
+                            const file = new Blob([agreementTextGenerated], {type: 'text/plain'});
+                            element.href = URL.createObjectURL(file);
+                            element.download = `Kontrak_Sewa_Guna_${activeAgreementSubmission.companyName.replace(/\s+/g, '_')}.txt`;
+                            document.body.appendChild(element);
+                            element.click();
+                            document.body.removeChild(element);
+                          }}
+                          className="px-3 py-1.5 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-[10px] font-bold transition-colors shadow-sm"
+                        >
+                          Unduh (.txt)
+                        </button>
+                      </div>
+                    </div>
+                    <textarea
+                      readOnly
+                      value={agreementTextGenerated}
+                      rows={20}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-[10px] font-mono leading-normal text-slate-800 resize-y focus:outline-none scrollbar-thin"
+                    />
+                  </div>
+                </div>
+              ) : (
+                <div className="p-8 text-center border border-dashed border-slate-250 rounded-xl bg-slate-50/50 text-slate-400 text-xs italic">
+                  Silakan pilih salah satu pengajuan sewa aktif di atas untuk memuat data pratinjau perjanjian.
+                </div>
+              )}
             </div>
           )}
 
