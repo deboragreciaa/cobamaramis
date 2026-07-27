@@ -47,7 +47,9 @@ import {
   CheckSquare,
   Square,
   RefreshCw,
-  Sparkles
+  Sparkles,
+  Clock,
+  ChevronLeft
 } from 'lucide-react';
 
 interface QuickPackageNew {
@@ -82,6 +84,17 @@ const EXCEL_PACKAGES: QuickPackageNew[] = [
 export default function Home() {
   const { user, role, loading, error, login, selectRole, logout, isMock } = useAuth();
   
+  const [timeStr, setTimeStr] = useState('09:06');
+  useEffect(() => {
+    const updateTime = () => {
+      const now = new Date();
+      setTimeStr(now.toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }));
+    };
+    updateTime();
+    const interval = setInterval(updateTime, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   // App States
   const [emailInput, setEmailInput] = useState('team@maramis.go.id');
   const [passwordInput, setPasswordInput] = useState('');
@@ -837,164 +850,220 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
   // SCREEN 3: MAIN APPLICATION DASHBOARD
   return (
-    <div className="flex-1 flex flex-col bg-slate-950 text-slate-100">
-      {/* HEADER BANNER */}
-      <header className="border-b border-slate-900 bg-slate-900/40 backdrop-blur-md sticky top-0 z-50 px-6 py-4">
-        <div className="max-w-7xl mx-auto flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="p-2 bg-amber-500/10 border border-amber-500/20 rounded-lg text-amber-500">
-              <Building className="h-6 w-6" />
+    <div className="flex-1 flex flex-col bg-[#f8fafc] text-slate-800 font-sans min-h-screen">
+      {/* HEADER BANNER - Satu Kemenkeu style */}
+      <header className="border-b border-slate-200 bg-white sticky top-0 z-50 px-6 py-3 flex items-center justify-between shadow-sm">
+        <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
+            {/* Logo Satu Kemenkeu style: Blue door/book shape */}
+            <div className="h-7 w-6 bg-[#0073C2] rounded-r-md flex items-center justify-center relative shadow-sm">
+              <div className="absolute left-0 top-0 bottom-0 w-1 bg-white"></div>
+              <div className="w-1.5 h-3 bg-white/20 rounded-sm"></div>
             </div>
-            <div>
-              <h1 className="font-bold text-white tracking-wide text-lg">Aplikasi Gedung A.A. Maramis</h1>
-              <p className="text-[11px] text-slate-400 font-medium">Lembaga Manajemen Aset Negara (LMAN)</p>
-            </div>
+            <span className="text-lg font-normal tracking-tight text-[#334155] flex items-center gap-1.5 select-none">
+              satu <strong className="font-extrabold text-[#0073C2]">maramis</strong>
+            </span>
           </div>
+        </div>
 
-          {/* User Session Info / Controls */}
-          <div className="flex flex-wrap items-center gap-3">
-            {isMock && (
-              <span className="text-[10px] bg-amber-500/10 text-amber-400 border border-amber-500/20 px-2 py-1 rounded font-semibold flex items-center gap-1">
-                <Sparkles className="h-3 w-3" /> DEMO MODE
-              </span>
-            )}
-            
-            <div className="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-1 text-xs">
-              <span className="px-2.5 py-1 text-slate-400 font-medium select-none">Peran:</span>
-              <span className={`px-2.5 py-1 rounded font-bold ${
-                role === 'PENGINPUT' 
-                  ? 'bg-amber-500/10 text-amber-400 border border-amber-500/20' 
-                  : 'bg-blue-500/10 text-blue-400 border border-blue-500/20'
-              }`}>
-                {role === 'PENGINPUT' ? 'Penginput' : 'Pereview'}
-              </span>
-              <button
-                onClick={() => selectRole(role === 'PENGINPUT' ? 'PEREVIEW' : 'PENGINPUT')}
-                className="ml-2 hover:bg-slate-800 text-slate-300 hover:text-white px-2 py-1 rounded font-semibold transition-colors flex items-center gap-1"
-                title="Beralih peran"
-              >
-                <RefreshCw className="h-3 w-3" /> Ganti
-              </button>
-            </div>
-
-            <button
-              onClick={logout}
-              className="text-xs bg-slate-900 hover:bg-red-500/10 border border-slate-800 hover:border-red-500/30 text-slate-400 hover:text-red-400 px-3 py-1.5 rounded-lg transition-all flex items-center gap-1.5 font-medium"
-            >
-              <LogOut className="h-3.5 w-3.5" />
-              Keluar
-            </button>
+        {/* User Session Info / Controls */}
+        <div className="flex items-center gap-5">
+          <div className="flex items-center gap-1 text-slate-600 font-semibold font-mono text-sm">
+            <Clock className="h-4 w-4 text-slate-400" />
+            <span>{timeStr}</span>
           </div>
+          <button
+            onClick={() => alert('Simulasi Clock In Pegawai LMAN Berhasil!')}
+            className="bg-[#f59e0b] hover:bg-[#d97706] text-white font-bold py-1.5 px-6 rounded-full text-xs transition-colors shadow-sm"
+          >
+            Clock In
+          </button>
+          <div className="h-8 w-8 rounded-full bg-sky-100 border border-sky-200 flex items-center justify-center font-bold text-xs text-[#0073C2] overflow-hidden" title={user?.email || ''}>
+            <span className="uppercase">{user?.email?.substring(0, 2) || 'LM'}</span>
+          </div>
+          <button className="text-slate-400 hover:text-slate-600" title="Pengaturan">
+            <Settings className="h-4.5 w-4.5" />
+          </button>
+          <button className="text-slate-400 hover:text-slate-600" title="Aplikasi Lain">
+            <Layers className="h-4.5 w-4.5" />
+          </button>
         </div>
       </header>
 
-      {/* DASHBOARD CONTAINER */}
-      <main className="flex-1 max-w-7xl w-full mx-auto p-6 flex flex-col gap-6">
-        
-        {/* NAV TABS */}
-        <div className="flex border-b border-slate-900 overflow-x-auto whitespace-nowrap scrollbar-none">
-          <button
-            onClick={() => setActiveTab('catalog')}
-            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
-              activeTab === 'catalog'
-                ? 'border-amber-500 text-amber-500'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Layers className="h-4 w-4 shrink-0" />
-            Katalog Ruangan (F1)
-          </button>
-          <button
-            onClick={() => setActiveTab('calculator')}
-            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
-              activeTab === 'calculator'
-                ? 'border-amber-500 text-amber-500'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Calculator className="h-4 w-4 shrink-0" />
-            Kalkulator (F2)
-            {selectedRoomCodes.length > 0 && (
-              <span className="bg-amber-500 text-slate-950 rounded-full h-5 w-5 flex items-center justify-center text-[10px] font-bold">
-                {selectedRoomCodes.length}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab('clients')}
-            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
-              activeTab === 'clients'
-                ? 'border-amber-500 text-amber-500'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <Users className="h-4 w-4 shrink-0" />
-            Klien (F3)
-            {clients.length > 0 && (
-              <span className="bg-slate-800 text-slate-400 rounded-full px-1.5 py-0.5 text-[9px] font-semibold">
-                {clients.length}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab('submissions')}
-            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
-              activeTab === 'submissions'
-                ? 'border-amber-500 text-amber-500'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <FileText className="h-4 w-4 shrink-0" />
-            Pengajuan (F4/F9)
-            {submissions.length > 0 && (
-              <span className="bg-slate-800 text-slate-400 rounded-full px-1.5 py-0.5 text-[9px] font-semibold">
-                {submissions.length}
-              </span>
-            )}
-          </button>
-          <button
-            onClick={() => setActiveTab('calendar')}
-            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
-              activeTab === 'calendar'
-                ? 'border-amber-500 text-amber-500'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <MapPin className="h-4 w-4 shrink-0" />
-            Kalender (F5)
-          </button>
-          <button
-            onClick={() => setActiveTab('surveys')}
-            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
-              activeTab === 'surveys'
-                ? 'border-amber-500 text-amber-500'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <CheckSquare className="h-4 w-4 shrink-0" />
-            Survei (F6)
-          </button>
-          <button
-            onClick={() => setActiveTab('documents')}
-            className={`px-4 py-2 text-sm font-semibold border-b-2 transition-all flex items-center gap-2 ${
-              activeTab === 'documents'
-                ? 'border-amber-500 text-amber-500'
-                : 'border-transparent text-slate-400 hover:text-slate-200'
-            }`}
-          >
-            <BookOpen className="h-4 w-4 shrink-0" />
-            Dokumen (F10)
-          </button>
-          
-          {role === 'PENGINPUT' && (
-            <div className="ml-auto hidden md:flex items-center text-[10px] text-slate-500 italic bg-slate-950/40 border border-slate-900 rounded px-2.5 py-1">
-              Mode Pengeditan Aktif (Tahap 1)
+      {/* DASHBOARD BODY CONTAINER (Sidebar + Content) */}
+      <div className="flex-1 flex overflow-hidden">
+        {/* SIDEBAR NAVIGATION - Satu Kemenkeu style */}
+        <aside className="w-72 bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-[calc(100vh-53px)] sticky top-[53px]">
+          <div className="flex flex-col overflow-y-auto">
+            {/* User Profile Header Blue Card */}
+            <div className="p-4 bg-[#0073C2] text-white relative flex items-center justify-between gap-3 shadow-md select-none">
+              <div className="flex-1 min-w-0">
+                <div className="font-extrabold text-xs tracking-wide truncate">
+                  {role === 'PENGINPUT' ? 'TIM PENGINPUT LMAN' : 'TIM PEREVIEW LMAN'}
+                </div>
+                <div className="text-[10px] text-sky-200 font-mono mt-0.5 tracking-wider truncate">
+                  {user?.email || 'team@maramis.go.id'}
+                </div>
+                <div className="text-[9px] text-white/80 mt-1.5 leading-relaxed line-clamp-2">
+                  di Seksi Pengembangan & Pendayagunaan Aset Negara, LMAN Kanwil AA Maramis.
+                </div>
+              </div>
+              <button className="h-6 w-6 rounded-full bg-white text-[#0073C2] flex items-center justify-center shadow hover:bg-slate-100 transition-colors">
+                <ChevronLeft className="h-3.5 w-3.5" />
+              </button>
             </div>
-          )}
-        </div>
 
-        {/* TAB CONTENTS */}
-        <div className="flex-1 flex flex-col gap-6">
+            {/* Nav list */}
+            <div className="py-4 flex flex-col gap-1">
+              <div className="text-[9px] font-bold text-slate-400 tracking-wider px-4 py-2 uppercase mt-2 select-none">
+                MENU UTAMA SEWA
+              </div>
+              
+              <button
+                onClick={() => setActiveTab('catalog')}
+                className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
+                  activeTab === 'catalog'
+                    ? 'bg-[#e0f2fe] text-[#0073C2]'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <Layers className={`h-4 w-4 shrink-0 ${activeTab === 'catalog' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                <span>Katalog Ruangan (F1)</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('calculator')}
+                className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
+                  activeTab === 'calculator'
+                    ? 'bg-[#e0f2fe] text-[#0073C2]'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Calculator className={`h-4 w-4 shrink-0 ${activeTab === 'calculator' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                  <span>Kalkulator Sewa (F2)</span>
+                </div>
+                {selectedRoomCodes.length > 0 && (
+                  <span className="bg-[#0073C2] text-white rounded-full h-4.5 w-4.5 flex items-center justify-center text-[9px] font-extrabold">
+                    {selectedRoomCodes.length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('clients')}
+                className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
+                  activeTab === 'clients'
+                    ? 'bg-[#e0f2fe] text-[#0073C2]'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <Users className={`h-4 w-4 shrink-0 ${activeTab === 'clients' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                  <span>Basis Data Klien (F3)</span>
+                </div>
+                {clients.length > 0 && (
+                  <span className="bg-slate-100 text-slate-500 rounded px-1 text-[9px] font-extrabold">
+                    {clients.length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('submissions')}
+                className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
+                  activeTab === 'submissions'
+                    ? 'bg-[#e0f2fe] text-[#0073C2]'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <div className="flex items-center gap-3">
+                  <FileText className={`h-4 w-4 shrink-0 ${activeTab === 'submissions' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                  <span>Pengajuan Sewa (F4/F9)</span>
+                </div>
+                {submissions.length > 0 && (
+                  <span className="bg-slate-100 text-slate-500 rounded px-1 text-[9px] font-extrabold">
+                    {submissions.length}
+                  </span>
+                )}
+              </button>
+
+              <button
+                onClick={() => setActiveTab('calendar')}
+                className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
+                  activeTab === 'calendar'
+                    ? 'bg-[#e0f2fe] text-[#0073C2]'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <MapPin className={`h-4 w-4 shrink-0 ${activeTab === 'calendar' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                <span>Kalender Kegiatan (F5)</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('surveys')}
+                className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
+                  activeTab === 'surveys'
+                    ? 'bg-[#e0f2fe] text-[#0073C2]'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <CheckSquare className={`h-4 w-4 shrink-0 ${activeTab === 'surveys' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                <span>Jadwal Survei (F6)</span>
+              </button>
+
+              <button
+                onClick={() => setActiveTab('documents')}
+                className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
+                  activeTab === 'documents'
+                    ? 'bg-[#e0f2fe] text-[#0073C2]'
+                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                }`}
+              >
+                <BookOpen className={`h-4 w-4 shrink-0 ${activeTab === 'documents' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                <span>Pusat Dokumen (F10)</span>
+              </button>
+            </div>
+          </div>
+
+          {/* Sidebar footer */}
+          <div className="p-4 border-t border-slate-100 flex flex-col gap-3 select-none">
+            <div className="text-[10px] text-slate-400 font-medium">
+              <div>Powered by <strong className="text-slate-600 font-bold">Pusintek</strong></div>
+              <div className="text-[9px] mt-0.5">Versi 2.7.0 | <span className="text-[#f59e0b] font-bold">Aplikasi Versi 1.0.0</span></div>
+            </div>
+            <button
+              onClick={logout}
+              className="w-full py-1.5 border border-red-200 hover:bg-red-50 text-red-500 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+            >
+              <LogOut className="h-3.5 w-3.5" />
+              Keluar Sesi
+            </button>
+          </div>
+        </aside>
+
+        {/* MAIN PANEL CONTENT - White scrollable area */}
+        <main className="flex-1 bg-[#f8fafc] overflow-y-auto p-6 flex flex-col gap-6">
+          <div className="flex justify-between items-center">
+            <h2 className="text-xl font-bold text-slate-800 tracking-tight select-none">
+              {activeTab === 'catalog' && 'Katalog Ruangan & Gedung'}
+              {activeTab === 'calculator' && 'Sasaran Perhitungan Tarif Penawaran'}
+              {activeTab === 'clients' && 'Basis Data Kelola Klien'}
+              {activeTab === 'submissions' && 'Daftar Pengajuan & Papan Pemantauan'}
+              {activeTab === 'calendar' && 'Kalender Penjadwalan & Reservasi'}
+              {activeTab === 'surveys' && 'Jadwal Survei Lapangan'}
+              {activeTab === 'documents' && 'Dokumen Operasional Sewa'}
+            </h2>
+            
+            {role === 'PENGINPUT' && (
+              <div className="text-[10px] text-[#0073C2] font-bold bg-[#e0f2fe] border border-[#bae6fd] rounded-full px-3 py-1 tracking-wider uppercase">
+                Mode Pengeditan Aktif
+              </div>
+            )}
+          </div>
+
+          {/* TAB CONTENTS */}
+          <div className="flex-1 flex flex-col gap-6">
 
           {/* TAB 1: KATALOG RUANGAN */}
           {activeTab === 'catalog' && (
@@ -2683,12 +2752,14 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
         </div>
       </main>
+      </div>
 
-      {/* FOOTER */}
-      <footer className="border-t border-slate-900 bg-slate-950 py-6 text-center text-[10px] text-slate-600">
-        <div className="max-w-7xl mx-auto px-6">
-          <p>© 2026 Lembaga Manajemen Aset Negara (LMAN). Hak Cipta Dilindungi.</p>
-          <p className="mt-1">Aplikasi Internal Tim Pengelola Gedung A.A. Maramis. Tidak untuk penggunaan publik.</p>
+      {/* FOOTER BAR - Satu Kemenkeu style */}
+      <footer className="border-t border-slate-200 bg-white py-3 px-6 text-slate-400 text-[10px] flex justify-between items-center select-none shadow-sm z-10 shrink-0">
+        <div>© 2026 Lembaga Manajemen Aset Negara (LMAN). Hak Cipta Dilindungi.</div>
+        <div className="flex items-center gap-1.5 font-semibold text-slate-500">
+          <span>Digital Signature Supported By BSSN</span>
+          <div className="h-4 w-4 bg-[#0073C2] rounded-full flex items-center justify-center text-[7px] text-white font-extrabold">B</div>
         </div>
       </footer>
     </div>
