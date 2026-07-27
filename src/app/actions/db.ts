@@ -622,3 +622,30 @@ export async function openSurveySlot(id: string): Promise<boolean> {
   }
 }
 
+export async function deleteSubmission(id: string): Promise<boolean> {
+  const performMockDelete = () => {
+    mockSubmissions = mockSubmissions.filter(s => s.id !== id);
+    mockBookings = mockBookings.filter(b => b.submissionId !== id);
+    return true;
+  };
+
+  if (!isFirebaseConfigured) {
+    return performMockDelete();
+  }
+  try {
+    // 1. Delete associated bookings
+    const bookingsSnapshot = await db.collection('bookings').where('submissionId', '==', id).get();
+    const batch = db.batch();
+    bookingsSnapshot.docs.forEach(doc => {
+      batch.delete(doc.ref);
+    });
+    // 2. Delete submission
+    batch.delete(db.collection('submissions').doc(id));
+    await batch.commit();
+    return true;
+  } catch (error) {
+    console.error('Failed to delete submission in Firestore, falling back to mock:', error);
+    return performMockDelete();
+  }
+}
+

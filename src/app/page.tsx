@@ -24,7 +24,8 @@ import {
   updateSurveyStatus,
   getClosedSurveySlots,
   closeSurveySlot,
-  openSurveySlot
+  openSurveySlot,
+  deleteSubmission
 } from '@/app/actions/db';
 import { Room, getQuickPackages, QuickPackage } from '@/lib/rooms-data';
 import { buildLoiText, buildPerjanjianText, formatTanggalIndo, formatJangkaWaktu, terbilang } from '@/lib/documents';
@@ -717,6 +718,32 @@ export default function Home() {
     } catch (err) {
       console.error('Error generating DOCX:', err);
       alert('Gagal membuat file Word: ' + err);
+    }
+  };
+
+  const handleDeleteSubmission = async (id: string, companyName: string) => {
+    if (!window.confirm(`Apakah Anda yakin ingin menghapus pengajuan sewa dari "${companyName}" secara permanen? Tindakan ini juga akan menghapus reservasi jadwal terkait.`)) {
+      return;
+    }
+    try {
+      const success = await deleteSubmission(id);
+      if (success) {
+        await createAuditLog(
+          'Hapus Pengajuan Sewa',
+          `Menghapus pengajuan sewa ID ${id} dari ${companyName}`
+        );
+        setSubmissions((prev) => prev.filter((s) => s.id !== id));
+        setBookings((prev) => prev.filter((b) => b.submissionId !== id));
+        if (selectedSubmissionId === id) {
+          setSelectedSubmissionId(null);
+        }
+        alert('Pengajuan sewa berhasil dihapus.');
+      } else {
+        alert('Gagal menghapus pengajuan sewa.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menghapus pengajuan sewa.');
     }
   };
 
@@ -2701,12 +2728,21 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                 )}
                               </div>
                               
-                              <button
-                                onClick={() => setSelectedSubmissionId(sub.id === selectedSubmissionId ? null : sub.id)}
-                                className="px-3 py-2 rounded bg-white hover:bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 transition-colors"
-                              >
-                                {selectedSubmissionId === sub.id ? 'Tutup Detail' : 'Tampilkan Checklist'}
-                              </button>
+                               <button
+                                 onClick={() => setSelectedSubmissionId(sub.id === selectedSubmissionId ? null : sub.id)}
+                                 className="px-3 py-2 rounded bg-white hover:bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 transition-colors shadow-sm"
+                               >
+                                 {selectedSubmissionId === sub.id ? 'Tutup Detail' : 'Tampilkan Checklist'}
+                               </button>
+
+                               {role === 'PENGINPUT' && (
+                                 <button
+                                   onClick={() => handleDeleteSubmission(sub.id, sub.companyName)}
+                                   className="px-3 py-2 rounded bg-red-50 hover:bg-red-100 text-red-650 border border-red-200 text-xs font-bold transition-all shadow-sm"
+                                 >
+                                   Hapus
+                                 </button>
+                               )}
                             </div>
                           </div>
                         );
