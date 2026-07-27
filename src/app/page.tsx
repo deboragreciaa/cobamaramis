@@ -1039,11 +1039,25 @@ export default function Home() {
     return getQuickPackages(rooms);
   }, [rooms]);
 
-  // Apply Quick Package (decoupled selection, supporting multiple selections)
+  // Apply Quick Package (decoupled selection, supporting multiple selections with mutual exclusivity for total floor)
   const applyQuickPackage = (pkgId: string) => {
-    setSelectedPackageIds((prev) =>
-      prev.includes(pkgId) ? prev.filter((id) => id !== pkgId) : [...prev, pkgId]
-    );
+    setSelectedPackageIds((prev) => {
+      const exists = prev.includes(pkgId);
+      let nextSelected = exists ? prev.filter((id) => id !== pkgId) : [...prev, pkgId];
+
+      if (!exists) {
+        const floorPrefix = pkgId.substring(0, 3); // e.g. "L1-", "L2-", "L3-"
+        if (pkgId.endsWith('-Total')) {
+          // Deselect other individual building packages on this floor
+          nextSelected = nextSelected.filter(id => !id.startsWith(floorPrefix) || id === pkgId);
+        } else {
+          // Deselect the Total package on this floor
+          const totalId = `${floorPrefix}Total`;
+          nextSelected = nextSelected.filter(id => id !== totalId);
+        }
+      }
+      return nextSelected;
+    });
     setSelectedRoomCodes([]); // clear individual room selections!
   };
 
