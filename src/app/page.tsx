@@ -1490,8 +1490,8 @@ export default function Home() {
               let numColor = 'text-muted-foreground';
 
               if (dayBookings.length > 0) {
-                cellBg = 'bg-[#e0f2fe] border-sky-300 dark:border-sky-800 text-sky-950 dark:text-sky-200 hover:bg-sky-200';
-                numColor = 'text-sky-700 dark:text-sky-300 font-extrabold';
+                cellBg = 'bg-[#9a1a35]/10 border-[#9a1a35]/60 dark:border-[#600018] text-[#800020] dark:text-[#9a1a35] hover:bg-[#9a1a35]/20';
+                numColor = 'text-[#800020] dark:text-[#9a1a35] font-extrabold';
               } else if (daySurveys.length > 0) {
                 cellBg = 'bg-[#fef08a] border-yellow-350 text-yellow-950 dark:text-yellow-200 hover:bg-yellow-200';
                 numColor = 'text-yellow-750 dark:text-yellow-200 font-extrabold';
@@ -1509,7 +1509,7 @@ export default function Home() {
                         <div
                           key={b.id}
                           title={`${b.activityName} (${b.roomCodes.join(', ')})`}
-                          className="text-[7.5px] px-1 py-0.5 rounded border border-sky-200/50 dark:border-sky-800 bg-card/80 text-sky-900 dark:text-sky-200 leading-none font-bold truncate"
+                          className="text-[7.5px] px-1 py-0.5 rounded border border-[#9a1a35]/40 dark:border-[#600018] bg-card/80 text-[#800020] dark:text-[#9a1a35] leading-none font-bold truncate"
                         >
                           {b.activityName}
                         </div>
@@ -1606,7 +1606,7 @@ export default function Home() {
                   <span className="font-bold text-foreground">{s.companyName}</span>
                   <span className={`text-[8px] border px-1.5 py-0.5 rounded font-extrabold ${
                     s.status === 'SCHEDULED'
-                      ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900 text-blue-750 dark:text-blue-300'
+                      ? 'bg-[#9a1a35]/10 dark:bg-[#600018]/30 border-[#9a1a35]/40 dark:border-[#600018] text-[#800020] dark:text-[#9a1a35]'
                       : 'bg-emerald-50 border-emerald-200 text-emerald-750'
                   }`}>
                     {s.status}
@@ -1927,8 +1927,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
   // Render Spinner
   if (loading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center bg-[#f4f6f9] dark:bg-background text-[#0073C2] dark:text-sky-300 font-sans">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0073C2] mb-4"></div>
+      <div className="flex-1 flex flex-col items-center justify-center bg-[#f4f6f9] dark:bg-background text-[#800020] dark:text-[#9a1a35] font-sans">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#800020] mb-4"></div>
         <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">Memuat Autentikasi...</p>
       </div>
     );
@@ -1959,7 +1959,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               alt="Logo Gedung A.A. Maramis"
               className="hidden dark:block w-[300px] h-auto mb-4"
             />
-            <h1 className="text-2xl font-bold text-center text-[#0073C2] dark:text-sky-300 tracking-wide">Gedung A.A. Maramis</h1>
+            <h1 className="text-2xl font-bold text-center text-[#800020] dark:text-[#9a1a35] tracking-wide">Gedung A.A. Maramis</h1>
             <p className="text-muted-foreground text-xs mt-1 text-center font-bold tracking-wider">SISTEM KELOLA SEWA INTERNAL — LMAN</p>
           </div>
 
@@ -1975,7 +1975,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-foreground text-sm focus:outline-none focus:border-[#0073C2] focus:ring-1 focus:ring-[#0073C2] transition-colors"
+                className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-foreground text-sm focus:outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020] transition-colors"
               />
               <span className="text-[10px] text-muted-foreground block">Satu akun bersama untuk seluruh tim pengelola.</span>
             </div>
@@ -1988,7 +1988,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 placeholder="Masukkan kata sandi tim"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
-                className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-[#0073C2] focus:ring-1 focus:ring-[#0073C2] transition-colors"
+                className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020] transition-colors"
               />
             </div>
 
@@ -2012,7 +2012,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               <p className="text-xs text-muted-foreground mb-2">Aplikasi berjalan dalam mode demo offline.</p>
               <button
                 onClick={useDemoPassword}
-                className="text-xs font-bold text-[#0073C2] dark:text-sky-300 hover:text-[#0284c7] underline decoration-dotted transition-colors"
+                className="text-xs font-bold text-[#800020] dark:text-[#9a1a35] hover:text-[#600018] underline decoration-dotted transition-colors"
               >
                 Gunakan sandi demo default (&quot;maramis2026&quot;)
               </button>
@@ -2038,7 +2038,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
           style={{ background: 'rgba(30, 30, 30, 0.70)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
         >
           <div className="flex flex-col items-center mb-6">
-            <h1 className="text-xl font-bold text-[#0073C2] dark:text-sky-300 tracking-wide">Pilih Peran Sesi Anda</h1>
+            <h1 className="text-xl font-bold text-[#800020] dark:text-[#9a1a35] tracking-wide">Pilih Peran Sesi Anda</h1>
             <p className="text-muted-foreground text-xs mt-1 font-semibold">Gedung A.A. Maramis — LMAN</p>
           </div>
 
@@ -2064,19 +2064,19 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             {/* PEREVIEW BUTTON */}
             <button
               onClick={() => selectRole('PEREVIEW')}
-              className="group text-left p-6 border border-border hover:border-blue-400 hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between"
+              className="group text-left p-6 border border-border hover:border-[#800020] hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between"
               style={{ background: 'rgba(30, 30, 30, 0.70)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
             >
               <div>
-                <div className="h-10 w-10 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 text-blue-650 dark:text-blue-300 flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
+                <div className="h-10 w-10 rounded-lg bg-[#9a1a35]/10 dark:bg-[#600018]/30 border border-[#9a1a35]/40 dark:border-[#600018] text-[#800020] dark:text-[#9a1a35] flex items-center justify-center mb-4 group-hover:bg-[#9a1a35]/15 transition-colors">
                   <Layers className="h-5 w-5" />
                 </div>
-                <h3 className="text-white/90 font-bold group-hover:text-[#0073C2] dark:text-sky-300 transition-colors">Pereview</h3>
+                <h3 className="text-white/90 font-bold group-hover:text-[#800020] dark:text-[#9a1a35] transition-colors">Pereview</h3>
                 <p className="text-muted-foreground text-xs mt-2 leading-relaxed font-medium">
                   Akses pantau dan monitoring saja. Melihat progres tahap pemesanan, melihat katalog ruangan, dan menggunakan kalkulator penawaran.
                 </p>
               </div>
-              <span className="text-[10px] text-[#0073C2] dark:text-sky-300 font-bold tracking-wider uppercase mt-4 block">PILIH PEREVIEW &rarr;</span>
+              <span className="text-[10px] text-[#800020] dark:text-[#9a1a35] font-bold tracking-wider uppercase mt-4 block">PILIH PEREVIEW &rarr;</span>
             </button>
           </div>
 
@@ -2100,8 +2100,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
   // SCREEN 3: MAIN APPLICATION DASHBOARD
   return (
     <div className="flex-1 flex flex-col bg-background text-foreground font-sans min-h-screen">
-      {/* HEADER BANNER - Blue Kemenkeu style */}
-      <header className="border-b border-[#0060a3] dark:border-[#0A4C87] bg-[#0073C2] dark:bg-[#0E5EA8] text-white sticky top-0 z-50 px-6 py-3 flex items-center justify-between shadow-md">
+      {/* HEADER BANNER - Maroon Kemenkeu style */}
+      <header className="border-b border-[#600018] dark:border-[#600018] bg-[#800020] dark:bg-[#600018] text-white sticky top-0 z-50 px-6 py-3 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             <img
@@ -2117,8 +2117,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
         {/* User Session Info / Controls */}
         <div className="flex items-center gap-5">
-          <div className="flex items-center gap-1 text-sky-100 font-semibold font-mono text-sm">
-            <Clock className="h-4 w-4 text-sky-200" />
+          <div className="flex items-center gap-1 text-white/90 font-semibold font-mono text-sm">
+            <Clock className="h-4 w-4 text-white/80" />
             <span>{timeStr}</span>
           </div>
         </div>
@@ -2130,12 +2130,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
         <aside className={`bg-sidebar text-sidebar-foreground border-r border-sidebar-border flex flex-col justify-between shrink-0 h-full transition-all duration-300 ${isSidebarCollapsed ? 'w-0 overflow-hidden border-r-0' : 'w-72'}`}>
           <div className="flex flex-col overflow-y-auto">
             {/* User Profile Header Blue Card */}
-            <div className="p-4 bg-[#0073C2] dark:bg-[#0E5EA8] text-white relative flex items-center justify-between gap-3 shadow-md select-none">
+            <div className="p-4 bg-[#800020] dark:bg-[#600018] text-white relative flex items-center justify-between gap-3 shadow-md select-none">
               <div className="flex-1 min-w-0">
                 <div className="font-extrabold text-xs tracking-wide truncate">
                   {role === 'PENGINPUT' ? 'TIM PENGINPUT LMAN' : 'TIM PEREVIEW LMAN'}
                 </div>
-                <div className="text-[10px] text-sky-200 font-mono mt-0.5 tracking-wider truncate">
+                <div className="text-[10px] text-white/80 font-mono mt-0.5 tracking-wider truncate">
                   {toUsernameDisplay(user?.email) || 'maramis'}
                 </div>
                 <div className="text-[9px] text-white/80 mt-1.5 leading-relaxed">
@@ -2154,11 +2154,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('catalog')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
                   activeTab === 'catalog'
-                    ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                    ? 'bg-[#9a1a35]/10 dark:bg-muted text-[#800020] dark:text-[#9a1a35]'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
-                <Layers className={`h-4 w-4 shrink-0 ${activeTab === 'catalog' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
+                <Layers className={`h-4 w-4 shrink-0 ${activeTab === 'catalog' ? 'text-[#800020] dark:text-[#9a1a35]' : 'text-muted-foreground'}`} />
                 <span>Katalog Ruangan</span>
               </button>
 
@@ -2166,16 +2166,16 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('calculator')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
                   activeTab === 'calculator'
-                    ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                    ? 'bg-[#9a1a35]/10 dark:bg-muted text-[#800020] dark:text-[#9a1a35]'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Calculator className={`h-4 w-4 shrink-0 ${activeTab === 'calculator' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
+                  <Calculator className={`h-4 w-4 shrink-0 ${activeTab === 'calculator' ? 'text-[#800020] dark:text-[#9a1a35]' : 'text-muted-foreground'}`} />
                   <span>Kalkulator Sewa</span>
                 </div>
                 {selectedRoomCodes.length > 0 && (
-                  <span className="bg-[#0073C2] text-white rounded-full h-4.5 w-4.5 flex items-center justify-center text-[9px] font-extrabold">
+                  <span className="bg-[#800020] text-white rounded-full h-4.5 w-4.5 flex items-center justify-center text-[9px] font-extrabold">
                     {selectedRoomCodes.length}
                   </span>
                 )}
@@ -2185,12 +2185,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('clients')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
                   activeTab === 'clients'
-                    ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                    ? 'bg-[#9a1a35]/10 dark:bg-muted text-[#800020] dark:text-[#9a1a35]'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Users className={`h-4 w-4 shrink-0 ${activeTab === 'clients' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
+                  <Users className={`h-4 w-4 shrink-0 ${activeTab === 'clients' ? 'text-[#800020] dark:text-[#9a1a35]' : 'text-muted-foreground'}`} />
                   <span>Basis Data Klien</span>
                 </div>
                 {activeClients.length > 0 && (
@@ -2204,12 +2204,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('submissions')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
                   activeTab === 'submissions'
-                    ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                    ? 'bg-[#9a1a35]/10 dark:bg-muted text-[#800020] dark:text-[#9a1a35]'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <FileText className={`h-4 w-4 shrink-0 ${activeTab === 'submissions' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
+                  <FileText className={`h-4 w-4 shrink-0 ${activeTab === 'submissions' ? 'text-[#800020] dark:text-[#9a1a35]' : 'text-muted-foreground'}`} />
                   <span>Pengajuan Sewa</span>
                 </div>
                 {submissions.length > 0 && (
@@ -2225,50 +2225,50 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   onClick={() => setIsCalendarMenuOpen(!isCalendarMenuOpen)}
                   className={`w-full py-2.5 px-4 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
                     activeTab === 'calendar_booking' || activeTab === 'calendar_survey' || activeTab === 'calendar_recap'
-                      ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                      ? 'bg-[#9a1a35]/10 dark:bg-muted text-[#800020] dark:text-[#9a1a35]'
                       : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <MapPin className={`h-4 w-4 shrink-0 ${activeTab === 'calendar_booking' || activeTab === 'calendar_survey' || activeTab === 'calendar_recap' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
+                    <MapPin className={`h-4 w-4 shrink-0 ${activeTab === 'calendar_booking' || activeTab === 'calendar_survey' || activeTab === 'calendar_recap' ? 'text-[#800020] dark:text-[#9a1a35]' : 'text-muted-foreground'}`} />
                     <span>Kalender Kegiatan</span>
                   </div>
                   <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isCalendarMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
 
                 {(isCalendarMenuOpen || activeTab === 'calendar_booking' || activeTab === 'calendar_survey' || activeTab === 'calendar_recap') && (
-                  <div className="pl-4 pr-1 mt-1 space-y-1 border-l-2 border-[#0073C2]/20 ml-6 flex flex-col">
+                  <div className="pl-4 pr-1 mt-1 space-y-1 border-l-2 border-[#800020]/20 ml-6 flex flex-col">
                     <button
                       onClick={() => setActiveTab('calendar_booking')}
                       className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
                         activeTab === 'calendar_booking'
-                          ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                          ? 'bg-[#9a1a35]/10 dark:bg-muted text-[#800020] dark:text-[#9a1a35]'
                           : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }`}
                     >
-                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'calendar_booking' ? 'bg-[#0073C2]' : 'bg-muted'}`} />
+                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'calendar_booking' ? 'bg-[#800020]' : 'bg-muted'}`} />
                       Booking Tanggal
                     </button>
                     <button
                       onClick={() => setActiveTab('calendar_survey')}
                       className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
                         activeTab === 'calendar_survey'
-                          ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                          ? 'bg-[#9a1a35]/10 dark:bg-muted text-[#800020] dark:text-[#9a1a35]'
                           : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }`}
                     >
-                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'calendar_survey' ? 'bg-[#0073C2]' : 'bg-muted'}`} />
+                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'calendar_survey' ? 'bg-[#800020]' : 'bg-muted'}`} />
                       Penjadwalan Survei
                     </button>
                     <button
                       onClick={() => setActiveTab('calendar_recap')}
                       className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
                         activeTab === 'calendar_recap'
-                          ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                          ? 'bg-[#9a1a35]/10 dark:bg-muted text-[#800020] dark:text-[#9a1a35]'
                           : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }`}
                     >
-                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'calendar_recap' ? 'bg-[#0073C2]' : 'bg-muted'}`} />
+                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'calendar_recap' ? 'bg-[#800020]' : 'bg-muted'}`} />
                       Rekap Penjadwalan
                     </button>
                   </div>
@@ -2281,39 +2281,39 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   onClick={() => setIsDocMenuOpen(!isDocMenuOpen)}
                   className={`w-full py-2.5 px-4 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
                     activeTab === 'doc_loi' || activeTab === 'doc_prj'
-                      ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                      ? 'bg-[#9a1a35]/10 dark:bg-muted text-[#800020] dark:text-[#9a1a35]'
                       : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <FileText className={`h-4 w-4 shrink-0 ${activeTab === 'doc_loi' || activeTab === 'doc_prj' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
+                    <FileText className={`h-4 w-4 shrink-0 ${activeTab === 'doc_loi' || activeTab === 'doc_prj' ? 'text-[#800020] dark:text-[#9a1a35]' : 'text-muted-foreground'}`} />
                     <span>Pembuatan Dokumen</span>
                   </div>
                   <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isDocMenuOpen ? 'rotate-180' : ''}`} />
                 </button>
                 
                 {(isDocMenuOpen || activeTab === 'doc_loi' || activeTab === 'doc_prj') && (
-                  <div className="pl-4 pr-1 mt-1 space-y-1 border-l-2 border-[#0073C2]/20 ml-6 flex flex-col">
+                  <div className="pl-4 pr-1 mt-1 space-y-1 border-l-2 border-[#800020]/20 ml-6 flex flex-col">
                     <button
                       onClick={() => setActiveTab('doc_loi')}
                       className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
                         activeTab === 'doc_loi'
-                          ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                          ? 'bg-[#9a1a35]/10 dark:bg-muted text-[#800020] dark:text-[#9a1a35]'
                           : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }`}
                     >
-                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'doc_loi' ? 'bg-[#0073C2]' : 'bg-muted'}`} />
+                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'doc_loi' ? 'bg-[#800020]' : 'bg-muted'}`} />
                       LOI (Letter of Intent)
                     </button>
                     <button
                       onClick={() => setActiveTab('doc_prj')}
                       className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
                         activeTab === 'doc_prj'
-                          ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                          ? 'bg-[#9a1a35]/10 dark:bg-muted text-[#800020] dark:text-[#9a1a35]'
                           : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }`}
                     >
-                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'doc_prj' ? 'bg-[#0073C2]' : 'bg-muted'}`} />
+                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'doc_prj' ? 'bg-[#800020]' : 'bg-muted'}`} />
                       PRJ (Perjanjian)
                     </button>
                   </div>
@@ -2324,11 +2324,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('documents')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
                   activeTab === 'documents'
-                    ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                    ? 'bg-[#9a1a35]/10 dark:bg-muted text-[#800020] dark:text-[#9a1a35]'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
-                <BookOpen className={`h-4 w-4 shrink-0 ${activeTab === 'documents' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
+                <BookOpen className={`h-4 w-4 shrink-0 ${activeTab === 'documents' ? 'text-[#800020] dark:text-[#9a1a35]' : 'text-muted-foreground'}`} />
                 <span>Pusat Dokumen</span>
               </button>
             </div>
@@ -2349,7 +2349,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
         {/* Collapsible toggle button */}
         <button
           onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          className="absolute top-6 h-7 w-7 rounded-full bg-card border border-border text-[#0073C2] dark:text-sky-300 flex items-center justify-center shadow-md hover:bg-muted transition-all duration-300 z-50"
+          className="absolute top-6 h-7 w-7 rounded-full bg-card border border-border text-[#800020] dark:text-[#9a1a35] flex items-center justify-center shadow-md hover:bg-muted transition-all duration-300 z-50"
           style={{ left: isSidebarCollapsed ? '12px' : '274px' }}
           title={isSidebarCollapsed ? 'Buka Menu' : 'Sembunyikan Menu'}
         >
@@ -2371,7 +2371,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             </h2>
             
             {role === 'PENGINPUT' && (
-              <div className="text-[10px] text-[#0073C2] dark:text-sky-300 font-bold bg-[#e0f2fe] border border-[#bae6fd] rounded-full px-3 py-1 tracking-wider uppercase">
+              <div className="text-[10px] text-[#800020] dark:text-[#9a1a35] font-bold bg-[#9a1a35]/10 border border-[#9a1a35]/30 rounded-full px-3 py-1 tracking-wider uppercase">
                 Mode Pengeditan Aktif
               </div>
             )}
@@ -2388,7 +2388,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               <div className="lg:col-span-1">
                 <div className="bg-card border border-border rounded-xl p-5 shadow-sm relative overflow-hidden flex flex-col gap-4 h-full min-h-[460px]">
                   <div>
-                    <h2 className="text-sm font-bold text-[#0073C2] dark:text-sky-300 flex items-center gap-1.5 mb-2">
+                    <h2 className="text-sm font-bold text-[#800020] dark:text-[#9a1a35] flex items-center gap-1.5 mb-2">
                       <Sparkles className="h-4 w-4 shrink-0 text-[#f59e0b] animate-pulse" /> Aula Utama C Lt. 2
                     </h2>
                     <p className="text-[11px] text-muted-foreground leading-relaxed mb-4">
@@ -2399,7 +2399,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       onClick={toggleSelectAllPrimary}
                       className={`w-full py-2 mb-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                         isAllPrimarySelected
-                          ? 'bg-[#0073C2] text-white shadow-md'
+                          ? 'bg-[#800020] text-white shadow-md'
                           : 'bg-muted hover:bg-muted text-foreground border border-border'
                       }`}
                     >
@@ -2420,14 +2420,14 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             onClick={() => toggleRoomSelection(room.code)}
                             className={`p-2.5 rounded-lg border cursor-pointer select-none transition-all flex flex-col justify-between ${
                               isSelected
-                                ? 'bg-sky-50 dark:bg-sky-950/30 border-[#0073C2]/60 shadow-sm'
+                                ? 'bg-[#9a1a35]/10 dark:bg-[#600018]/30 border-[#800020]/60 shadow-sm'
                                 : 'bg-card hover:bg-muted border-border'
                             }`}
                           >
                             <div className="flex justify-between items-center mb-1">
-                              <span className="text-[9px] text-[#0073C2] dark:text-sky-300 font-extrabold">{room.code}</span>
+                              <span className="text-[9px] text-[#800020] dark:text-[#9a1a35] font-extrabold">{room.code}</span>
                               <div className={`h-2.5 w-2.5 rounded-sm border flex items-center justify-center ${
-                                isSelected ? 'bg-[#0073C2] border-[#0073C2] text-white' : 'border-border bg-card'
+                                isSelected ? 'bg-[#800020] border-[#800020] text-white' : 'border-border bg-card'
                               }`}>
                                 {isSelected && <Check className="h-1.5 w-1.5 stroke-[3]" />}
                               </div>
@@ -2450,7 +2450,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   <div className="flex justify-between items-center mb-4">
                     <div>
                       <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5">
-                        <Layers className="h-4 w-4 text-[#0073C2] dark:text-sky-300" /> Paket Ruang Cepat (Saleable Area Total)
+                        <Layers className="h-4 w-4 text-[#800020] dark:text-[#9a1a35]" /> Paket Ruang Cepat (Saleable Area Total)
                       </h2>
                       <p className="text-[11px] text-muted-foreground mt-1">Pilih cepat berdasarkan luas gedung & lantai dari data Excel (Pilihan ini terpisah dari list di bawah)</p>
                     </div>
@@ -2467,7 +2467,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Lantai 1 */}
                     <div className="p-3 bg-muted border border-border rounded-xl flex flex-col gap-2">
-                      <h3 className="text-[10px] font-extrabold text-[#0073C2] dark:text-sky-300 mb-1 border-b border-border pb-1 uppercase tracking-wider">Lantai 1 (Total: 3.220 m²)</h3>
+                      <h3 className="text-[10px] font-extrabold text-[#800020] dark:text-[#9a1a35] mb-1 border-b border-border pb-1 uppercase tracking-wider">Lantai 1 (Total: 3.220 m²)</h3>
                       <div className="grid grid-cols-2 gap-2">
                         {EXCEL_PACKAGES.filter(p => p.floor === 1).map(pkg => {
                           const isSelected = selectedPackageIds.includes(pkg.id);
@@ -2477,7 +2477,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               onClick={() => applyQuickPackage(pkg.id)}
                               className={`p-2 rounded text-left transition-all border flex flex-col justify-between ${
                                 isSelected
-                                  ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] dark:text-sky-300 font-bold shadow-sm'
+                                  ? 'bg-[#9a1a35]/10 border-[#800020] text-[#800020] dark:text-[#9a1a35] font-bold shadow-sm'
                                   : 'bg-card hover:bg-muted border-border text-foreground'
                               }`}
                             >
@@ -2491,7 +2491,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                     {/* Lantai 2 */}
                     <div className="p-3 bg-muted border border-border rounded-xl flex flex-col gap-2">
-                      <h3 className="text-[10px] font-extrabold text-[#0073C2] dark:text-sky-300 mb-1 border-b border-border pb-1 uppercase tracking-wider">Lantai 2 (Total: 2.624 m²)</h3>
+                      <h3 className="text-[10px] font-extrabold text-[#800020] dark:text-[#9a1a35] mb-1 border-b border-border pb-1 uppercase tracking-wider">Lantai 2 (Total: 2.624 m²)</h3>
                       <div className="grid grid-cols-2 gap-2">
                         {EXCEL_PACKAGES.filter(p => p.floor === 2).map(pkg => {
                           const isSelected = selectedPackageIds.includes(pkg.id);
@@ -2501,7 +2501,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               onClick={() => applyQuickPackage(pkg.id)}
                               className={`p-2 rounded text-left transition-all border flex flex-col justify-between ${
                                 isSelected
-                                  ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] dark:text-sky-300 font-bold shadow-sm'
+                                  ? 'bg-[#9a1a35]/10 border-[#800020] text-[#800020] dark:text-[#9a1a35] font-bold shadow-sm'
                                   : 'bg-card hover:bg-muted border-border text-foreground'
                               }`}
                             >
@@ -2515,7 +2515,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                     {/* Lantai 3 */}
                     <div className="p-3 bg-muted border border-border rounded-xl flex flex-col gap-2">
-                      <h3 className="text-[10px] font-extrabold text-[#0073C2] dark:text-sky-300 mb-1 border-b border-border pb-1 uppercase tracking-wider">Lantai 3 (Total: 3.342 m²)</h3>
+                      <h3 className="text-[10px] font-extrabold text-[#800020] dark:text-[#9a1a35] mb-1 border-b border-border pb-1 uppercase tracking-wider">Lantai 3 (Total: 3.342 m²)</h3>
                       <div className="flex flex-col gap-2">
                         <div className="grid grid-cols-2 gap-2">
                           {EXCEL_PACKAGES.filter(p => p.floor === 3 && p.id !== 'L3-Total').map(pkg => {
@@ -2526,7 +2526,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                 onClick={() => applyQuickPackage(pkg.id)}
                                 className={`p-2 rounded text-left transition-all border flex flex-col justify-between ${
                                   isSelected
-                                    ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] dark:text-sky-300 font-bold shadow-sm'
+                                    ? 'bg-[#9a1a35]/10 border-[#800020] text-[#800020] dark:text-[#9a1a35] font-bold shadow-sm'
                                     : 'bg-card hover:bg-muted border-border text-foreground'
                                 }`}
                               >
@@ -2544,7 +2544,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               onClick={() => applyQuickPackage(pkg.id)}
                               className={`p-2 rounded text-center transition-all border flex justify-between items-center ${
                                 isSelected
-                                  ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] dark:text-sky-300 font-bold shadow-sm'
+                                  ? 'bg-[#9a1a35]/10 border-[#800020] text-[#800020] dark:text-[#9a1a35] font-bold shadow-sm'
                                   : 'bg-card hover:bg-muted border-border text-foreground'
                               }`}
                             >
@@ -2568,7 +2568,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       placeholder="Cari kode atau nama ruang..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-muted border border-border rounded-lg py-2.5 pl-9 pr-4 text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-[#0073C2] transition-colors focus:bg-card"
+                      className="w-full bg-muted border border-border rounded-lg py-2.5 pl-9 pr-4 text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-[#800020] transition-colors focus:bg-card"
                     />
                   </div>
 
@@ -2581,7 +2581,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         <select
                           value={sortBy}
                           onChange={(e) => setSortBy(e.target.value as any)}
-                          className="flex-1 bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="flex-1 bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         >
                           <option value="capacity">Kapasitas</option>
                           <option value="rate">Tarif Booklet</option>
@@ -2603,7 +2603,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       <select
                         value={filterBuilding}
                         onChange={(e) => setFilterBuilding(e.target.value)}
-                        className="bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2] w-full"
+                        className="bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-[#800020] w-full"
                       >
                         <option value="all">Semua Gedung</option>
                         <option value="A">Gedung A</option>
@@ -2617,7 +2617,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       <select
                         value={filterFloor}
                         onChange={(e) => setFilterFloor(e.target.value)}
-                        className="bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2] w-full"
+                        className="bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-[#800020] w-full"
                       >
                         <option value="all">Semua Lantai</option>
                         <option value="1">Lantai 1</option>
@@ -2636,7 +2636,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           min="0"
                           value={filterMinCapacity}
                           onChange={(e) => setFilterMinCapacity(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 pl-6 pr-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 pl-6 pr-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                           placeholder="0"
                         />
                       </div>
@@ -2648,8 +2648,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm p-5">
                   <div className="flex justify-between items-center mb-4">
                     <div>
-                      <h3 className="text-sm font-bold text-[#0073C2] dark:text-sky-300 flex items-center gap-2">
-                        <Building className="h-4 w-4 text-[#0073C2] dark:text-sky-300" /> Daftar Ruangan Individual (Opsional)
+                      <h3 className="text-sm font-bold text-[#800020] dark:text-[#9a1a35] flex items-center gap-2">
+                        <Building className="h-4 w-4 text-[#800020] dark:text-[#9a1a35]" /> Daftar Ruangan Individual (Opsional)
                       </h3>
                       <p className="text-[11px] text-muted-foreground mt-1">Pilih ruangan secara manual di bawah jika penyewa ingin menyewa ruangan tertentu, bukan satu gedung penuh.</p>
                     </div>
@@ -2665,7 +2665,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   
                   {dbLoading ? (
                     <div className="py-12 text-center text-muted-foreground text-sm">
-                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0073C2] mx-auto mb-3"></div>
+                      <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#800020] mx-auto mb-3"></div>
                       Memuat katalog ruangan...
                     </div>
                   ) : filteredRooms.length === 0 ? (
@@ -2682,7 +2682,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                 onClick={toggleSelectAllFiltered}
                                 className={`mx-auto h-4 w-4 rounded border flex items-center justify-center transition-colors ${
                                   isAllFilteredSelected
-                                    ? 'bg-[#0073C2] border-[#0073C2] text-white'
+                                    ? 'bg-[#800020] border-[#800020] text-white'
                                     : 'border-border bg-card text-transparent hover:border-foreground'
                                   }`}
                                 title={isAllFilteredSelected ? "Deselect All" : "Select All"}
@@ -2708,7 +2708,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                 key={room.code}
                                 onClick={() => toggleRoomSelection(room.code)}
                                 className={`hover:bg-muted cursor-pointer transition-colors ${
-                                  isSelected ? 'bg-sky-50/50 dark:bg-sky-950/30' : 'bg-card'
+                                  isSelected ? 'bg-[#9a1a35]/10 dark:bg-[#600018]/30' : 'bg-card'
                                 }`}
                               >
                                 <td className="p-3.5 text-center" onClick={(e) => e.stopPropagation()}>
@@ -2716,7 +2716,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                     onClick={() => toggleRoomSelection(room.code)}
                                     className={`mx-auto h-4 w-4 rounded border flex items-center justify-center transition-colors ${
                                       isSelected
-                                        ? 'bg-[#0073C2] border-[#0073C2] text-white'
+                                        ? 'bg-[#800020] border-[#800020] text-white'
                                         : 'border-border bg-card text-transparent hover:border-foreground'
                                     }`}
                                   >
@@ -2789,7 +2789,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       <p className="text-xs text-muted-foreground">Belum ada ruangan atau paket terpilih.</p>
                       <button
                         onClick={() => setActiveTab('catalog')}
-                        className="mt-2 text-xs font-bold text-[#0073C2] dark:text-sky-300 hover:underline"
+                        className="mt-2 text-xs font-bold text-[#800020] dark:text-[#9a1a35] hover:underline"
                       >
                         Pilih dari Katalog Ruangan &rarr;
                       </button>
@@ -2803,7 +2803,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             {activePackages.map((pkg) => (
                               <span
                                 key={pkg.id}
-                                className="inline-flex items-center gap-1.5 text-xs font-bold bg-[#e0f2fe] border border-[#bae6fd] text-[#0073C2] dark:text-sky-300 px-3 py-1 rounded-lg"
+                                className="inline-flex items-center gap-1.5 text-xs font-bold bg-[#9a1a35]/10 border border-[#9a1a35]/30 text-[#800020] dark:text-[#9a1a35] px-3 py-1 rounded-lg"
                               >
                                 <Layers className="h-3 w-3" />
                                 {pkg.label} (Lt. {pkg.floor}) — {pkg.areaSqm} m²
@@ -2852,7 +2852,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         </div>
                         <div>
                           <span className="text-[10px] text-muted-foreground block">Akumulasi Luas</span>
-                          <span className="text-base font-bold text-[#0073C2] dark:text-sky-300">{totalSelectedArea} m²</span>
+                          <span className="text-base font-bold text-[#800020] dark:text-[#9a1a35]">{totalSelectedArea} m²</span>
                         </div>
                         <div>
                           <span className="text-[10px] text-muted-foreground block">Akumulasi Kapasitas</span>
@@ -2879,7 +2879,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           min="1"
                           value={eventDays}
                           onChange={(e) => setEventDays(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-foreground text-sm focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-foreground text-sm focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                       <div>
@@ -2889,7 +2889,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           min="0"
                           value={loadingDays}
                           onChange={(e) => setLoadingDays(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-foreground text-sm focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-foreground text-sm focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                     </div>
@@ -2901,7 +2901,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         <select
                           value={selectedPurposeKey}
                           onChange={(e) => setSelectedPurposeKey(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-foreground text-sm focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-foreground text-sm focus:outline-none focus:border-[#800020]"
                         >
                           {PURPOSE_OPTIONS.map((opt) => (
                             <option key={opt.key} value={opt.key}>
@@ -2922,7 +2922,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             value={customPurposeFactor}
                             onChange={(e) => setCustomPurposeFactor(e.target.value)}
                             className={`w-full bg-card border rounded-lg py-1.5 px-2.5 text-foreground text-xs focus:outline-none ${
-                              isPurposeFactorDeviating ? 'border-yellow-500 focus:border-yellow-500' : 'border-border focus:border-[#0073C2]'
+                              isPurposeFactorDeviating ? 'border-yellow-500 focus:border-yellow-500' : 'border-border focus:border-[#800020]'
                             }`}
                           />
                         </div>
@@ -2935,7 +2935,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             min="0"
                             value={customReturnRate}
                             onChange={(e) => setCustomReturnRate(e.target.value)}
-                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-foreground text-xs focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-foreground text-xs focus:outline-none focus:border-[#800020]"
                             placeholder="Markup 15% = 115%"
                           />
                         </div>
@@ -2957,7 +2957,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 {/* CONSTANT/SYSTEM SETTINGS DISPLAY */}
                 <div className="bg-card border border-border rounded-xl p-5 flex flex-col md:flex-row gap-4 justify-between items-center text-xs text-muted-foreground shadow-sm">
                   <div className="flex items-center gap-1.5">
-                    <Info className="h-4 w-4 text-[#0073C2] dark:text-sky-300 shrink-0" />
+                    <Info className="h-4 w-4 text-[#800020] dark:text-[#9a1a35] shrink-0" />
                     <span>Konstanta System (Settings): Nilai Wajar = {formatRupiah(systemSettings.fairValuePerSqm)}/m² · Faktor Loading = {systemSettings.loadingFactor * 100}% · PPN = {systemSettings.ppnRate * 100}%</span>
                   </div>
                   {role === 'PENGINPUT' && (
@@ -2980,7 +2980,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         onClick={() => setCalcMode('auto')}
                         className={`px-2 py-1 rounded font-bold transition-all ${
                           calcMode === 'auto'
-                            ? 'bg-[#0073C2] text-white shadow-sm'
+                            ? 'bg-[#800020] text-white shadow-sm'
                             : 'text-muted-foreground hover:text-foreground'
                         }`}
                       >
@@ -2990,7 +2990,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         onClick={() => setCalcMode('manual')}
                         className={`px-2 py-1 rounded font-bold transition-all ${
                           calcMode === 'manual'
-                            ? 'bg-[#0073C2] text-white shadow-sm'
+                            ? 'bg-[#800020] text-white shadow-sm'
                             : 'text-muted-foreground hover:text-foreground'
                         }`}
                       >
@@ -3008,7 +3008,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           placeholder="Masukkan nilai sewa"
                           value={manualSewa}
                           onChange={(e) => setManualSewa(e.target.value)}
-                          className="w-full bg-card border border-border rounded py-1 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded py-1 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                       <div>
@@ -3018,7 +3018,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           placeholder="PPN Sewa"
                           value={manualPPNSewa}
                           onChange={(e) => setManualPPNSewa(e.target.value)}
-                          className="w-full bg-card border border-border rounded py-1 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded py-1 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                       <div>
@@ -3028,7 +3028,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           placeholder="Nilai loading"
                           value={manualLoading}
                           onChange={(e) => setManualLoading(e.target.value)}
-                          className="w-full bg-card border border-border rounded py-1 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded py-1 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                       <div>
@@ -3038,7 +3038,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           placeholder="PPN Loading"
                           value={manualPPNLoading}
                           onChange={(e) => setManualPPNLoading(e.target.value)}
-                          className="w-full bg-card border border-border rounded py-1 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded py-1 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                     </div>
@@ -3075,7 +3075,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   <div className="space-y-2">
                     <button
                       onClick={handleCopyResults}
-                      className="w-full bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold py-2.5 rounded-lg text-xs transition-colors flex items-center justify-center gap-2 shadow-sm"
+                      className="w-full bg-[#800020] hover:bg-[#600018] text-white font-bold py-2.5 rounded-lg text-xs transition-colors flex items-center justify-center gap-2 shadow-sm"
                     >
                       <Copy className="h-4 w-4" />
                       {copySuccess ? 'Berhasil Disalin!' : 'Salin Rincian Tarif'}
@@ -3105,7 +3105,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </>
                     ) : (
                       <>
-                        <Users className="h-4 w-4 text-[#0073C2] dark:text-sky-300" />
+                        <Users className="h-4 w-4 text-[#800020] dark:text-[#9a1a35]" />
                         <span>Tambah Klien Baru</span>
                       </>
                     )}
@@ -3122,7 +3122,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={clientCompanyName}
                           onChange={(e) => setClientCompanyName(e.target.value)}
                           placeholder="e.g., PT. Media Nusantara"
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                       <div>
@@ -3133,7 +3133,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={clientPicName}
                           onChange={(e) => setClientPicName(e.target.value)}
                           placeholder="e.g., Budi Santoso"
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -3145,7 +3145,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={clientPicPhone}
                           onChange={(e) => setClientPicPhone(e.target.value)}
                           placeholder="e.g., 08123456789"
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -3157,10 +3157,10 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={clientPicTitle}
                           onChange={(e) => setClientPicTitle(e.target.value)}
                           placeholder="e.g., Producer Summerland"
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
-                      <div className="p-2.5 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 text-blue-700 dark:text-blue-300 rounded-lg text-[9px] leading-relaxed">
+                      <div className="p-2.5 bg-[#9a1a35]/10 dark:bg-[#600018]/30 border border-[#9a1a35]/40 dark:border-[#600018] text-[#800020] dark:text-[#9a1a35] rounded-lg text-[9px] leading-relaxed">
                         ⚠️ <strong>Perlindungan Data Klien (A3)</strong>: Dilarang keras menginput identitas pribadi sensitif seperti NIK, data KTP, paspor, tanggal lahir, atau alamat pribadi.
                       </div>
                       
@@ -3170,7 +3170,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           className={`w-full font-bold py-2 rounded-lg text-xs transition-colors shadow-sm ${
                             editingClientId 
                               ? 'bg-yellow-400 hover:bg-yellow-500 text-black' 
-                              : 'bg-[#0073C2] hover:bg-[#0284c7] text-white'
+                              : 'bg-[#800020] hover:bg-[#600018] text-white'
                           }`}
                         >
                           {editingClientId ? 'Simpan Perubahan' : 'Simpan Data Klien'}
@@ -3199,7 +3199,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 {/* LMAN Officials settings card */}
                 <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
                   <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
-                    <Award className="h-4 w-4 text-[#0073C2] dark:text-sky-300" />
+                    <Award className="h-4 w-4 text-[#800020] dark:text-[#9a1a35]" />
                     <span>Daftar Pejabat LMAN</span>
                   </h2>
                   
@@ -3278,7 +3278,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={officialName}
                           onChange={(e) => setOfficialName(e.target.value)}
                           placeholder="e.g. Mahdi"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                       <div>
@@ -3289,7 +3289,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={officialTitle}
                           onChange={(e) => setOfficialTitle(e.target.value)}
                           placeholder="e.g. Pelaksana Tugas Direktur Pengembangan..."
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
@@ -3301,7 +3301,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             value={officialOrdinanceNumber}
                             onChange={(e) => setOfficialOrdinanceNumber(e.target.value)}
                             placeholder="e.g. PRIN-10/LMAN/2024"
-                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#800020]"
                           />
                         </div>
                         <div>
@@ -3311,7 +3311,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             required
                             value={officialOrdinanceDate}
                             onChange={(e) => setOfficialOrdinanceDate(e.target.value)}
-                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#800020]"
                           />
                         </div>
                       </div>
@@ -3321,7 +3321,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           className={`flex-1 font-bold py-1.5 rounded-lg text-[10px] transition-colors shadow-sm ${
                             editingOfficialId 
                               ? 'bg-yellow-400 hover:bg-yellow-500 text-black' 
-                              : 'bg-[#0073C2] hover:bg-[#0284c7] text-white'
+                              : 'bg-[#800020] hover:bg-[#600018] text-white'
                           }`}
                         >
                           {editingOfficialId ? 'Simpan Pejabat' : 'Tambah Pejabat'}
@@ -3369,7 +3369,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             <tr
                               key={c.id}
                               className={`hover:bg-muted transition-colors ${
-                                selectedClientId === c.id ? 'bg-sky-50/50 dark:bg-sky-950/30' : 'bg-card'
+                                selectedClientId === c.id ? 'bg-[#9a1a35]/10 dark:bg-[#600018]/30' : 'bg-card'
                               }`}
                             >
                               <td className="p-3 font-bold text-foreground">{c.companyName}</td>
@@ -3425,7 +3425,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   const clientSubs = submissions.filter((s) => s.clientId === selectedClientId);
                   return (
                     <div className="bg-card border border-border rounded-xl p-5 shadow-sm animate-fadeIn text-foreground">
-                      <h3 className="text-xs font-bold text-[#0073C2] dark:text-sky-300 mb-3">
+                      <h3 className="text-xs font-bold text-[#800020] dark:text-[#9a1a35] mb-3">
                         Riwayat Pengajuan Sewa: {client?.companyName}
                       </h3>
                       {clientSubs.length === 0 ? (
@@ -3447,11 +3447,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                 </div>
                               </div>
                               <div className="text-right flex flex-col items-end gap-1.5">
-                                <div className="text-xs font-mono font-bold text-[#0073C2] dark:text-sky-300">
+                                <div className="text-xs font-mono font-bold text-[#800020] dark:text-[#9a1a35]">
                                   {formatRupiah(sub.estimatedCost)}
                                 </div>
                                 <div className="flex items-center gap-1.5">
-                                  <span className="inline-block text-[9px] bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300 border border-[#bae6fd] px-2 py-0.5 rounded font-bold">
+                                  <span className="inline-block text-[9px] bg-[#9a1a35]/10 text-[#800020] dark:text-[#9a1a35] border border-[#9a1a35]/30 px-2 py-0.5 rounded font-bold">
                                     Tahap {sub.stage}
                                   </span>
                                   <button
@@ -3459,7 +3459,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                       setActiveLoiSubmission(sub);
                                       setActiveTab('doc_loi');
                                     }}
-                                    className="px-2 py-0.5 bg-[#0073C2] hover:bg-[#0284c7] text-white text-[9px] font-bold rounded transition-colors shadow-sm"
+                                    className="px-2 py-0.5 bg-[#800020] hover:bg-[#600018] text-white text-[9px] font-bold rounded transition-colors shadow-sm"
                                   >
                                     Buat LOI
                                   </button>
@@ -3484,7 +3484,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 {role === 'PENGINPUT' ? (
                   <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
                     <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
-                      <FileText className="h-4 w-4 text-[#0073C2] dark:text-sky-300" />
+                      <FileText className="h-4 w-4 text-[#800020] dark:text-[#9a1a35]" />
                       Catat Pengajuan Sewa Baru
                     </h2>
                     
@@ -3500,7 +3500,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         <div className="font-bold text-muted-foreground">Data Kalkulator Tertaut:</div>
                         <div>Ruangan: <span className="font-semibold text-foreground">{activePackages.length > 0 ? activePackages.map(p=>p.label).join(', ') : selectedRoomCodes.join(', ')}</span></div>
                         <div>Total Luas: <span className="font-semibold text-foreground">{totalSelectedArea} m²</span></div>
-                        <div>Estimasi Tarif: <span className="font-semibold text-[#0073C2] dark:text-sky-300">{formatRupiah(calculatorResults.total)}</span></div>
+                        <div>Estimasi Tarif: <span className="font-semibold text-[#800020] dark:text-[#9a1a35]">{formatRupiah(calculatorResults.total)}</span></div>
                       </div>
                     )}
 
@@ -3511,7 +3511,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           required
                           value={subClientId}
                           onChange={(e) => setSubClientId(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         >
                           <option value="">-- Pilih Instansi --</option>
                           {activeClients.map((c) => (
@@ -3530,7 +3530,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={subActivityName}
                           onChange={(e) => setSubActivityName(e.target.value)}
                           placeholder="e.g., Produksi Film / Rapat Umum"
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -3541,7 +3541,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           required
                           value={subPicInternal}
                           onChange={(e) => setSubPicInternal(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -3552,14 +3552,14 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           onChange={(e) => setSubNotes(e.target.value)}
                           rows={3}
                           placeholder="e.g., Kebutuhan khusus kelistrikan, detail panggung."
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
                       <button
                         type="submit"
                         disabled={selectedRoomCodes.length === 0 && selectedPackageIds.length === 0}
-                        className="w-full bg-[#0073C2] disabled:bg-muted disabled:text-muted-foreground hover:bg-[#0284c7] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
+                        className="w-full bg-[#800020] disabled:bg-muted disabled:text-muted-foreground hover:bg-[#600018] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
                       >
                         Buat Pengajuan Sewa
                       </button>
@@ -3569,7 +3569,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   // Pereview Board Statistics Dashboard
                   <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
                     <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
-                      <Layers className="h-4 w-4 text-[#0073C2] dark:text-sky-300" />
+                      <Layers className="h-4 w-4 text-[#800020] dark:text-[#9a1a35]" />
                       Statistik Papan Pemantauan
                     </h2>
                     <div className="grid grid-cols-2 gap-3">
@@ -3595,7 +3595,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               <span className="font-bold text-foreground">{count} pengajuan</span>
                             </div>
                             <div className="w-full bg-muted h-1.5 rounded overflow-hidden border border-border">
-                              <div className="bg-[#0073C2] h-full rounded" style={{ width: `${percent}%` }}></div>
+                              <div className="bg-[#800020] h-full rounded" style={{ width: `${percent}%` }}></div>
                             </div>
                           </div>
                         );
@@ -3624,7 +3624,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             key={sub.id}
                             className={`p-4 bg-card border rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 ${
                               selectedSubmissionId === sub.id
-                                ? 'border-[#0073C2] bg-sky-50/20 dark:bg-sky-950/30'
+                                ? 'border-[#800020] bg-[#9a1a35]/10 dark:bg-[#600018]/30'
                                 : 'border-border hover:border-border'
                             }`}
                           >
@@ -3648,14 +3648,14 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                             <div className="flex items-center gap-2 shrink-0">
                               <div className="flex flex-col gap-1.5">
-                                <span className="text-[9px] bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300 border border-[#bae6fd] px-2 py-1 rounded font-bold text-center">
+                                <span className="text-[9px] bg-[#9a1a35]/10 text-[#800020] dark:text-[#9a1a35] border border-[#9a1a35]/30 px-2 py-1 rounded font-bold text-center">
                                   Tahap {sub.stage}/9
                                 </span>
                                 {role === 'PENGINPUT' && (
                                   <select
                                     value={sub.stage}
                                     onChange={(e) => handleUpdateStage(sub.id, parseInt(e.target.value))}
-                                    className="bg-card border border-border text-[10px] py-1 px-1.5 rounded text-foreground focus:outline-none font-bold focus:border-[#0073C2]"
+                                    className="bg-card border border-border text-[10px] py-1 px-1.5 rounded text-foreground focus:outline-none font-bold focus:border-[#800020]"
                                   >
                                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((s) => (
                                       <option key={s} value={s}>
@@ -3719,7 +3719,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     <div className="bg-card border border-border rounded-xl p-5 shadow-sm animate-fadeIn flex flex-col gap-4 text-foreground">
                       <div className="flex justify-between items-start border-b border-border pb-2">
                         <div>
-                          <h3 className="text-xs font-bold text-[#0073C2] dark:text-sky-300">
+                          <h3 className="text-xs font-bold text-[#800020] dark:text-[#9a1a35]">
                             Daftar Periksa 9-Tahap Pengajuan
                           </h3>
                           <p className="text-[10px] text-muted-foreground mt-0.5">Pengajuan: {sub.activityName} ({sub.companyName})</p>
@@ -3740,7 +3740,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               key={st.t}
                               className={`p-3 rounded-lg flex items-start gap-3 border transition-colors ${
                                 isActive
-                                  ? 'bg-sky-50/50 dark:bg-sky-950/30 border-[#0073C2]/40 text-foreground'
+                                  ? 'bg-[#9a1a35]/10 dark:bg-[#600018]/30 border-[#800020]/40 text-foreground'
                                   : isDone
                                   ? 'bg-muted border-border text-muted-foreground'
                                   : 'bg-muted/20 border-border text-muted-foreground'
@@ -3748,13 +3748,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             >
                               <div className={`mt-0.5 h-5 w-5 rounded-full flex items-center justify-center border font-bold text-[10px] ${
                                 isDone 
-                                  ? 'bg-[#0073C2] border-[#0073C2] text-white'
+                                  ? 'bg-[#800020] border-[#800020] text-white'
                                   : 'border-border'
                               }`}>
                                 {isDone ? '✓' : st.t}
                               </div>
                               <div>
-                                <h4 className={`text-[11px] font-bold ${isActive ? 'text-[#0073C2] dark:text-sky-300' : isDone ? 'text-foreground' : 'text-muted-foreground'}`}>
+                                <h4 className={`text-[11px] font-bold ${isActive ? 'text-[#800020] dark:text-[#9a1a35]' : isDone ? 'text-foreground' : 'text-muted-foreground'}`}>
                                   {st.label}
                                 </h4>
                                 <p className="text-[10px] mt-0.5 leading-normal">{st.desc}</p>
@@ -3766,7 +3766,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                       setLoiNomorSuratPemohon('');
                                       setActiveLoiSubmission(sub);
                                     }}
-                                    className="mt-2 px-2.5 py-1 rounded bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold text-[9px] transition-all flex items-center gap-1 shadow-sm"
+                                    className="mt-2 px-2.5 py-1 rounded bg-[#800020] hover:bg-[#600018] text-white font-bold text-[9px] transition-all flex items-center gap-1 shadow-sm"
                                   >
                                     <FileText className="h-3 w-3" />
                                     Buat / Lihat LOI (F7)
@@ -3779,7 +3779,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                       setAgreementNomor('');
                                       setActiveAgreementSubmission(sub);
                                     }}
-                                    className="mt-2 px-2.5 py-1 rounded bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold text-[9px] transition-all flex items-center gap-1 shadow-sm"
+                                    className="mt-2 px-2.5 py-1 rounded bg-[#800020] hover:bg-[#600018] text-white font-bold text-[9px] transition-all flex items-center gap-1 shadow-sm"
                                   >
                                     <FileText className="h-3 w-3" />
                                     Buat / Lihat Perjanjian (F8)
@@ -3804,7 +3804,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               <div className="lg:col-span-1">
                 <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
                   <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
-                    <MapPin className="h-4 w-4 text-[#0073C2] dark:text-sky-300" />
+                    <MapPin className="h-4 w-4 text-[#800020] dark:text-[#9a1a35]" />
                     Pencatatan Booking Tanggal
                   </h2>
 
@@ -3817,7 +3817,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         <select
                           value={bookingSubmissionId}
                           onChange={(e) => setBookingSubmissionId(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         >
                           <option value="">-- Tidak Dikaitkan (e.g. UNAVAILABLE) --</option>
                           {submissions.map((s) => (
@@ -3833,7 +3833,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         <select
                           value={bookingType}
                           onChange={(e) => setBookingType(e.target.value as BookingType)}
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         >
                           <option value="TENTATIVE">Tentatif (Tahap 1-4)</option>
                           <option value="CONFIRMED">Terkunci / Confirmed (Tahap 5+)</option>
@@ -3849,7 +3849,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             required
                             value={bookingStartDate}
                             onChange={(e) => setBookingStartDate(e.target.value)}
-                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                           />
                         </div>
                         <div>
@@ -3859,7 +3859,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             required
                             value={bookingEndDate}
                             onChange={(e) => setBookingEndDate(e.target.value)}
-                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                           />
                         </div>
                       </div>
@@ -3885,7 +3885,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                       <button
                         type="submit"
-                        className="w-full bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
+                        className="w-full bg-[#800020] hover:bg-[#600018] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
                       >
                         Catat Booking Tanggal
                       </button>
@@ -3925,7 +3925,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={surveyCompanyName}
                           onChange={(e) => setSurveyCompanyName(e.target.value)}
                           placeholder="Ketik manual, mis. PT Contoh Sejahtera"
-                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                         <span className="text-[10px] text-muted-foreground block mt-1">
                           Diisi manual: survei dijadwalkan sebelum ada permohonan sewa, sehingga pihak pengaju belum tercatat di Basis Data Klien dan belum tentu fix (bisa batal).
@@ -3940,7 +3940,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             required
                             value={surveyDate}
                             onChange={(e) => setSurveyDate(e.target.value)}
-                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                           />
                         </div>
                         <div>
@@ -3948,7 +3948,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           <select
                             value={surveyTimeSlot}
                             onChange={(e) => setSurveyTimeSlot(e.target.value as '10:00' | '14:00')}
-                            className="w-full bg-card border border-border rounded-lg py-2 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-2 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                           >
                             <option value="10:00">10:00 WIB</option>
                             <option value="14:00">14:00 WIB</option>
@@ -3958,7 +3958,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                       <button
                         type="submit"
-                        className="w-full bg-[#0073C2] hover:bg-[#0284c7] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
+                        className="w-full bg-[#800020] hover:bg-[#600018] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
                       >
                         Simpan Jadwal Survei
                       </button>
@@ -3998,10 +3998,10 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 {documentsList.map((doc, idx) => (
                   <div
                     key={idx}
-                    className="p-4 bg-muted border border-border hover:border-[#0073C2]/45 rounded-xl flex items-center justify-between gap-4 transition-all duration-300 group"
+                    className="p-4 bg-muted border border-border hover:border-[#800020]/45 rounded-xl flex items-center justify-between gap-4 transition-all duration-300 group"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="p-2.5 bg-card border border-border rounded-lg text-muted-foreground group-hover:text-[#0073C2] dark:text-sky-300 transition-colors mt-0.5">
+                      <div className="p-2.5 bg-card border border-border rounded-lg text-muted-foreground group-hover:text-[#800020] dark:text-[#9a1a35] transition-colors mt-0.5">
                         <FileText className="h-5 w-5" />
                       </div>
                       <div>
@@ -4015,7 +4015,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     
                     <button
                       onClick={() => alert(`Simulasi mengunduh berkas: ${doc.name} (${doc.type})`)}
-                      className="px-3 py-1.5 bg-card hover:bg-[#0073C2] hover:text-white border border-border rounded-lg text-[10px] font-bold text-foreground transition-all shrink-0 shadow-sm"
+                      className="px-3 py-1.5 bg-card hover:bg-[#800020] hover:text-white border border-border rounded-lg text-[10px] font-bold text-foreground transition-all shrink-0 shadow-sm"
                     >
                       Unduh {doc.type}
                     </button>
@@ -4030,7 +4030,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             <div className="bg-card border border-border rounded-xl p-6 shadow-sm text-foreground animate-fadeIn flex flex-col gap-6">
               <div>
                 <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-[#0073C2] dark:text-sky-300" />
+                  <FileText className="h-5 w-5 text-[#800020] dark:text-[#9a1a35]" />
                   Pembuatan Surat Penawaran Harga / Letter of Intent (LOI) [F7]
                 </h2>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -4047,7 +4047,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     const selected = submissions.find(s => s.id === e.target.value);
                     setActiveLoiSubmission(selected || null);
                   }}
-                  className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                  className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                 >
                   <option value="">-- Pilih Pengajuan / Acara --</option>
                   {submissions.map((sub) => (
@@ -4072,7 +4072,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={loiNomorSurat}
                           onChange={(e) => setLoiNomorSurat(e.target.value)}
                           placeholder="e.g. 001/LMAN-P3/2026"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4083,7 +4083,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={loiNomorSuratPemohon}
                           onChange={(e) => setLoiNomorSuratPemohon(e.target.value)}
                           placeholder="e.g. 123/EXT/2026"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4093,7 +4093,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="date"
                           value={loiTanggalSuratPemohon}
                           onChange={(e) => setLoiTanggalSuratPemohon(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4104,7 +4104,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={loiPerihalSuratPemohon}
                           onChange={(e) => setLoiPerihalSuratPemohon(e.target.value)}
                           placeholder="e.g. Surat Permohonan Perizinan Lokasi Syuting"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4115,7 +4115,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={loiLuasAreaCustom}
                           onChange={(e) => setLoiLuasAreaCustom(e.target.value)}
                           placeholder="e.g. ±1.182 m2"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4125,7 +4125,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="text"
                           value={loiTautanPerjanjian}
                           onChange={(e) => setLoiTautanPerjanjian(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4135,7 +4135,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="text"
                           value={loiTautanTataTertib}
                           onChange={(e) => setLoiTautanTataTertib(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4145,7 +4145,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="text"
                           value={loiNamaPenandatangan}
                           onChange={(e) => setLoiNamaPenandatangan(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4155,19 +4155,19 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="text"
                           value={loiJabatanPenandatangan}
                           onChange={(e) => setLoiJabatanPenandatangan(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                     </div>
 
-                    <label className="flex items-start gap-2.5 p-3.5 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-xl cursor-pointer">
+                    <label className="flex items-start gap-2.5 p-3.5 bg-[#9a1a35]/10 dark:bg-[#600018]/30 border border-[#9a1a35]/40 dark:border-[#600018] rounded-xl cursor-pointer">
                       <input
                         type="checkbox"
                         checked={loiVerified}
                         onChange={(e) => setLoiVerified(e.target.checked)}
-                        className="mt-1 h-3.5 w-3.5 rounded border-border text-[#0073C2] dark:text-sky-300 focus:ring-[#0073C2]"
+                        className="mt-1 h-3.5 w-3.5 rounded border-border text-[#800020] dark:text-[#9a1a35] focus:ring-[#800020]"
                       />
-                      <div className="text-[10px] text-blue-750 dark:text-blue-300 leading-normal font-medium">
+                      <div className="text-[10px] text-[#800020] dark:text-[#9a1a35] leading-normal font-medium">
                         <strong>Verifikasi Data & Terbilang (F7)</strong>: Saya menyatakan telah memeriksa kebenaran data LOI, perhitungan tarif dasar, PPN 11%, dan ejaan terbilang rupiah.
                       </div>
                     </label>
@@ -4216,7 +4216,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           onClick={() => handleDownloadLoiDocx(activeLoiSubmission)}
                           className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all shadow-sm ${
                             loiVerified
-                              ? 'bg-[#0073C2] hover:bg-[#0284c7] text-white'
+                              ? 'bg-[#800020] hover:bg-[#600018] text-white'
                               : 'bg-muted text-muted-foreground cursor-not-allowed border border-border'
                           }`}
                           title={!loiVerified ? "Harap centang kotak verifikasi data & terbilang sewa terlebih dahulu" : "Unduh Surat LOI (.docx)"}
@@ -4246,7 +4246,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             <div className="bg-card border border-border rounded-xl p-6 shadow-sm text-foreground animate-fadeIn flex flex-col gap-6">
               <div>
                 <h2 className="text-base font-bold text-foreground flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-[#0073C2] dark:text-sky-300" />
+                  <FileText className="h-5 w-5 text-[#800020] dark:text-[#9a1a35]" />
                   Penyusunan Perjanjian Sewa Guna / Kontrak (PRJ) [F8]
                 </h2>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -4263,7 +4263,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     const selected = submissions.find(s => s.id === e.target.value);
                     setActiveAgreementSubmission(selected || null);
                   }}
-                  className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                  className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                 >
                   <option value="">-- Pilih Pengajuan / Acara --</option>
                   {submissions.map((sub) => (
@@ -4288,7 +4288,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={agreementNomor}
                           onChange={(e) => setAgreementNomor(e.target.value)}
                           placeholder="e.g. 002/SPG/LMAN/2026"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4298,7 +4298,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="text"
                           value={agreementPihakPertama}
                           onChange={(e) => setAgreementPihakPertama(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4308,7 +4308,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="text"
                           value={agreementJabatanPihakPertama}
                           onChange={(e) => setAgreementJabatanPihakPertama(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4320,7 +4320,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             value={agreementOfferLetterNo}
                             onChange={(e) => setAgreementOfferLetterNo(e.target.value)}
                             placeholder="e.g. S-229/LMAN/LMAN.4/2026"
-                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                           />
                         </div>
                         <div>
@@ -4329,7 +4329,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             type="date"
                             value={agreementOfferLetterDate}
                             onChange={(e) => setAgreementOfferLetterDate(e.target.value)}
-                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                           />
                         </div>
                       </div>
@@ -4341,7 +4341,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={agreementInstitutionAddress}
                           onChange={(e) => setAgreementInstitutionAddress(e.target.value)}
                           placeholder="e.g. Jalan Lapangan Banteng Timur Nomor 2-4, Jakarta Pusat"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                     </div>
@@ -4381,7 +4381,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         </button>
                         <button
                           onClick={() => handleDownloadAgreementDocx(activeAgreementSubmission)}
-                          className="px-3 py-1.5 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-[10px] font-bold transition-colors shadow-sm"
+                          className="px-3 py-1.5 rounded-lg bg-[#800020] hover:bg-[#600018] text-white text-[10px] font-bold transition-colors shadow-sm"
                         >
                           Unduh Word (.docx)
                         </button>
@@ -4410,7 +4410,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 {/* Modal Header */}
                 <div className="p-5 border-b border-border flex justify-between items-center bg-muted">
                   <div>
-                    <h3 className="text-sm font-bold text-[#0073C2] dark:text-sky-300 flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-[#800020] dark:text-[#9a1a35] flex items-center gap-2">
                       <FileText className="h-4 w-4" />
                       Penerbitan Surat Penawaran Harga / LOI (F7)
                     </h3>
@@ -4438,7 +4438,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={loiNomorSurat}
                           onChange={(e) => setLoiNomorSurat(e.target.value)}
                           placeholder="e.g. 001/LMAN-P3/2026"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4449,7 +4449,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={loiNomorSuratPemohon}
                           onChange={(e) => setLoiNomorSuratPemohon(e.target.value)}
                           placeholder="e.g. 123/EXT/2026"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4459,7 +4459,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="text"
                           value={loiNamaPenandatangan}
                           onChange={(e) => setLoiNamaPenandatangan(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4469,7 +4469,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="date"
                           value={loiTanggalSuratPemohon}
                           onChange={(e) => setLoiTanggalSuratPemohon(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4480,7 +4480,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={loiPerihalSuratPemohon}
                           onChange={(e) => setLoiPerihalSuratPemohon(e.target.value)}
                           placeholder="e.g. Surat Permohonan Perizinan Lokasi Syuting"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4491,7 +4491,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={loiLuasAreaCustom}
                           onChange={(e) => setLoiLuasAreaCustom(e.target.value)}
                           placeholder="e.g. ±1.182 m2"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4501,7 +4501,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="text"
                           value={loiJabatanPenandatangan}
                           onChange={(e) => setLoiJabatanPenandatangan(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4511,7 +4511,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="text"
                           value={loiTautanPerjanjian}
                           onChange={(e) => setLoiTautanPerjanjian(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4521,19 +4521,19 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="text"
                           value={loiTautanTataTertib}
                           onChange={(e) => setLoiTautanTataTertib(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                     </div>
 
-                    <label className="flex items-start gap-2.5 p-3.5 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-xl cursor-pointer">
+                    <label className="flex items-start gap-2.5 p-3.5 bg-[#9a1a35]/10 dark:bg-[#600018]/30 border border-[#9a1a35]/40 dark:border-[#600018] rounded-xl cursor-pointer">
                       <input
                         type="checkbox"
                         checked={loiVerified}
                         onChange={(e) => setLoiVerified(e.target.checked)}
-                        className="mt-1 h-3.5 w-3.5 rounded border-border text-[#0073C2] dark:text-sky-300 focus:ring-[#0073C2]"
+                        className="mt-1 h-3.5 w-3.5 rounded border-border text-[#800020] dark:text-[#9a1a35] focus:ring-[#800020]"
                       />
-                      <div className="text-[10px] text-blue-750 dark:text-blue-300 leading-normal font-medium">
+                      <div className="text-[10px] text-[#800020] dark:text-[#9a1a35] leading-normal font-medium">
                         <strong>Verifikasi Data & Terbilang (F7)</strong>: Saya menyatakan telah memeriksa kebenaran data LOI, perhitungan tarif dasar, PPN 11%, dan ejaan terbilang rupiah.
                       </div>
                     </label>
@@ -4584,7 +4584,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     onClick={() => handleDownloadLoiDocx(activeLoiSubmission)}
                     className={`px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-sm ${
                       loiVerified
-                        ? 'bg-[#0073C2] hover:bg-[#0284c7] text-white'
+                        ? 'bg-[#800020] hover:bg-[#600018] text-white'
                         : 'bg-muted text-muted-foreground cursor-not-allowed border border-border'
                     }`}
                     title={!loiVerified ? "Harap centang kotak verifikasi data & terbilang sewa terlebih dahulu" : "Unduh Surat LOI (.docx)"}
@@ -4603,7 +4603,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 {/* Modal Header */}
                 <div className="p-5 border-b border-border flex justify-between items-center bg-muted">
                   <div>
-                    <h3 className="text-sm font-bold text-[#0073C2] dark:text-sky-300 flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-[#800020] dark:text-[#9a1a35] flex items-center gap-2">
                       <FileText className="h-4 w-4" />
                       Penyusunan Perjanjian Sewa Guna (F8)
                     </h3>
@@ -4631,7 +4631,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={agreementNomor}
                           onChange={(e) => setAgreementNomor(e.target.value)}
                           placeholder="e.g. 002/SPG/LMAN/2026"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4641,7 +4641,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="text"
                           value={agreementPihakPertama}
                           onChange={(e) => setAgreementPihakPertama(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4651,7 +4651,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           type="text"
                           value={agreementJabatanPihakPertama}
                           onChange={(e) => setAgreementJabatanPihakPertama(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
 
@@ -4663,7 +4663,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             value={agreementOfferLetterNo}
                             onChange={(e) => setAgreementOfferLetterNo(e.target.value)}
                             placeholder="e.g. S-229/LMAN/LMAN.4/2026"
-                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                           />
                         </div>
                         <div>
@@ -4672,7 +4672,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             type="date"
                             value={agreementOfferLetterDate}
                             onChange={(e) => setAgreementOfferLetterDate(e.target.value)}
-                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                           />
                         </div>
                       </div>
@@ -4684,7 +4684,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           value={agreementInstitutionAddress}
                           onChange={(e) => setAgreementInstitutionAddress(e.target.value)}
                           placeholder="e.g. Jalan Lapangan Banteng Timur Nomor 2-4, Jakarta Pusat"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                     </div>
@@ -4732,7 +4732,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </button>
                   <button
                     onClick={() => handleDownloadAgreementDocx(activeAgreementSubmission)}
-                    className="px-4 py-2 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-xs font-bold transition-colors shadow-sm"
+                    className="px-4 py-2 rounded-lg bg-[#800020] hover:bg-[#600018] text-white text-xs font-bold transition-colors shadow-sm"
                   >
                     Unduh Word (.docx)
                   </button>
@@ -4745,7 +4745,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
           {editingBooking && (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
               <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 text-foreground font-sans">
-                <h3 className="text-sm font-bold text-[#0073C2] dark:text-sky-300 flex items-center gap-2 border-b border-border pb-3">
+                <h3 className="text-sm font-bold text-[#800020] dark:text-[#9a1a35] flex items-center gap-2 border-b border-border pb-3">
                   <MapPin className="h-4 w-4" />
                   Edit Booking Tanggal
                 </h3>
@@ -4755,7 +4755,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   <select
                     value={editBookingType}
                     onChange={(e) => setEditBookingType(e.target.value as BookingType)}
-                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                   >
                     <option value="TENTATIVE">Tentatif (Tahap 1-4)</option>
                     <option value="CONFIRMED">Terkunci / Confirmed (Tahap 5+)</option>
@@ -4771,7 +4771,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       required
                       value={editBookingStartDate}
                       onChange={(e) => setEditBookingStartDate(e.target.value)}
-                      className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                      className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                     />
                   </div>
                   <div>
@@ -4781,7 +4781,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       required
                       value={editBookingEndDate}
                       onChange={(e) => setEditBookingEndDate(e.target.value)}
-                      className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                      className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                     />
                   </div>
                 </div>
@@ -4793,7 +4793,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     value={editBookingRoomCodes}
                     onChange={(e) => setEditBookingRoomCodes(e.target.value)}
                     placeholder="mis. R101, R102"
-                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                   />
                 </div>
 
@@ -4803,7 +4803,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     value={editBookingNotes}
                     onChange={(e) => setEditBookingNotes(e.target.value)}
                     rows={2}
-                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2] resize-none"
+                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020] resize-none"
                   />
                 </div>
 
@@ -4816,7 +4816,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </button>
                   <button
                     onClick={handleSaveEditBooking}
-                    className="px-4 py-2 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-xs font-bold transition-colors shadow-sm"
+                    className="px-4 py-2 rounded-lg bg-[#800020] hover:bg-[#600018] text-white text-xs font-bold transition-colors shadow-sm"
                   >
                     Simpan Perubahan
                   </button>
@@ -4829,7 +4829,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
           {editingSurvey && (
             <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
               <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 text-foreground font-sans">
-                <h3 className="text-sm font-bold text-[#0073C2] dark:text-sky-300 flex items-center gap-2 border-b border-border pb-3">
+                <h3 className="text-sm font-bold text-[#800020] dark:text-[#9a1a35] flex items-center gap-2 border-b border-border pb-3">
                   <CheckSquare className="h-4 w-4" />
                   Edit Jadwal Survei
                 </h3>
@@ -4841,7 +4841,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     required
                     value={editSurveyCompanyName}
                     onChange={(e) => setEditSurveyCompanyName(e.target.value)}
-                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                   />
                 </div>
 
@@ -4853,7 +4853,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       required
                       value={editSurveyDate}
                       onChange={(e) => setEditSurveyDate(e.target.value)}
-                      className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                      className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                     />
                   </div>
                   <div>
@@ -4861,7 +4861,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     <select
                       value={editSurveyTimeSlot}
                       onChange={(e) => setEditSurveyTimeSlot(e.target.value as '10:00' | '14:00')}
-                      className="w-full bg-card border border-border rounded-lg py-2 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                      className="w-full bg-card border border-border rounded-lg py-2 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                     >
                       <option value="10:00">10:00 WIB</option>
                       <option value="14:00">14:00 WIB</option>
@@ -4875,7 +4875,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     type="text"
                     value={editSurveyPicInternal}
                     onChange={(e) => setEditSurveyPicInternal(e.target.value)}
-                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                   />
                 </div>
 
@@ -4887,7 +4887,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       min={1}
                       value={editSurveyGuestCount}
                       onChange={(e) => setEditSurveyGuestCount(e.target.value)}
-                      className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                      className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                     />
                   </div>
                   <div>
@@ -4895,7 +4895,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     <select
                       value={editSurveyStatus}
                       onChange={(e) => setEditSurveyStatus(e.target.value as Survey['status'])}
-                      className="w-full bg-card border border-border rounded-lg py-2 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                      className="w-full bg-card border border-border rounded-lg py-2 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                     >
                       <option value="SCHEDULED">SCHEDULED</option>
                       <option value="COMPLETED">COMPLETED</option>
@@ -4913,7 +4913,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </button>
                   <button
                     onClick={handleSaveEditSurvey}
-                    className="px-4 py-2 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-xs font-bold transition-colors shadow-sm"
+                    className="px-4 py-2 rounded-lg bg-[#800020] hover:bg-[#600018] text-white text-xs font-bold transition-colors shadow-sm"
                   >
                     Simpan Perubahan
                   </button>
