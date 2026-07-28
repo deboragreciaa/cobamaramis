@@ -33,7 +33,7 @@ import {
   setActiveOfficial
 } from '@/app/actions/db';
 import { Room, getQuickPackages, QuickPackage } from '@/lib/rooms-data';
-import { buildLoiText, buildPerjanjianText, formatTanggalIndo, formatJangkaWaktu, terbilang, formatRupiahTerbilang, pisahPpn } from '@/lib/documents';
+import { buildLoiText, buildPerjanjianText, formatTanggalIndo, formatTanggalPanjang, formatJangkaWaktu, hitungDurasiHari, terbilang, formatRupiahTerbilang, pisahPpn } from '@/lib/documents';
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import { calculatePenawaran, formatRupiah, PURPOSE_OPTIONS, PurposeOption } from '@/lib/calculator';
@@ -282,6 +282,11 @@ export default function Home() {
   const [agreementNomor, setAgreementNomor] = useState('');
   const [agreementPihakPertama, setAgreementPihakPertama] = useState('Tim LMAN');
   const [agreementJabatanPihakPertama, setAgreementJabatanPihakPertama] = useState('Divisi Pengembangan dan Pendayagunaan Properti 1');
+
+  // F8 DOCX Generator — Surat Penawaran reference + client address, filled manually by Penginput
+  const [agreementOfferLetterNo, setAgreementOfferLetterNo] = useState('');
+  const [agreementOfferLetterDate, setAgreementOfferLetterDate] = useState('');
+  const [agreementInstitutionAddress, setAgreementInstitutionAddress] = useState('');
 
   // F7 & F8 Generated Memos
   const loiTextGenerated = useMemo(() => {
@@ -915,81 +920,104 @@ export default function Home() {
     }
   };
 
+  // F8 DOCX Download Handler — fills PRJ_Template_Placeholder.docx with {{...}} tokens
   const handleDownloadAgreementDocx = async (sub: Submission) => {
     try {
       const client = clients.find(c => c.id === sub.clientId);
       const subBookings = bookings.filter(b => b.submissionId === sub.id);
-      const startDate = subBookings.length > 0 ? subBookings[0].startDate : new Date().toISOString().split('T')[0];
-      const endDate = subBookings.length > 0 ? subBookings[subBookings.length - 1].endDate : new Date().toISOString().split('T')[0];
+      const startDate = subBookings.length > 0 ? subBookings[0].startDate : sub.createdAt.split('T')[0];
+      const endDate = subBookings.length > 0 ? subBookings[subBookings.length - 1].endDate : startDate;
 
-      const response = await fetch('/agreement_template.docx');
+      const durasiHari = hitungDurasiHari(startDate, endDate);
+      const eventDuration = durasiHari > 0 ? `${durasiHari} (${terbilang(durasiHari)}) hari` : '';
+      const eventDateRange = durasiHari > 1
+        ? `${formatTanggalIndo(startDate)} sampai dengan ${formatTanggalIndo(endDate)}`
+        : formatTanggalIndo(startDate);
+
+      const offerLetterNo = (agreementOfferLetterNo || loiNomorSurat || '').trim();
+      const offerLetterDate = agreementOfferLetterDate ? formatTanggalIndo(agreementOfferLetterDate) : '';
+      const offerLetterNoDate = offerLetterNo && offerLetterDate ? `${offerLetterNo} tanggal ${offerLetterDate}` : '';
+
+      const paymentDeadlineIso = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
+
+      const areaText = `${new Intl.NumberFormat('id-ID').format(sub.totalAreaSqm)} meter`;
+      const objectDescriptionBase = (sub.objectDescription || sub.roomCodes.join(', ')).trim();
+
+      const officialOrdinanceLegalBasis = activeOfficial
+        ? `berdasarkan Surat Perintah Direktur Utama Lembaga Manajemen Aset Negara Nomor ${activeOfficial.ordinanceNumber} tanggal ${formatTanggalIndo(activeOfficial.ordinanceDate)} dan dalam kapasitasnya bertindak untuk dan atas nama Direktur Utama Lembaga Manajemen Aset Negara berdasarkan Keputusan Direktur Utama Lembaga Manajemen Aset Negara Nomor 45/LMAN/2025 tentang Pelimpahan Sebagian Kewenangan Direktur Utama Dalam Bentuk Mandat Kepada Direktur dan Kepala Divisi di Lingkungan Lembaga Manajemen Aset Negara Untuk dan Atas Nama Direktur Utama Lembaga Manajemen Aset Negara Menandatangani Dokumen Dalam Rangka Pelaksanaan Tugas dan Fungsi`
+        : '';
+
+      const data = {
+        offerLetterNoDate,
+        signatureDateWords: formatTanggalPanjang(new Date().toISOString().split('T')[0]).replace(/^hari /, ''),
+        officialName: (activeOfficial?.name || '').trim(),
+        officialTitle: activeOfficial ? `${activeOfficial.title} ${officialOrdinanceLegalBasis}`.trim() : '',
+        signatoryName: (client?.signatoryName || client?.picName || '').trim(),
+        signatoryTitle: (client?.signatoryTitle || client?.picTitle || '').trim(),
+        applicationLetterNo: (loiNomorSuratPemohon || sub.applicationLetterNo || '').trim(),
+        applicationLetterDate: formatTanggalIndo(loiTanggalSuratPemohon || sub.applicationLetterDate || ''),
+        eventName: (sub.eventName || sub.activityName || '').trim(),
+        objectDescription: objectDescriptionBase ? `${objectDescriptionBase}, dengan luas ${areaText}` : '',
+        eventDuration,
+        eventDate: eventDateRange,
+        nilaiSewa: formatRupiahTerbilang(sub.offerValue || sub.estimatedCost),
+        paymentDeadline: formatTanggalIndo(paymentDeadlineIso),
+        institutionName: (client ? (client.institutionName || client.companyName) : sub.companyName).trim(),
+        institutionAddress: agreementInstitutionAddress.trim(),
+      };
+
+      const FIELD_LABELS: Record<keyof typeof data, string> = {
+        offerLetterNoDate: 'Nomor & Tanggal Surat Penawaran',
+        signatureDateWords: 'Tanggal Tanda Tangan',
+        officialName: 'Nama Pejabat LMAN Aktif',
+        officialTitle: 'Jabatan Pejabat LMAN Aktif',
+        signatoryName: 'Nama Penanda Tangan Klien',
+        signatoryTitle: 'Jabatan/Sebutan Klien',
+        applicationLetterNo: 'Nomor Surat Permohonan',
+        applicationLetterDate: 'Tanggal Surat Permohonan',
+        eventName: 'Nama Kegiatan',
+        objectDescription: 'Objek Sewa',
+        eventDuration: 'Durasi Pelaksanaan',
+        eventDate: 'Tanggal Pelaksanaan',
+        nilaiSewa: 'Nilai Sewa',
+        paymentDeadline: 'Batas Pembayaran',
+        institutionName: 'Nama Instansi Klien',
+        institutionAddress: 'Alamat Instansi Klien',
+      };
+
+      const missingFields = (Object.keys(data) as (keyof typeof data)[])
+        .filter((key) => !data[key] || data[key] === '-')
+        .map((key) => FIELD_LABELS[key]);
+
+      if (missingFields.length > 0) {
+        alert(`Tidak dapat membuat draf Perjanjian. Field berikut belum diisi:\n\n- ${missingFields.join('\n- ')}`);
+        return;
+      }
+
+      const response = await fetch('/PRJ_Template_Placeholder.docx');
+      if (!response.ok) throw new Error('Template PRJ_Template_Placeholder.docx tidak ditemukan');
       const arrayBuffer = await response.arrayBuffer();
       const zip = new PizZip(arrayBuffer);
-      const xmlFile = zip.file('word/document.xml');
-      if (!xmlFile) throw new Error('word/document.xml not found in template');
-      let docXml = xmlFile.asText();
-
-      // Replace hardcoded OJK text with dynamic placeholders in document.xml
-      docXml = docXml.replaceAll('PRIN-10/LMAN/2024', '{agrNoOrdinance}');
-      docXml = docXml.replaceAll('9 Oktober 2024', '{agrDateOrdinance}');
-      docXml = docXml.replaceAll('MAHDI', '{agrNamaPihakPertama}');
-      docXml = docXml.replaceAll('Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan', '{agrJabatanPihakPertama}');
-      docXml = docXml.replaceAll('Hudiyanto', '{agrNamaPihakKedua}');
-      docXml = docXml.replaceAll('Kepala Departemen Logistik dan Fasilitas', '{agrJabatanPihakKedua}');
-      docXml = docXml.replaceAll('Otoritas Jasa Keuangan', '{agrInstansiPihakKedua}');
-      docXml = docXml.replaceAll('Gedung Soemitro Djojohadikusumo, Jalan Lapangan Banteng Timur Nomor 2-4, Jakarta Pusat', '{agrAlamatPihakKedua}');
-      docXml = docXml.replaceAll('0811986423', '{agrTeleponPihakKedua}');
-      docXml = docXml.replaceAll('sebagian Gedung A.A. Maramis, Gedung C lantai 2', '{agrObjekDeskripsi}');
-      docXml = docXml.replaceAll('1.089 meter persegi', '{agrLuasArea}');
-      docXml = docXml.replaceAll('Kegiatan Ekspose dan Jumpa Pers Triwulan I OJK', '{agrPeruntukan}');
-      docXml = docXml.replaceAll('1 (satu) hari yaitu tanggal 3 Februari 2026', '{agrJangkaWaktu}');
-      
-      docXml = docXml.replaceAll('Rp45.329.625', '{agrUangSewa}');
-      docXml = docXml.replaceAll('empat puluh lima juta tiga ratus dua puluh sembilan ribu enam ratus dua puluh lima rupiah', '{agrUangSewaTerbilang}');
-      
-      docXml = docXml.replaceAll('9 Februari 2026', '{agrBatasBayar}');
-      docXml = docXml.replaceAll('Rp0', '{agrSecurityDeposit}');
-      docXml = docXml.replaceAll('nol rupiah', '{agrSecurityDepositTerbilang}');
-
-      zip.file('word/document.xml', docXml);
-
       const doc = new Docxtemplater(zip, {
         paragraphLoop: true,
         linebreaks: true,
+        delimiters: { start: '{{', end: '}}' },
       });
 
-      const inputData = {
-        agrNoOrdinance: 'PRIN-10/LMAN/2024',
-        agrDateOrdinance: '9 Oktober 2024',
-        agrNamaPihakPertama: agreementPihakPertama || 'Mahdi',
-        agrJabatanPihakPertama: agreementJabatanPihakPertama || 'Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan',
-        agrNamaPihakKedua: client ? client.picName : 'Hudiyanto',
-        agrJabatanPihakKedua: 'Direktur Utama',
-        agrInstansiPihakKedua: client ? client.companyName : 'Otoritas Jasa Keuangan',
-        agrAlamatPihakKedua: 'Gedung Keuangan Instansi Pihak Kedua',
-        agrTeleponPihakKedua: client ? client.picPhone : '0811986423',
-        agrObjekDeskripsi: 'sebagian Gedung A.A. Maramis (' + sub.roomCodes.join(', ') + ')',
-        agrLuasArea: `${sub.roomCodes.length * 150} meter persegi`,
-        agrPeruntukan: sub.activityName,
-        agrJangkaWaktu: formatJangkaWaktu(startDate, endDate),
-        agrUangSewa: 'Rp' + new Intl.NumberFormat('id-ID').format(sub.estimatedCost),
-        agrUangSewaTerbilang: terbilang(sub.estimatedCost) + ' rupiah',
-        agrBatasBayar: formatTanggalIndo(new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0]),
-        agrSecurityDeposit: 'Rp' + new Intl.NumberFormat('id-ID').format(Math.floor(sub.estimatedCost * 0.10)),
-        agrSecurityDepositTerbilang: terbilang(sub.estimatedCost * 0.10) + ' rupiah'
-      };
-
-      doc.render(inputData);
+      doc.render(data);
 
       const out = doc.getZip().generate({
         type: 'blob',
         mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       });
 
+      const sanitizeForFilename = (s: string) =>
+        s.replace(/[\\/:*?"<>|]/g, '').trim().replace(/\s+/g, '_').slice(0, 60);
+
       const url = window.URL.createObjectURL(out);
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = `Kontrak_Perjanjian_Maramis_${sub.companyName.replace(/\s+/g, '_')}.docx`;
+      anchor.download = `DRAF_PRJ_${sanitizeForFilename(data.signatoryName)}_${sanitizeForFilename(data.eventDate)}.docx`;
       document.body.appendChild(anchor);
       anchor.click();
       document.body.removeChild(anchor);
@@ -4283,6 +4311,39 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Surat Penawaran</label>
+                          <input
+                            type="text"
+                            value={agreementOfferLetterNo}
+                            onChange={(e) => setAgreementOfferLetterNo(e.target.value)}
+                            placeholder="e.g. S-229/LMAN/LMAN.4/2026"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Surat Penawaran</label>
+                          <input
+                            type="date"
+                            value={agreementOfferLetterDate}
+                            onChange={(e) => setAgreementOfferLetterDate(e.target.value)}
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Alamat Instansi Klien (Pihak Kedua)</label>
+                        <input
+                          type="text"
+                          value={agreementInstitutionAddress}
+                          onChange={(e) => setAgreementInstitutionAddress(e.target.value)}
+                          placeholder="e.g. Jalan Lapangan Banteng Timur Nomor 2-4, Jakarta Pusat"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
                     </div>
 
                     <div className="p-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-250 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg text-[9px] leading-relaxed">
@@ -4593,6 +4654,39 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Surat Penawaran</label>
+                          <input
+                            type="text"
+                            value={agreementOfferLetterNo}
+                            onChange={(e) => setAgreementOfferLetterNo(e.target.value)}
+                            placeholder="e.g. S-229/LMAN/LMAN.4/2026"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Surat Penawaran</label>
+                          <input
+                            type="date"
+                            value={agreementOfferLetterDate}
+                            onChange={(e) => setAgreementOfferLetterDate(e.target.value)}
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          />
+                        </div>
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Alamat Instansi Klien (Pihak Kedua)</label>
+                        <input
+                          type="text"
+                          value={agreementInstitutionAddress}
+                          onChange={(e) => setAgreementInstitutionAddress(e.target.value)}
+                          placeholder="e.g. Jalan Lapangan Banteng Timur Nomor 2-4, Jakarta Pusat"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
                     </div>
 
                     <div className="p-3 bg-yellow-550 border border-yellow-200 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg text-[9px] leading-relaxed">
@@ -4632,9 +4726,15 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       element.click();
                       document.body.removeChild(element);
                     }}
-                    className="px-4 py-2 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-xs font-bold transition-colors shadow-sm"
+                    className="px-4 py-2 rounded-lg bg-card border border-border hover:bg-muted text-xs font-bold text-foreground transition-colors shadow-sm"
                   >
                     Unduh Draf Kontrak (.txt)
+                  </button>
+                  <button
+                    onClick={() => handleDownloadAgreementDocx(activeAgreementSubmission)}
+                    className="px-4 py-2 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-xs font-bold transition-colors shadow-sm"
+                  >
+                    Unduh Word (.docx)
                   </button>
                 </div>
               </div>
