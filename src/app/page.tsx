@@ -2489,11 +2489,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 </div>
               </div>
 
-              {/* RIGHT COLUMN: QUICK PACKAGES */}
-              <div className="lg:col-span-3">
+              {/* RIGHT COLUMN: QUICK PACKAGES & FILTER BAR */}
+              <div className="lg:col-span-3 flex flex-col gap-6">
                 
                 {/* QUICK PACKAGES (EXCEL SALEABLE AREA TOTALS) */}
-                <div className="bg-card border border-border rounded-xl p-5 shadow-sm relative overflow-hidden h-full">
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm relative overflow-hidden h-fit">
                   <div className="flex justify-between items-center mb-4">
                     <div>
                       <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5">
@@ -2585,8 +2585,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </div>
                   </div>
                 </div>
-              </div>
-            </div>
 
             {/* FILTER BAR - Clean Full-width Search + 4 Inline Controls below */}
                 <div className="bg-card border border-border rounded-xl p-4 shadow-sm space-y-4">
@@ -2673,6 +2671,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
 
             {/* COMPACT ROOMS LIST (TABLE) */}
             <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm p-5">
