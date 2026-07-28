@@ -1563,7 +1563,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
   // Render Spinner
   if (loading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center bg-[#f4f6f9] text-[#0073C2] dark:text-sky-300 font-sans">
+      <div className="flex-1 flex flex-col items-center justify-center bg-[#f4f6f9] dark:bg-background text-[#0073C2] dark:text-sky-300 font-sans">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0073C2] mb-4"></div>
         <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">Memuat Autentikasi...</p>
       </div>
@@ -1573,7 +1573,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
   // SCREEN 1: LOGIN FORM
   if (!user) {
     return (
-      <div className="flex-1 flex items-center justify-center p-4 bg-[#f4f6f9] relative overflow-hidden font-sans">
+      <div className="flex-1 flex items-center justify-center p-4 bg-[#f4f6f9] dark:bg-background relative overflow-hidden font-sans">
         {/* Decorative Gradients */}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/5 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-yellow-400/5 rounded-full blur-3xl pointer-events-none"></div>
@@ -1650,7 +1650,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
   // SCREEN 2: ROLE SELECTION
   if (user && !role) {
     return (
-      <div className="flex-1 flex items-center justify-center p-4 bg-[#f4f6f9] relative overflow-hidden font-sans">
+      <div className="flex-1 flex items-center justify-center p-4 bg-[#f4f6f9] dark:bg-background relative overflow-hidden font-sans">
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/5 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-yellow-400/5 rounded-full blur-3xl pointer-events-none"></div>
 
@@ -1717,7 +1717,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
   return (
     <div className="flex-1 flex flex-col bg-background text-foreground font-sans min-h-screen">
       {/* HEADER BANNER - Blue Kemenkeu style */}
-      <header className="border-b border-[#0060a3] bg-[#0073C2] text-white sticky top-0 z-50 px-6 py-3 flex items-center justify-between shadow-md">
+      <header className="border-b border-[#0060a3] dark:border-[#0A4C87] bg-[#0073C2] dark:bg-[#0E5EA8] text-white sticky top-0 z-50 px-6 py-3 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             {/* Logo style: White door/book shape */}
@@ -1743,10 +1743,10 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
       {/* DASHBOARD BODY CONTAINER (Sidebar + Content) */}
       <div className="flex-1 flex overflow-hidden relative">
         {/* SIDEBAR NAVIGATION - Satu Kemenkeu style */}
-        <aside className={`bg-card border-r border-border flex flex-col justify-between shrink-0 h-full transition-all duration-300 ${isSidebarCollapsed ? 'w-0 overflow-hidden border-r-0' : 'w-72'}`}>
+        <aside className={`bg-sidebar text-sidebar-foreground border-r border-sidebar-border flex flex-col justify-between shrink-0 h-full transition-all duration-300 ${isSidebarCollapsed ? 'w-0 overflow-hidden border-r-0' : 'w-72'}`}>
           <div className="flex flex-col overflow-y-auto">
             {/* User Profile Header Blue Card */}
-            <div className="p-4 bg-[#0073C2] text-white relative flex items-center justify-between gap-3 shadow-md select-none">
+            <div className="p-4 bg-[#0073C2] dark:bg-[#0E5EA8] text-white relative flex items-center justify-between gap-3 shadow-md select-none">
               <div className="flex-1 min-w-0">
                 <div className="font-extrabold text-xs tracking-wide truncate">
                   {role === 'PENGINPUT' ? 'TIM PENGINPUT LMAN' : 'TIM PEREVIEW LMAN'}
@@ -1770,7 +1770,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('catalog')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
                   activeTab === 'catalog'
-                    ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                    ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
@@ -1782,7 +1782,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('calculator')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
                   activeTab === 'calculator'
-                    ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                    ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
@@ -1801,7 +1801,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('clients')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
                   activeTab === 'clients'
-                    ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                    ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
@@ -1820,7 +1820,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('submissions')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
                   activeTab === 'submissions'
-                    ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                    ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
@@ -1839,7 +1839,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('calendar')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
                   activeTab === 'calendar'
-                    ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                    ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
@@ -1853,7 +1853,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   onClick={() => setIsDocMenuOpen(!isDocMenuOpen)}
                   className={`w-full py-2.5 px-4 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
                     activeTab === 'doc_loi' || activeTab === 'doc_prj'
-                      ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                      ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
                       : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   }`}
                 >
@@ -1870,7 +1870,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       onClick={() => setActiveTab('doc_loi')}
                       className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
                         activeTab === 'doc_loi'
-                          ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                          ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
                           : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }`}
                     >
@@ -1881,7 +1881,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       onClick={() => setActiveTab('doc_prj')}
                       className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
                         activeTab === 'doc_prj'
-                          ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                          ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
                           : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }`}
                     >
@@ -1896,7 +1896,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('documents')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
                   activeTab === 'documents'
-                    ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                    ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
                     : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
@@ -1929,7 +1929,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
         </button>
 
         {/* MAIN PANEL CONTENT - White scrollable area */}
-        <main className="flex-1 bg-[#f8fafc] overflow-y-auto p-6 flex flex-col gap-6">
+        <main className="flex-1 bg-[#f8fafc] dark:bg-background overflow-y-auto p-6 flex flex-col gap-6">
           <div className="flex justify-between items-center">
             <h2 className="text-xl font-bold text-foreground tracking-tight select-none">
               {activeTab === 'catalog' && 'Katalog Ruangan & Gedung'}
