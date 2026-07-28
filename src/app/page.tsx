@@ -1939,7 +1939,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
     return (
       <div
         className="flex-1 flex items-center justify-center p-4 relative overflow-hidden font-sans bg-cover bg-center"
-        style={{ backgroundImage: "url('/foto_aa_maramis.webp')" }}
+        style={{ backgroundImage: "url('/foto_aa_maramis_2.webp')" }}
       >
         {/* Readability overlay over background photo */}
         <div className="absolute inset-0 bg-[rgba(0,0,0,0.55)] pointer-events-none"></div>
@@ -2028,7 +2028,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
     return (
       <div
         className="flex-1 flex items-center justify-center p-4 relative overflow-hidden font-sans bg-cover bg-center"
-        style={{ backgroundImage: "url('/foto_aa_maramis.webp')" }}
+        style={{ backgroundImage: "url('/foto_aa_maramis_2.webp')" }}
       >
         {/* Readability overlay over background photo */}
         <div className="absolute inset-0 bg-[rgba(0,0,0,0.55)] pointer-events-none"></div>
