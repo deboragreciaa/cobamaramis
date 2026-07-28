@@ -2433,7 +2433,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               
               {/* LEFT COLUMN: PRIMARY ROOMS WIDGET */}
               <div className="lg:col-span-1">
-                <div className="bg-card border border-border rounded-xl p-5 shadow-sm relative overflow-hidden flex flex-col gap-4 h-fit">
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm relative overflow-hidden flex flex-col gap-4 h-full">
                   <div>
                     <h2 className="text-sm font-bold text-[#800020] dark:text-[#9a1a35] flex items-center gap-1.5 mb-2">
                       <Sparkles className="h-4 w-4 shrink-0 text-[#f59e0b] animate-pulse" /> Aula Utama C Lt. 2
@@ -2489,11 +2489,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 </div>
               </div>
 
-              {/* RIGHT COLUMN: FILTERS, TABLE LIST & QUICK PACKAGES */}
-              <div className="lg:col-span-3 flex flex-col gap-6">
+              {/* RIGHT COLUMN: QUICK PACKAGES */}
+              <div className="lg:col-span-3">
                 
                 {/* QUICK PACKAGES (EXCEL SALEABLE AREA TOTALS) */}
-                <div className="bg-card border border-border rounded-xl p-5 shadow-sm relative overflow-hidden">
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm relative overflow-hidden h-full">
                   <div className="flex justify-between items-center mb-4">
                     <div>
                       <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5">
