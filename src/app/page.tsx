@@ -2563,40 +2563,21 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     {/* Lantai 3 */}
                     <div className="p-3 bg-muted border border-border rounded-xl flex flex-col gap-2">
                       <h3 className="text-[10px] font-extrabold text-[#800020] dark:text-[#9a1a35] mb-1 border-b border-border pb-1 uppercase tracking-wider">Lantai 3 (Total: 3.342 m²)</h3>
-                      <div className="flex flex-col gap-2">
-                        <div className="grid grid-cols-2 gap-2">
-                          {EXCEL_PACKAGES.filter(p => p.floor === 3 && p.id !== 'L3-Total').map(pkg => {
-                            const isSelected = selectedPackageIds.includes(pkg.id);
-                            return (
-                              <button
-                                key={pkg.id}
-                                onClick={() => applyQuickPackage(pkg.id)}
-                                className={`p-2 rounded text-left transition-all border flex flex-col justify-between ${
-                                  isSelected
-                                    ? 'bg-[#9a1a35]/10 border-[#800020] text-[#800020] dark:text-[#9a1a35] font-bold shadow-sm'
-                                    : 'bg-card hover:bg-muted border-border text-foreground'
-                                }`}
-                              >
-                                <span className="text-[10px] truncate">{pkg.label}</span>
-                                <span className="font-mono text-[9px] text-muted-foreground mt-0.5">{pkg.areaSqm} m²</span>
-                              </button>
-                            );
-                          })}
-                        </div>
-                        {EXCEL_PACKAGES.filter(p => p.id === 'L3-Total').map(pkg => {
+                      <div className="grid grid-cols-2 gap-2">
+                        {EXCEL_PACKAGES.filter(p => p.floor === 3).map(pkg => {
                           const isSelected = selectedPackageIds.includes(pkg.id);
                           return (
                             <button
                               key={pkg.id}
                               onClick={() => applyQuickPackage(pkg.id)}
-                              className={`p-2 rounded text-center transition-all border flex justify-between items-center ${
+                              className={`p-2 rounded text-left transition-all border flex flex-col justify-between ${
                                 isSelected
                                   ? 'bg-[#9a1a35]/10 border-[#800020] text-[#800020] dark:text-[#9a1a35] font-bold shadow-sm'
                                   : 'bg-card hover:bg-muted border-border text-foreground'
                               }`}
                             >
-                              <span className="text-[10px]">{pkg.label}</span>
-                              <span className="font-mono text-[9px] text-muted-foreground">{pkg.areaSqm} m²</span>
+                              <span className="text-[10px] truncate">{pkg.label}</span>
+                              <span className="font-mono text-[9px] text-muted-foreground mt-0.5">{pkg.areaSqm} m²</span>
                             </button>
                           );
                         })}
