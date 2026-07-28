@@ -602,6 +602,26 @@ export async function createSurvey(surveyData: Omit<Survey, 'id'>): Promise<Surv
   }
 }
 
+export async function updateSurvey(id: string, data: Partial<Survey>): Promise<boolean> {
+  const performMockUpdate = () => {
+    const idx = mockSurveys.findIndex(s => s.id === id);
+    if (idx === -1) return false;
+    mockSurveys[idx] = { ...mockSurveys[idx], ...data };
+    return true;
+  };
+
+  if (!isFirebaseConfigured) {
+    return performMockUpdate();
+  }
+  try {
+    await db.collection('surveys').doc(id).update(data);
+    return true;
+  } catch (error) {
+    console.error('Failed to update survey in Firestore, falling back to mock:', error);
+    return performMockUpdate();
+  }
+}
+
 export async function updateSurveyStatus(id: string, status: Survey['status']): Promise<boolean> {
   const performMockUpdate = () => {
     const survey = mockSurveys.find(s => s.id === id);

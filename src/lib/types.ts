@@ -68,7 +68,7 @@ export interface Booking {
 
 export interface Survey {
   id: string;
-  submissionId: string;
+  submissionId?: string;
   companyName: string;
   date: string; // YYYY-MM-DD
   timeSlot: '10:00' | '14:00';

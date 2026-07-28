@@ -21,6 +21,7 @@ import {
   deleteBooking,
   getSurveys,
   createSurvey,
+  updateSurvey,
   updateSurveyStatus,
   getClosedSurveySlots,
   closeSurveySlot,
@@ -32,7 +33,7 @@ import {
   setActiveOfficial
 } from '@/app/actions/db';
 import { Room, getQuickPackages, QuickPackage } from '@/lib/rooms-data';
-import { buildLoiText, buildPerjanjianText, formatTanggalIndo, formatJangkaWaktu, terbilang } from '@/lib/documents';
+import { buildLoiText, buildPerjanjianText, formatTanggalIndo, formatJangkaWaktu, terbilang, formatRupiahTerbilang, pisahPpn } from '@/lib/documents';
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import { calculatePenawaran, formatRupiah, PURPOSE_OPTIONS, PurposeOption } from '@/lib/calculator';
@@ -115,7 +116,7 @@ export default function Home() {
   // App States
   const [usernameInput, setUsernameInput] = useState('maramis');
   const [passwordInput, setPasswordInput] = useState('');
-  const [activeTab, setActiveTab] = useState<'catalog' | 'calculator' | 'clients' | 'submissions' | 'calendar' | 'surveys' | 'documents' | 'doc_loi' | 'doc_prj'>('catalog');
+  const [activeTab, setActiveTab] = useState<'catalog' | 'calculator' | 'clients' | 'submissions' | 'calendar_booking' | 'calendar_survey' | 'calendar_recap' | 'documents' | 'doc_loi' | 'doc_prj'>('catalog');
   const [selectedPackageIds, setSelectedPackageIds] = useState<string[]>([]);
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
   const [isDocMenuOpen, setIsDocMenuOpen] = useState(false);
@@ -198,17 +199,35 @@ export default function Home() {
   const [bookingNotes, setBookingNotes] = useState('');
   const [bookingSubmissionId, setBookingSubmissionId] = useState('');
   
-  // F6 Survey Form States
-  const [surveySubmissionId, setSurveySubmissionId] = useState('');
+  // F6 Survey Form States (manual entry — survey is scheduled before a rental submission exists)
+  const [surveyCompanyName, setSurveyCompanyName] = useState('');
   const [surveyDate, setSurveyDate] = useState('');
   const [surveyTimeSlot, setSurveyTimeSlot] = useState<'10:00' | '14:00'>('10:00');
   const [surveyPicInternal, setSurveyPicInternal] = useState('Tim LMAN');
   const [surveyGuestCount, setSurveyGuestCount] = useState('5');
-  
+
   // F6 Close Slot States
   const [closeSlotDate, setCloseSlotDate] = useState('');
   const [closeSlotTimeSlot, setCloseSlotTimeSlot] = useState<'10:00' | '14:00'>('10:00');
   const [closeSlotReason, setCloseSlotReason] = useState('');
+
+  // Calendar sidebar submenu + edit modals
+  const [isCalendarMenuOpen, setIsCalendarMenuOpen] = useState(false);
+
+  const [editingBooking, setEditingBooking] = useState<Booking | null>(null);
+  const [editBookingType, setEditBookingType] = useState<BookingType>('TENTATIVE');
+  const [editBookingStartDate, setEditBookingStartDate] = useState('');
+  const [editBookingEndDate, setEditBookingEndDate] = useState('');
+  const [editBookingRoomCodes, setEditBookingRoomCodes] = useState('');
+  const [editBookingNotes, setEditBookingNotes] = useState('');
+
+  const [editingSurvey, setEditingSurvey] = useState<Survey | null>(null);
+  const [editSurveyCompanyName, setEditSurveyCompanyName] = useState('');
+  const [editSurveyDate, setEditSurveyDate] = useState('');
+  const [editSurveyTimeSlot, setEditSurveyTimeSlot] = useState<'10:00' | '14:00'>('10:00');
+  const [editSurveyPicInternal, setEditSurveyPicInternal] = useState('');
+  const [editSurveyGuestCount, setEditSurveyGuestCount] = useState('5');
+  const [editSurveyStatus, setEditSurveyStatus] = useState<Survey['status']>('SCHEDULED');
 
   // F7 & F8 Document Generator States
   const [activeLoiSubmission, setActiveLoiSubmission] = useState<Submission | null>(null);
@@ -730,14 +749,14 @@ export default function Home() {
       const endDate = subBookings.length > 0 ? subBookings[subBookings.length - 1].endDate : new Date().toISOString().split('T')[0];
 
       const inputData = {
-        loiNomorSurat: loiNomorSurat || 'S-229/LMAN/LMAN.4/2026',
-        loiNomorSuratPemohon: loiNomorSuratPemohon || sub.applicationLetterNo || 'SPL/017/140126/ROSE/SUMMERLAND',
+        loiNomorSurat: loiNomorSurat || sub.loiNomorSurat || '',
+        loiNomorSuratPemohon: loiNomorSuratPemohon || sub.applicationLetterNo || '',
         loiTanggalSuratPemohon: loiTanggalSuratPemohon || sub.applicationLetterDate || sub.createdAt.split('T')[0],
-        loiPerihalSuratPemohon: loiPerihalSuratPemohon || sub.applicationSubject || 'Surat Permohonan Perizinan Lokasi Syuting',
-        loiTautanPerjanjian: loiTautanPerjanjian || `s.kemenkeu.go.id/${client ? (client.institutionName || client.companyName).replace(/\s+/g, '').toLowerCase() : 'summerland'}${startDate.replace(/-/g, '')}`,
+        loiPerihalSuratPemohon: loiPerihalSuratPemohon || sub.applicationSubject || '',
+        loiTautanPerjanjian: loiTautanPerjanjian || `s.kemenkeu.go.id/${(client ? (client.institutionName || client.companyName) : sub.companyName).replace(/\s+/g, '').toLowerCase()}${startDate.replace(/-/g, '')}`,
         loiTautanTataTertib: loiTautanTataTertib || 's.kemenkeu.go.id/TataTertibMaramis',
         loiLuasArea: loiLuasAreaCustom || sub.areaText || `±${new Intl.NumberFormat('id-ID').format(sub.totalAreaSqm)} m2`,
-        loiNamaPenandatangan: loiNamaPenandatangan || 'Mahdi',
+        loiNamaPenandatangan: loiNamaPenandatangan || sub.loiOfficialName || '',
       };
 
       const updatedSub = {
@@ -755,8 +774,8 @@ export default function Home() {
         
         // Sync revised prompt fields
         institutionName: client ? (client.institutionName || client.companyName) : sub.companyName,
-        signatoryName: client ? (client.signatoryName || client.picName) : 'Razka Robby Ertanto',
-        signatoryTitle: client ? (client.signatoryTitle || client.picTitle) : 'Producer Summerland',
+        signatoryName: client ? (client.signatoryName || client.picName) : (sub.signatoryName || ''),
+        signatoryTitle: client ? (client.signatoryTitle || client.picTitle) : (sub.signatoryTitle || ''),
         eventName: sub.eventName || sub.activityName,
         objectDescription: sub.objectDescription || sub.roomCodes.join(', '),
         areaText: inputData.loiLuasArea,
@@ -776,124 +795,116 @@ export default function Home() {
     }
   };
 
-  // F7 & F8 DOCX Download Handlers
+  // F7 DOCX Download Handler — fills LOI_Template_Placeholder.docx with {{...}} tokens
   const handleDownloadLoiDocx = async (sub: Submission) => {
     try {
       const client = clients.find(c => c.id === sub.clientId);
       const subBookings = bookings.filter(b => b.submissionId === sub.id);
-      const startDate = subBookings.length > 0 ? subBookings[0].startDate : new Date().toISOString().split('T')[0];
-      const endDate = subBookings.length > 0 ? subBookings[subBookings.length - 1].endDate : new Date().toISOString().split('T')[0];
+      const startDate = subBookings.length > 0 ? subBookings[0].startDate : sub.createdAt.split('T')[0];
+      const endDate = subBookings.length > 0 ? subBookings[subBookings.length - 1].endDate : startDate;
 
-      const dpp = sub.estimatedCost / (1 + systemSettings.ppnRate);
-      const ppn = sub.estimatedCost - dpp;
+      const { dpp, ppn, total } = pisahPpn(sub.estimatedCost, systemSettings.ppnRate);
 
-      const response = await fetch('/loi_template.docx');
+      const data = {
+        signatoryName: (client?.signatoryName || client?.picName || '').trim(),
+        signatoryTitle: (client?.signatoryTitle || client?.picTitle || '').trim(),
+        applicationLetterNo: (loiNomorSuratPemohon || sub.applicationLetterNo || '').trim(),
+        applicationLetterDate: formatTanggalIndo(loiTanggalSuratPemohon || sub.applicationLetterDate || ''),
+        applicationSubject: (loiPerihalSuratPemohon || sub.applicationSubject || '').trim(),
+        objectDescription: (sub.objectDescription || sub.roomCodes.join(', ')).trim(),
+        areaText: (loiLuasAreaCustom || sub.areaText || '').trim(),
+        eventName: (sub.eventName || sub.activityName || '').trim(),
+        eventDate: (sub.eventDate || formatJangkaWaktu(startDate, endDate) || '').trim(),
+        tarifDasar: formatRupiahTerbilang(dpp),
+        tarifPPN: formatRupiahTerbilang(ppn),
+        tarifTotal: formatRupiahTerbilang(total),
+        linkPerjanjian: (loiTautanPerjanjian || '').trim(),
+        linkTataTertib: (loiTautanTataTertib || '').trim(),
+        officialName: (loiNamaPenandatangan || '').trim(),
+      };
+
+      const FIELD_LABELS: Record<keyof typeof data, string> = {
+        signatoryName: 'Nama Penanda Tangan Klien',
+        signatoryTitle: 'Jabatan/Sebutan Klien',
+        applicationLetterNo: 'Nomor Surat Permohonan',
+        applicationLetterDate: 'Tanggal Surat Permohonan',
+        applicationSubject: 'Perihal Surat Permohonan',
+        objectDescription: 'Objek Pemanfaatan',
+        areaText: 'Luas Area',
+        eventName: 'Peruntukan/Nama Kegiatan',
+        eventDate: 'Jangka Waktu Pemanfaatan',
+        tarifDasar: 'Tarif Dasar',
+        tarifPPN: 'PPN',
+        tarifTotal: 'Total Tarif',
+        linkPerjanjian: 'Tautan Perjanjian',
+        linkTataTertib: 'Tautan Tata Tertib',
+        officialName: 'Nama Pejabat LMAN Aktif',
+      };
+
+      const missingFields = (Object.keys(data) as (keyof typeof data)[])
+        .filter((key) => !data[key] || data[key] === '-')
+        .map((key) => FIELD_LABELS[key]);
+
+      if (missingFields.length > 0) {
+        alert(`Tidak dapat membuat draf LOI. Field berikut belum diisi:\n\n- ${missingFields.join('\n- ')}`);
+        return;
+      }
+
+      const response = await fetch('/LOI_Template_Placeholder.docx');
+      if (!response.ok) throw new Error('Template LOI_Template_Placeholder.docx tidak ditemukan');
       const arrayBuffer = await response.arrayBuffer();
       const zip = new PizZip(arrayBuffer);
-      const xmlFile = zip.file('word/document.xml');
-      if (!xmlFile) throw new Error('word/document.xml not found in template');
-      let docXml = xmlFile.asText();
-
-      // Replace hardcoded Summerland text with dynamic placeholders in document.xml
-      docXml = docXml.replaceAll('S-229/LMAN/LMAN.4/2026', '{loiNomorSurat}');
-      docXml = docXml.replaceAll('22 Mei 2026', '{loiTanggalSurat}');
-      docXml = docXml.replaceAll('Razka Robby Ertanto', '{loiNamaPemohon}');
-      docXml = docXml.replaceAll('Producer Summerland', '{loiJabatanPemohon}');
-      docXml = docXml.replaceAll('SPL/017/140126/ROSE/SUMMERLAND', '{loiNomorSuratPemohon}');
-      docXml = docXml.replaceAll('28 Januari 2026', '{loiTanggalSuratPemohon}');
-      docXml = docXml.replaceAll('Surat Permohonan Perizinan Lokasi Syuting', '{loiPerihalSuratPemohon}');
-      docXml = docXml.replaceAll('Ruangan pada Gedung A.A. Maramis', '{loiObjekPemanfaatan}');
-      docXml = docXml.replaceAll('Jalan Lapangan Banteng Timur nomor 2 - 4, Kelurahan Pasar baru, Kecamatan Sawah Besar, Kota Jakarta Pusat', '{loiAlamatAset}');
-      docXml = docXml.replaceAll('±1.182 m2', '{loiLuasArea}');
-      docXml = docXml.replaceAll('Produksi Film Rose Pandanwangi', '{loiPeruntukan}');
-      docXml = docXml.replaceAll('30 Januari 2026', '{loiJangkaWaktu}');
-      
-      docXml = docXml.replaceAll('Rp9.459.459', '{loiTarifDpp}');
-      docXml = docXml.replaceAll('sembilan juta empat ratus lima puluh sembilan ribu empat ratus lima puluh sembilan rupiah', '{loiTarifDppTerbilang}');
-      
-      docXml = docXml.replaceAll('Rp1.040.541', '{loiPpn}');
-      docXml = docXml.replaceAll('satu juta empat puluh ribu lima ratus empat puluh satu rupiah', '{loiPpnTerbilang}');
-      
-      docXml = docXml.replaceAll('Rp10.500.000', '{loiTotalTarif}');
-      docXml = docXml.replaceAll('sepuluh juta lima ratus ribu rupiah', '{loiTotalTarifTerbilang}');
-      
-      docXml = docXml.replaceAll('s.kemenkeu.go.id/FilmRosePandanwangi30Januari2026', '{loiTautanPerjanjian}');
-      docXml = docXml.replaceAll('s.kemenkeu.go.id/TataTertibMaramis', '{loiTautanTataTertib}');
-      docXml = docXml.replaceAll('Mahdi', '{loiNamaPenandatangan}');
-
-      zip.file('word/document.xml', docXml);
-
       const doc = new Docxtemplater(zip, {
         paragraphLoop: true,
         linebreaks: true,
+        delimiters: { start: '{{', end: '}}' },
       });
 
-      const inputData = {
-        loiNomorSurat: loiNomorSurat || 'S-229/LMAN/LMAN.4/2026',
-        loiTanggalSurat: formatTanggalIndo(new Date().toISOString().split('T')[0]),
-        loiNamaPemohon: client ? (client.signatoryName || client.picName) : 'Razka Robby Ertanto',
-        loiJabatanPemohon: client ? (client.signatoryTitle || client.picTitle || 'Perwakilan ' + (client.institutionName || client.companyName)) : 'Producer Summerland',
-        loiNomorSuratPemohon: loiNomorSuratPemohon || sub.applicationLetterNo || 'SPL/017/140126/ROSE/SUMMERLAND',
-        loiTanggalSuratPemohon: formatTanggalIndo(loiTanggalSuratPemohon || sub.applicationLetterDate || sub.createdAt.split('T')[0]),
-        loiPerihalSuratPemohon: loiPerihalSuratPemohon || sub.applicationSubject || 'Surat Permohonan Perizinan Lokasi Syuting',
-        loiObjekPemanfaatan: sub.objectDescription || sub.roomCodes.join(', '),
-        loiAlamatAset: 'Jalan Lapangan Banteng Timur nomor 2 - 4, Kelurahan Pasar baru, Kecamatan Sawah Besar, Kota Jakarta Pusat',
-        loiLuasArea: loiLuasAreaCustom || sub.areaText || `±${new Intl.NumberFormat('id-ID').format(sub.totalAreaSqm)} m2`,
-        loiPeruntukan: sub.eventName || sub.activityName,
-        loiJangkaWaktu: sub.eventDate || formatJangkaWaktu(startDate, endDate),
-        loiTarifDpp: 'Rp' + new Intl.NumberFormat('id-ID').format(Math.floor(dpp)),
-        loiTarifDppTerbilang: terbilang(dpp) + ' rupiah',
-        loiPpn: 'Rp' + new Intl.NumberFormat('id-ID').format(Math.floor(ppn)),
-        loiPpnTerbilang: terbilang(ppn) + ' rupiah',
-        loiTotalTarif: 'Rp' + new Intl.NumberFormat('id-ID').format(sub.estimatedCost),
-        loiTotalTarifTerbilang: terbilang(sub.estimatedCost) + ' rupiah',
-        loiTautanPerjanjian: loiTautanPerjanjian || `s.kemenkeu.go.id/${client ? (client.institutionName || client.companyName).replace(/\s+/g, '').toLowerCase() : 'summerland'}${startDate.replace(/-/g, '')}`,
-        loiTautanTataTertib: loiTautanTataTertib || 's.kemenkeu.go.id/TataTertibMaramis',
-        loiNamaPenandatangan: loiNamaPenandatangan || 'Mahdi'
-      };
-
-      // Save snapshots and revised fields to database
-      const updatedSub = {
-        ...sub,
-        loiNomorSurat: inputData.loiNomorSurat,
-        loiNomorSuratPemohon: inputData.loiNomorSuratPemohon,
-        loiTanggalSuratPemohon: loiTanggalSuratPemohon || sub.applicationLetterDate || sub.createdAt.split('T')[0],
-        loiPerihalSuratPemohon: inputData.loiPerihalSuratPemohon,
-        loiTautanPerjanjian: inputData.loiTautanPerjanjian,
-        loiTautanTataTertib: inputData.loiTautanTataTertib,
-        loiLuasAreaCustom: inputData.loiLuasArea,
-        loiVerified: true,
-        loiOfficialName: inputData.loiNamaPenandatangan,
-        loiOfficialTitle: loiJabatanPenandatangan || 'Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan LMAN',
-        
-        // Sync revised prompt fields
-        institutionName: client ? (client.institutionName || client.companyName) : sub.companyName,
-        signatoryName: inputData.loiNamaPemohon,
-        signatoryTitle: inputData.loiJabatanPemohon,
-        eventName: inputData.loiPeruntukan,
-        objectDescription: inputData.loiObjekPemanfaatan,
-        areaText: inputData.loiLuasArea,
-        eventDate: inputData.loiJangkaWaktu,
-        applicationLetterNo: inputData.loiNomorSuratPemohon,
-        applicationLetterDate: loiTanggalSuratPemohon || sub.applicationLetterDate || sub.createdAt.split('T')[0],
-        applicationSubject: inputData.loiPerihalSuratPemohon,
-        offerValue: sub.estimatedCost
-      };
-      await updateSubmission(sub.id, updatedSub);
-      setSubmissions(prev => prev.map(s => s.id === sub.id ? updatedSub : s));
-      setLoiVerified(true);
-
-      doc.render(inputData);
+      doc.render(data);
 
       const out = doc.getZip().generate({
         type: 'blob',
         mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       });
 
+      // Save snapshots and revised fields to database
+      const updatedSub = {
+        ...sub,
+        loiNomorSurat: loiNomorSurat || sub.loiNomorSurat || '',
+        loiNomorSuratPemohon: data.applicationLetterNo,
+        loiTanggalSuratPemohon: loiTanggalSuratPemohon || sub.applicationLetterDate || sub.createdAt.split('T')[0],
+        loiPerihalSuratPemohon: data.applicationSubject,
+        loiTautanPerjanjian: data.linkPerjanjian,
+        loiTautanTataTertib: data.linkTataTertib,
+        loiLuasAreaCustom: data.areaText,
+        loiVerified: true,
+        loiOfficialName: data.officialName,
+        loiOfficialTitle: loiJabatanPenandatangan || sub.loiOfficialTitle || '',
+
+        // Sync revised prompt fields
+        institutionName: client ? (client.institutionName || client.companyName) : sub.companyName,
+        signatoryName: data.signatoryName,
+        signatoryTitle: data.signatoryTitle,
+        eventName: data.eventName,
+        objectDescription: data.objectDescription,
+        areaText: data.areaText,
+        eventDate: data.eventDate,
+        applicationLetterNo: data.applicationLetterNo,
+        applicationLetterDate: loiTanggalSuratPemohon || sub.applicationLetterDate || sub.createdAt.split('T')[0],
+        applicationSubject: data.applicationSubject,
+        offerValue: sub.estimatedCost
+      };
+      await updateSubmission(sub.id, updatedSub);
+      setSubmissions(prev => prev.map(s => s.id === sub.id ? updatedSub : s));
+      setLoiVerified(true);
+
+      const sanitizeForFilename = (s: string) =>
+        s.replace(/[\\/:*?"<>|]/g, '').trim().replace(/\s+/g, '_').slice(0, 60);
+
       const url = window.URL.createObjectURL(out);
       const anchor = document.createElement('a');
       anchor.href = url;
-      anchor.download = `LOI_Gedung_Maramis_${sub.companyName.replace(/\s+/g, '_')}.docx`;
+      anchor.download = `DRAF_LOI_${sanitizeForFilename(data.signatoryName)}_${sanitizeForFilename(data.eventDate)}.docx`;
       document.body.appendChild(anchor);
       anchor.click();
       document.body.removeChild(anchor);
@@ -1203,16 +1214,14 @@ export default function Home() {
     }
   };
 
-  // F6 Survey Handlers
+  // F6 Survey Handlers — the requesting party is typed manually because a site
+  // survey is scheduled before the client's rental submission (and client record) exist.
   const handleCreateSurvey = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!surveySubmissionId || !surveyDate) {
-      alert('Pilih pengajuan dan tanggal survei.');
+    if (!surveyCompanyName.trim() || !surveyDate) {
+      alert('Isi nama pihak pengaju dan tanggal survei.');
       return;
     }
-
-    const sub = submissions.find((s) => s.id === surveySubmissionId);
-    if (!sub) return;
 
     // Check if slot is closed
     const isClosed = closedSlots.some((slot) => slot.date === surveyDate);
@@ -1223,18 +1232,20 @@ export default function Home() {
 
     try {
       const newSurvey = await createSurvey({
-        submissionId: surveySubmissionId,
-        companyName: sub.companyName,
+        companyName: surveyCompanyName.trim(),
         date: surveyDate,
-        timeSlot: '10:00',
-        picInternal: 'Tim LMAN',
-        guestCount: 5,
+        timeSlot: surveyTimeSlot,
+        picInternal: surveyPicInternal || 'Tim LMAN',
+        guestCount: parseInt(surveyGuestCount, 10) || 1,
         status: 'SCHEDULED',
       });
 
       setSurveys((prev) => [...prev, newSurvey]);
+      setSurveyCompanyName('');
       setSurveyDate('');
-      setSurveySubmissionId('');
+      setSurveyTimeSlot('10:00');
+      setSurveyPicInternal('Tim LMAN');
+      setSurveyGuestCount('5');
       alert('Jadwal survei berhasil dicatat!');
     } catch (err) {
       console.error(err);
@@ -1250,6 +1261,89 @@ export default function Home() {
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  // Edit modal handlers — Booking
+  const handleOpenEditBooking = (b: Booking) => {
+    setEditingBooking(b);
+    setEditBookingType(b.type);
+    setEditBookingStartDate(b.startDate);
+    setEditBookingEndDate(b.endDate);
+    setEditBookingRoomCodes(b.roomCodes.join(', '));
+    setEditBookingNotes(b.notes || '');
+  };
+
+  const handleSaveEditBooking = async () => {
+    if (!editingBooking) return;
+    if (!editBookingStartDate || !editBookingEndDate) {
+      alert('Tanggal mulai dan tanggal selesai wajib diisi.');
+      return;
+    }
+
+    const roomCodes = editBookingRoomCodes.split(',').map((r) => r.trim()).filter(Boolean);
+    const data: Partial<Booking> = {
+      type: editBookingType,
+      startDate: editBookingStartDate,
+      endDate: editBookingEndDate,
+      roomCodes,
+      notes: editBookingNotes,
+    };
+
+    try {
+      const result = await updateBooking(editingBooking.id, data);
+      if (!result.success) {
+        alert(`Gagal memperbarui booking: ${result.error || 'Terjadi kesalahan'}`);
+        return;
+      }
+      setBookings((prev) => prev.map((b) => (b.id === editingBooking.id ? { ...b, ...data } : b)));
+      setEditingBooking(null);
+      alert('Booking berhasil diperbarui.');
+    } catch (err) {
+      console.error(err);
+      alert('Gagal memperbarui booking.');
+    }
+  };
+
+  // Edit modal handlers — Survey
+  const handleOpenEditSurvey = (s: Survey) => {
+    setEditingSurvey(s);
+    setEditSurveyCompanyName(s.companyName);
+    setEditSurveyDate(s.date);
+    setEditSurveyTimeSlot(s.timeSlot);
+    setEditSurveyPicInternal(s.picInternal);
+    setEditSurveyGuestCount(String(s.guestCount));
+    setEditSurveyStatus(s.status);
+  };
+
+  const handleSaveEditSurvey = async () => {
+    if (!editingSurvey) return;
+    if (!editSurveyCompanyName.trim() || !editSurveyDate) {
+      alert('Nama pihak pengaju dan tanggal survei wajib diisi.');
+      return;
+    }
+
+    const data: Partial<Survey> = {
+      companyName: editSurveyCompanyName.trim(),
+      date: editSurveyDate,
+      timeSlot: editSurveyTimeSlot,
+      picInternal: editSurveyPicInternal || 'Tim LMAN',
+      guestCount: parseInt(editSurveyGuestCount, 10) || 1,
+      status: editSurveyStatus,
+    };
+
+    try {
+      const success = await updateSurvey(editingSurvey.id, data);
+      if (!success) {
+        alert('Gagal memperbarui jadwal survei.');
+        return;
+      }
+      setSurveys((prev) => prev.map((s) => (s.id === editingSurvey.id ? { ...s, ...data } : s)));
+      setEditingSurvey(null);
+      alert('Jadwal survei berhasil diperbarui.');
+    } catch (err) {
+      console.error(err);
+      alert('Gagal memperbarui jadwal survei.');
     }
   };
 
@@ -1285,6 +1379,248 @@ export default function Home() {
       console.error(err);
     }
   };
+
+  // Reusable calendar grid + list renderers shared by the Booking Tanggal, Penjadwalan
+  // Survei, and Rekap Penjadwalan sub-pages so the calendar and the two lists stay
+  // in sync everywhere they appear instead of drifting across copy-pasted blocks.
+  const renderCalendarGrid = () => {
+    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay(); // 0 (Sunday) to 6 (Saturday)
+    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
+
+    const daysArray: (number | null)[] = [];
+    const daysToPad = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1; // start week on Monday
+    for (let i = 0; i < daysToPad; i++) {
+      daysArray.push(null);
+    }
+    for (let i = 1; i <= daysInMonth; i++) {
+      daysArray.push(i);
+    }
+
+    const weekDays = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
+
+    return (
+      <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
+        {/* Calendar Month Selector Header */}
+        <div className="flex justify-between items-center border-b border-border pb-3">
+          <h2 className="text-sm font-bold text-foreground">Grid Kalender Pemakaian</h2>
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => {
+                if (currentMonth === 0) {
+                  setCurrentMonth(11);
+                  setCurrentYear(c => c - 1);
+                } else {
+                  setCurrentMonth(m => m - 1);
+                }
+              }}
+              className="p-1.5 bg-card border border-border rounded hover:bg-muted text-muted-foreground font-bold transition-colors"
+            >
+              &larr;
+            </button>
+            <span className="text-xs font-extrabold text-foreground uppercase tracking-wider font-mono">
+              {new Date(currentYear, currentMonth).toLocaleString('id-ID', { month: 'long', year: 'numeric' })}
+            </span>
+            <button
+              onClick={() => {
+                if (currentMonth === 11) {
+                  setCurrentMonth(0);
+                  setCurrentYear(c => c + 1);
+                } else {
+                  setCurrentMonth(m => m + 1);
+                }
+              }}
+              className="p-1.5 bg-card border border-border rounded hover:bg-muted text-muted-foreground font-bold transition-colors"
+            >
+              &rarr;
+            </button>
+          </div>
+        </div>
+
+        {/* Calendar Grid */}
+        <div className="space-y-4">
+          <div className="grid grid-cols-7 gap-1.5 text-center text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+            {weekDays.map((wd) => (
+              <div key={wd} className="py-1 bg-muted rounded">{wd}</div>
+            ))}
+          </div>
+
+          <div className="grid grid-cols-7 gap-1.5">
+            {daysArray.map((day, idx) => {
+              if (day === null) {
+                return <div key={`empty-${idx}`} className="aspect-square bg-muted rounded-lg border border-dashed border-border"></div>;
+              }
+
+              const padZero = (n: number) => n.toString().padStart(2, '0');
+              const dateStr = `${currentYear}-${padZero(currentMonth + 1)}-${padZero(day)}`;
+
+              // Find bookings that fall on this day
+              const dayBookings = bookings.filter((b) => dateStr >= b.startDate && dateStr <= b.endDate);
+              // Find surveys on this day
+              const daySurveys = surveys.filter((s) => s.date === dateStr && s.status !== 'CANCELLED');
+
+              let cellBg = 'bg-card border-border hover:border-border';
+              let numColor = 'text-muted-foreground';
+
+              if (dayBookings.length > 0) {
+                cellBg = 'bg-[#e0f2fe] border-sky-300 dark:border-sky-800 text-sky-950 dark:text-sky-200 hover:bg-sky-200';
+                numColor = 'text-sky-700 dark:text-sky-300 font-extrabold';
+              } else if (daySurveys.length > 0) {
+                cellBg = 'bg-[#fef08a] border-yellow-350 text-yellow-950 dark:text-yellow-200 hover:bg-yellow-200';
+                numColor = 'text-yellow-750 dark:text-yellow-200 font-extrabold';
+              }
+
+              return (
+                <div
+                  key={`day-${day}`}
+                  className={`aspect-square p-1 border rounded-lg flex flex-col justify-between overflow-hidden shadow-sm transition-all ${cellBg}`}
+                >
+                  <span className={`text-[10px] font-mono ${numColor}`}>{day}</span>
+                  <div className="flex flex-col gap-0.5 mt-1 overflow-y-auto scrollbar-none">
+                    {dayBookings.map((b) => {
+                      return (
+                        <div
+                          key={b.id}
+                          title={`${b.activityName} (${b.roomCodes.join(', ')})`}
+                          className="text-[7.5px] px-1 py-0.5 rounded border border-sky-200/50 dark:border-sky-800 bg-card/80 text-sky-900 dark:text-sky-200 leading-none font-bold truncate"
+                        >
+                          {b.activityName}
+                        </div>
+                      );
+                    })}
+
+                    {daySurveys.map((s) => (
+                      <div
+                        key={s.id}
+                        title={`Survei: ${s.companyName} (Status: ${s.status})`}
+                        className="text-[7.5px] px-1 py-0.5 rounded border border-yellow-250 dark:border-yellow-900 bg-card/80 text-yellow-900 dark:text-yellow-200 leading-none font-bold truncate"
+                      >
+                        🕵️ {s.companyName}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  const renderBookingsList = () => (
+    <div className="bg-card border border-border rounded-xl p-5 shadow-sm text-foreground">
+      <h4 className="text-xs font-bold text-muted-foreground mb-3">Daftar Aktif Booking Tanggal</h4>
+      {bookings.length === 0 ? (
+        <p className="text-xs text-muted-foreground italic py-2">Belum ada booking terdaftar.</p>
+      ) : (
+        <div className="space-y-2 max-h-60 overflow-y-auto">
+          {bookings.map((b) => (
+            <div
+              key={b.id}
+              className="p-3 bg-muted border border-border rounded-xl flex items-center justify-between gap-4 text-xs text-foreground"
+            >
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-foreground">{b.activityName}</span>
+                  <span className={`text-[8px] border px-1.5 py-0.5 rounded font-extrabold ${
+                    b.type === 'CONFIRMED'
+                      ? 'bg-emerald-50 border-emerald-200 text-emerald-750'
+                      : b.type === 'TENTATIVE'
+                      ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-250 dark:border-amber-900 text-amber-750 dark:text-amber-200'
+                      : 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900 text-red-750 dark:text-red-300'
+                  }`}>
+                    {b.type}
+                  </span>
+                </div>
+                <p className="text-[10px] text-muted-foreground">
+                  Ruang: {b.roomCodes.join(', ')} | Periode: {b.startDate} s/d {b.endDate}
+                </p>
+                {b.notes && <p className="text-[9px] text-muted-foreground italic mt-1">&quot;{b.notes}&quot;</p>}
+              </div>
+
+              {role === 'PENGINPUT' && (
+                <div className="flex gap-2 shrink-0">
+                  <button
+                    onClick={() => handleOpenEditBooking(b)}
+                    className="px-2.5 py-1 rounded bg-card hover:bg-muted text-foreground border border-border text-[10px] font-bold transition-all shadow-sm"
+                  >
+                    Edit
+                  </button>
+                  <button
+                    onClick={() => handleDeleteBooking(b.id)}
+                    className="px-2.5 py-1 rounded bg-red-50 dark:bg-red-950/30 hover:bg-red-100 text-red-600 dark:text-red-300 border border-red-200 dark:border-red-900 text-[10px] font-bold transition-all shadow-sm"
+                  >
+                    Hapus
+                  </button>
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+
+  const renderSurveysList = () => (
+    <div className="bg-card border border-border rounded-xl p-5 shadow-sm text-foreground">
+      <h4 className="text-xs font-bold text-muted-foreground mb-3">Daftar Jadwal Survei Lokasi</h4>
+      {surveys.filter(s => s.status !== 'CANCELLED').length === 0 ? (
+        <p className="text-xs text-muted-foreground italic py-2">Belum ada survei terjadwal.</p>
+      ) : (
+        <div className="space-y-2 max-h-60 overflow-y-auto">
+          {surveys.filter(s => s.status !== 'CANCELLED').map((s) => (
+            <div
+              key={s.id}
+              className="p-3 bg-muted border border-border rounded-xl flex items-center justify-between gap-4 text-xs text-foreground"
+            >
+              <div className="space-y-1">
+                <div className="flex items-center gap-2">
+                  <span className="font-bold text-foreground">{s.companyName}</span>
+                  <span className={`text-[8px] border px-1.5 py-0.5 rounded font-extrabold ${
+                    s.status === 'SCHEDULED'
+                      ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900 text-blue-750 dark:text-blue-300'
+                      : 'bg-emerald-50 border-emerald-200 text-emerald-750'
+                  }`}>
+                    {s.status}
+                  </span>
+                </div>
+                <p className="text-[10px] text-muted-foreground">
+                  Tanggal Kunjungan: {s.date} · Waktu Slot: {s.timeSlot} WIB
+                </p>
+              </div>
+
+              {role === 'PENGINPUT' && (
+                <div className="flex gap-2 shrink-0">
+                  <button
+                    onClick={() => handleOpenEditSurvey(s)}
+                    className="px-2.5 py-1 rounded bg-card hover:bg-muted text-foreground border border-border text-[10px] font-bold transition-all shadow-sm"
+                  >
+                    Edit
+                  </button>
+                  {s.status === 'SCHEDULED' && (
+                    <>
+                      <button
+                        onClick={() => handleUpdateSurvey(s.id, 'COMPLETED')}
+                        className="px-2.5 py-1 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 text-[10px] font-bold transition-all shadow-sm"
+                      >
+                        Selesai
+                      </button>
+                      <button
+                        onClick={() => handleUpdateSurvey(s.id, 'CANCELLED')}
+                        className="px-2.5 py-1 rounded bg-red-50 dark:bg-red-950/30 hover:bg-red-100 text-red-650 dark:text-red-300 border border-red-200 dark:border-red-900 text-[10px] font-bold transition-all shadow-sm"
+                      >
+                        Batal
+                      </button>
+                    </>
+                  )}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 
   // Helper: Use Demo Password
   const useDemoPassword = () => {
@@ -1855,17 +2191,61 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 )}
               </button>
 
-              <button
-                onClick={() => setActiveTab('calendar')}
-                className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
-                  activeTab === 'calendar'
-                    ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
-                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
-                }`}
-              >
-                <MapPin className={`h-4 w-4 shrink-0 ${activeTab === 'calendar' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
-                <span>Kalender Kegiatan</span>
-              </button>
+              {/* Kalender Kegiatan collapsible menu */}
+              <div className="mx-2.5 my-0.5">
+                <button
+                  onClick={() => setIsCalendarMenuOpen(!isCalendarMenuOpen)}
+                  className={`w-full py-2.5 px-4 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
+                    activeTab === 'calendar_booking' || activeTab === 'calendar_survey' || activeTab === 'calendar_recap'
+                      ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                  }`}
+                >
+                  <div className="flex items-center gap-3">
+                    <MapPin className={`h-4 w-4 shrink-0 ${activeTab === 'calendar_booking' || activeTab === 'calendar_survey' || activeTab === 'calendar_recap' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
+                    <span>Kalender Kegiatan</span>
+                  </div>
+                  <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isCalendarMenuOpen ? 'rotate-180' : ''}`} />
+                </button>
+
+                {(isCalendarMenuOpen || activeTab === 'calendar_booking' || activeTab === 'calendar_survey' || activeTab === 'calendar_recap') && (
+                  <div className="pl-4 pr-1 mt-1 space-y-1 border-l-2 border-[#0073C2]/20 ml-6 flex flex-col">
+                    <button
+                      onClick={() => setActiveTab('calendar_booking')}
+                      className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
+                        activeTab === 'calendar_booking'
+                          ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }`}
+                    >
+                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'calendar_booking' ? 'bg-[#0073C2]' : 'bg-muted'}`} />
+                      Booking Tanggal
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('calendar_survey')}
+                      className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
+                        activeTab === 'calendar_survey'
+                          ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }`}
+                    >
+                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'calendar_survey' ? 'bg-[#0073C2]' : 'bg-muted'}`} />
+                      Penjadwalan Survei
+                    </button>
+                    <button
+                      onClick={() => setActiveTab('calendar_recap')}
+                      className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
+                        activeTab === 'calendar_recap'
+                          ? 'bg-[#e0f2fe] dark:bg-muted text-[#0073C2] dark:text-sky-300'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
+                      }`}
+                    >
+                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'calendar_recap' ? 'bg-[#0073C2]' : 'bg-muted'}`} />
+                      Rekap Penjadwalan
+                    </button>
+                  </div>
+                )}
+              </div>
 
               {/* Pembuatan Dokumen collapsible menu */}
               <div className="mx-2.5 my-0.5">
@@ -1956,8 +2336,9 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               {activeTab === 'calculator' && 'Sasaran Perhitungan Tarif Penawaran'}
               {activeTab === 'clients' && 'Basis Data Kelola Klien'}
               {activeTab === 'submissions' && 'Daftar Pengajuan & Papan Pemantauan'}
-              {activeTab === 'calendar' && 'Kalender Penjadwalan & Reservasi'}
-              {activeTab === 'surveys' && 'Jadwal Survei Lapangan'}
+              {activeTab === 'calendar_booking' && 'Kalender — Booking Tanggal'}
+              {activeTab === 'calendar_survey' && 'Kalender — Penjadwalan Survei'}
+              {activeTab === 'calendar_recap' && 'Kalender — Rekap Penjadwalan'}
               {activeTab === 'documents' && 'Dokumen Operasional Sewa'}
             </h2>
             
@@ -3388,8 +3769,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             </div>
           )}
 
-          {/* TAB: CALENDAR (F5) */}
-          {activeTab === 'calendar' && (
+          {/* TAB: CALENDAR — BOOKING TANGGAL */}
+          {activeTab === 'calendar_booking' && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
               {/* LEFT COLUMN: Reserve Date Form (Penginput only) */}
               <div className="lg:col-span-1">
@@ -3483,43 +3864,68 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </form>
                   )}
                 </div>
+              </div>
 
-                {/* Penjadwalan Survei Lokasi Form */}
+              {/* RIGHT COLUMN: Calendar + Bookings List (kept on this page per spec) */}
+              <div className="lg:col-span-2 flex flex-col gap-6">
+                {renderCalendarGrid()}
+                {renderBookingsList()}
+              </div>
+            </div>
+          )}
+
+          {/* TAB: CALENDAR — PENJADWALAN SURVEI */}
+          {activeTab === 'calendar_survey' && (
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
+              {/* LEFT COLUMN: Survey Scheduling Form (Penginput only) */}
+              <div className="lg:col-span-1">
                 <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
                   <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
                     <CheckSquare className="h-4 w-4 text-indigo-650" />
                     Penjadwalan Survei Lokasi
                   </h2>
+
                   {role !== 'PENGINPUT' ? (
                     <p className="text-xs text-muted-foreground italic">Peran Pereview hanya memiliki akses baca (Read-only).</p>
                   ) : (
                     <form onSubmit={handleCreateSurvey} className="space-y-4">
                       <div>
-                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Pilih Pengajuan Terkait</label>
-                        <select
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nama Pihak / Instansi Pengaju</label>
+                        <input
+                          type="text"
                           required
-                          value={surveySubmissionId}
-                          onChange={(e) => setSurveySubmissionId(e.target.value)}
+                          value={surveyCompanyName}
+                          onChange={(e) => setSurveyCompanyName(e.target.value)}
+                          placeholder="Ketik manual, mis. PT Contoh Sejahtera"
                           className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
-                        >
-                          <option value="">-- Pilih Pengajuan --</option>
-                          {submissions.map((s) => (
-                            <option key={s.id} value={s.id}>
-                              {s.companyName} - {s.activityName}
-                            </option>
-                          ))}
-                        </select>
+                        />
+                        <span className="text-[10px] text-muted-foreground block mt-1">
+                          Diisi manual: survei dijadwalkan sebelum ada permohonan sewa, sehingga pihak pengaju belum tercatat di Basis Data Klien dan belum tentu fix (bisa batal).
+                        </span>
                       </div>
 
-                      <div>
-                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Kunjungan Survei</label>
-                        <input
-                          type="date"
-                          required
-                          value={surveyDate}
-                          onChange={(e) => setSurveyDate(e.target.value)}
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
-                        />
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Kunjungan Survei</label>
+                          <input
+                            type="date"
+                            required
+                            value={surveyDate}
+                            onChange={(e) => setSurveyDate(e.target.value)}
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Waktu Slot</label>
+                          <select
+                            value={surveyTimeSlot}
+                            onChange={(e) => setSurveyTimeSlot(e.target.value as '10:00' | '14:00')}
+                            className="w-full bg-card border border-border rounded-lg py-2 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                          >
+                            <option value="10:00">10:00 WIB</option>
+                            <option value="14:00">14:00 WIB</option>
+                          </select>
+                        </div>
                       </div>
 
                       <button
@@ -3533,229 +3939,21 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 </div>
               </div>
 
-              {/* RIGHT COLUMN: Grid Calendar View */}
+              {/* RIGHT COLUMN: Calendar + Surveys List (kept on this page per spec) */}
               <div className="lg:col-span-2 flex flex-col gap-6">
-                <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
-                  {/* Calendar Month Selector Header */}
-                  <div className="flex justify-between items-center border-b border-border pb-3">
-                    <h2 className="text-sm font-bold text-foreground">Grid Kalender Pemakaian</h2>
-                    <div className="flex items-center gap-2">
-                      <button
-                        onClick={() => {
-                          if (currentMonth === 0) {
-                            setCurrentMonth(11);
-                            setCurrentYear(c => c - 1);
-                          } else {
-                            setCurrentMonth(m => m - 1);
-                          }
-                        }}
-                        className="p-1.5 bg-card border border-border rounded hover:bg-muted text-muted-foreground font-bold transition-colors"
-                      >
-                        &larr;
-                      </button>
-                      <span className="text-xs font-extrabold text-foreground uppercase tracking-wider font-mono">
-                        {new Date(currentYear, currentMonth).toLocaleString('id-ID', { month: 'long', year: 'numeric' })}
-                      </span>
-                      <button
-                        onClick={() => {
-                          if (currentMonth === 11) {
-                            setCurrentMonth(0);
-                            setCurrentYear(c => c + 1);
-                          } else {
-                            setCurrentMonth(m => m + 1);
-                          }
-                        }}
-                        className="p-1.5 bg-card border border-border rounded hover:bg-muted text-muted-foreground font-bold transition-colors"
-                      >
-                        &rarr;
-                      </button>
-                    </div>
-                  </div>
+                {renderCalendarGrid()}
+                {renderSurveysList()}
+              </div>
+            </div>
+          )}
 
-                  {/* Calendar Grid */}
-                  {(() => {
-                    // Calculate calendar days
-                    const firstDayOfMonth = new Date(currentYear, currentMonth, 1).getDay(); // 0 (Sunday) to 6 (Saturday)
-                    const daysInMonth = new Date(currentYear, currentMonth + 1, 0).getDate();
-                    
-                    const daysArray = [];
-                    // Pad previous month days
-                    const daysToPad = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1; // start week on Monday
-                    for (let i = 0; i < daysToPad; i++) {
-                      daysArray.push(null);
-                    }
-                    // Current month days
-                    for (let i = 1; i <= daysInMonth; i++) {
-                      daysArray.push(i);
-                    }
-
-                    const weekDays = ['Sen', 'Sel', 'Rab', 'Kam', 'Jum', 'Sab', 'Min'];
-
-                    return (
-                      <div className="space-y-4">
-                        <div className="grid grid-cols-7 gap-1.5 text-center text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-                          {weekDays.map((wd) => (
-                            <div key={wd} className="py-1 bg-muted rounded">{wd}</div>
-                          ))}
-                        </div>
-
-                        <div className="grid grid-cols-7 gap-1.5">
-                          {daysArray.map((day, idx) => {
-                            if (day === null) {
-                              return <div key={`empty-${idx}`} className="aspect-square bg-muted rounded-lg border border-dashed border-border"></div>;
-                            }
-
-                            const padZero = (n: number) => n.toString().padStart(2, '0');
-                            const dateStr = `${currentYear}-${padZero(currentMonth + 1)}-${padZero(day)}`;
-                            
-                            // Find bookings that fall on this day
-                            const dayBookings = bookings.filter((b) => dateStr >= b.startDate && dateStr <= b.endDate);
-                            // Find surveys on this day
-                            const daySurveys = surveys.filter((s) => s.date === dateStr && s.status !== 'CANCELLED');
-
-                            let cellBg = 'bg-card border-border hover:border-border';
-                            let numColor = 'text-muted-foreground';
-                            
-                            if (dayBookings.length > 0) {
-                              cellBg = 'bg-[#e0f2fe] border-sky-300 dark:border-sky-800 text-sky-950 dark:text-sky-200 hover:bg-sky-200';
-                              numColor = 'text-sky-700 dark:text-sky-300 font-extrabold';
-                            } else if (daySurveys.length > 0) {
-                              cellBg = 'bg-[#fef08a] border-yellow-350 text-yellow-950 dark:text-yellow-200 hover:bg-yellow-200';
-                              numColor = 'text-yellow-750 dark:text-yellow-200 font-extrabold';
-                            }
-
-                            return (
-                              <div
-                                key={`day-${day}`}
-                                className={`aspect-square p-1 border rounded-lg flex flex-col justify-between overflow-hidden shadow-sm transition-all ${cellBg}`}
-                              >
-                                <span className={`text-[10px] font-mono ${numColor}`}>{day}</span>
-                                <div className="flex flex-col gap-0.5 mt-1 overflow-y-auto scrollbar-none">
-                                  {dayBookings.map((b) => {
-                                    return (
-                                      <div
-                                        key={b.id}
-                                        title={`${b.activityName} (${b.roomCodes.join(', ')})`}
-                                        className="text-[7.5px] px-1 py-0.5 rounded border border-sky-200/50 dark:border-sky-800 bg-card/80 text-sky-900 dark:text-sky-200 leading-none font-bold truncate"
-                                      >
-                                        {b.activityName}
-                                      </div>
-                                    );
-                                  })}
-
-                                  {daySurveys.map((s) => (
-                                    <div
-                                      key={s.id}
-                                      title={`Survei: ${s.companyName} (Status: ${s.status})`}
-                                      className="text-[7.5px] px-1 py-0.5 rounded border border-yellow-250 dark:border-yellow-900 bg-card/80 text-yellow-900 dark:text-yellow-200 leading-none font-bold truncate"
-                                    >
-                                      🕵️ {s.companyName}
-                                    </div>
-                                  ))}
-                                </div>
-                              </div>
-                            );
-                          })}
-                        </div>
-                      </div>
-                    );
-                  })()}
-
-                  {/* Calendar Bookings List View */}
-                  <div className="mt-4 pt-4 border-t border-border">
-                    <h4 className="text-xs font-bold text-muted-foreground mb-3">Daftar Aktif Booking Tanggal</h4>
-                    {bookings.length === 0 ? (
-                      <p className="text-xs text-muted-foreground italic py-2">Belum ada booking terdaftar.</p>
-                    ) : (
-                      <div className="space-y-2 max-h-60 overflow-y-auto">
-                        {bookings.map((b) => (
-                          <div
-                            key={b.id}
-                            className="p-3 bg-muted border border-border rounded-xl flex items-center justify-between gap-4 text-xs text-foreground"
-                          >
-                            <div className="space-y-1">
-                              <div className="flex items-center gap-2">
-                                <span className="font-bold text-foreground">{b.activityName}</span>
-                                <span className={`text-[8px] border px-1.5 py-0.5 rounded font-extrabold ${
-                                  b.type === 'CONFIRMED'
-                                    ? 'bg-emerald-50 border-emerald-200 text-emerald-750'
-                                    : b.type === 'TENTATIVE'
-                                    ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-250 dark:border-amber-900 text-amber-750 dark:text-amber-200'
-                                    : 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900 text-red-750 dark:text-red-300'
-                                }`}>
-                                  {b.type}
-                                </span>
-                              </div>
-                              <p className="text-[10px] text-muted-foreground">
-                                Ruang: {b.roomCodes.join(', ')} | Periode: {b.startDate} s/d {b.endDate}
-                              </p>
-                              {b.notes && <p className="text-[9px] text-muted-foreground italic mt-1">&quot;{b.notes}&quot;</p>}
-                            </div>
-
-                            {role === 'PENGINPUT' && (
-                              <button
-                                onClick={() => handleDeleteBooking(b.id)}
-                                className="px-2.5 py-1 rounded bg-red-50 dark:bg-red-950/30 hover:bg-red-100 text-red-600 dark:text-red-300 border border-red-200 dark:border-red-900 text-[10px] font-bold transition-all shadow-sm"
-                              >
-                                Hapus
-                              </button>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Calendar Surveys List View */}
-                  <div className="mt-6 pt-4 border-t border-border">
-                    <h4 className="text-xs font-bold text-muted-foreground mb-3">Daftar Jadwal Survei Lokasi</h4>
-                    {surveys.filter(s => s.status !== 'CANCELLED').length === 0 ? (
-                      <p className="text-xs text-muted-foreground italic py-2">Belum ada survei terjadwal.</p>
-                    ) : (
-                      <div className="space-y-2 max-h-60 overflow-y-auto">
-                        {surveys.filter(s => s.status !== 'CANCELLED').map((s) => (
-                          <div
-                            key={s.id}
-                            className="p-3 bg-muted border border-border rounded-xl flex items-center justify-between gap-4 text-xs text-foreground"
-                          >
-                            <div className="space-y-1">
-                              <div className="flex items-center gap-2">
-                                <span className="font-bold text-foreground">{s.companyName}</span>
-                                <span className={`text-[8px] border px-1.5 py-0.5 rounded font-extrabold ${
-                                  s.status === 'SCHEDULED'
-                                    ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900 text-blue-750 dark:text-blue-300'
-                                    : 'bg-emerald-50 border-emerald-200 text-emerald-750'
-                                }`}>
-                                  {s.status}
-                                </span>
-                              </div>
-                              <p className="text-[10px] text-muted-foreground">
-                                Tanggal Kunjungan: {s.date} · Waktu Slot: 10:00 WIB
-                              </p>
-                            </div>
-
-                            {role === 'PENGINPUT' && s.status === 'SCHEDULED' && (
-                              <div className="flex gap-2">
-                                <button
-                                  onClick={() => handleUpdateSurvey(s.id, 'COMPLETED')}
-                                  className="px-2.5 py-1 rounded bg-emerald-50 hover:bg-emerald-100 text-emerald-600 border border-emerald-200 text-[10px] font-bold transition-all shadow-sm"
-                                >
-                                  Selesai
-                                </button>
-                                <button
-                                  onClick={() => handleUpdateSurvey(s.id, 'CANCELLED')}
-                                  className="px-2.5 py-1 rounded bg-red-50 dark:bg-red-950/30 hover:bg-red-100 text-red-650 dark:text-red-300 border border-red-200 dark:border-red-900 text-[10px] font-bold transition-all shadow-sm"
-                                >
-                                  Batal
-                                </button>
-                              </div>
-                            )}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-      </div>
+          {/* TAB: CALENDAR — REKAP PENJADWALAN */}
+          {activeTab === 'calendar_recap' && (
+            <div className="flex flex-col gap-6 animate-fadeIn">
+              {renderCalendarGrid()}
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {renderBookingsList()}
+                {renderSurveysList()}
               </div>
             </div>
           )}
@@ -4437,6 +4635,187 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     className="px-4 py-2 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-xs font-bold transition-colors shadow-sm"
                   >
                     Unduh Draf Kontrak (.txt)
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* EDIT MODAL: Booking Tanggal */}
+          {editingBooking && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 text-foreground font-sans">
+                <h3 className="text-sm font-bold text-[#0073C2] dark:text-sky-300 flex items-center gap-2 border-b border-border pb-3">
+                  <MapPin className="h-4 w-4" />
+                  Edit Booking Tanggal
+                </h3>
+
+                <div>
+                  <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Status Reservasi</label>
+                  <select
+                    value={editBookingType}
+                    onChange={(e) => setEditBookingType(e.target.value as BookingType)}
+                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                  >
+                    <option value="TENTATIVE">Tentatif (Tahap 1-4)</option>
+                    <option value="CONFIRMED">Terkunci / Confirmed (Tahap 5+)</option>
+                    <option value="UNAVAILABLE">Tidak Tersedia / Internal</option>
+                  </select>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Mulai</label>
+                    <input
+                      type="date"
+                      required
+                      value={editBookingStartDate}
+                      onChange={(e) => setEditBookingStartDate(e.target.value)}
+                      className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Selesai</label>
+                    <input
+                      type="date"
+                      required
+                      value={editBookingEndDate}
+                      onChange={(e) => setEditBookingEndDate(e.target.value)}
+                      className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Ruangan Di-Booking (pisahkan dengan koma)</label>
+                  <input
+                    type="text"
+                    value={editBookingRoomCodes}
+                    onChange={(e) => setEditBookingRoomCodes(e.target.value)}
+                    placeholder="mis. R101, R102"
+                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Catatan</label>
+                  <textarea
+                    value={editBookingNotes}
+                    onChange={(e) => setEditBookingNotes(e.target.value)}
+                    rows={2}
+                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2] resize-none"
+                  />
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2 border-t border-border">
+                  <button
+                    onClick={() => setEditingBooking(null)}
+                    className="px-4 py-2 rounded-lg bg-card border border-border hover:bg-muted text-xs font-bold text-foreground transition-colors shadow-sm"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={handleSaveEditBooking}
+                    className="px-4 py-2 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-xs font-bold transition-colors shadow-sm"
+                  >
+                    Simpan Perubahan
+                  </button>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* EDIT MODAL: Penjadwalan Survei */}
+          {editingSurvey && (
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-md p-6 space-y-4 text-foreground font-sans">
+                <h3 className="text-sm font-bold text-[#0073C2] dark:text-sky-300 flex items-center gap-2 border-b border-border pb-3">
+                  <CheckSquare className="h-4 w-4" />
+                  Edit Jadwal Survei
+                </h3>
+
+                <div>
+                  <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nama Pihak / Instansi Pengaju</label>
+                  <input
+                    type="text"
+                    required
+                    value={editSurveyCompanyName}
+                    onChange={(e) => setEditSurveyCompanyName(e.target.value)}
+                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Kunjungan Survei</label>
+                    <input
+                      type="date"
+                      required
+                      value={editSurveyDate}
+                      onChange={(e) => setEditSurveyDate(e.target.value)}
+                      className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Waktu Slot</label>
+                    <select
+                      value={editSurveyTimeSlot}
+                      onChange={(e) => setEditSurveyTimeSlot(e.target.value as '10:00' | '14:00')}
+                      className="w-full bg-card border border-border rounded-lg py-2 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                    >
+                      <option value="10:00">10:00 WIB</option>
+                      <option value="14:00">14:00 WIB</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className="text-[10px] font-semibold text-muted-foreground block mb-1">PIC Internal</label>
+                  <input
+                    type="text"
+                    value={editSurveyPicInternal}
+                    onChange={(e) => setEditSurveyPicInternal(e.target.value)}
+                    className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-3">
+                  <div>
+                    <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Jumlah Tamu</label>
+                    <input
+                      type="number"
+                      min={1}
+                      value={editSurveyGuestCount}
+                      onChange={(e) => setEditSurveyGuestCount(e.target.value)}
+                      className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                    />
+                  </div>
+                  <div>
+                    <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Status</label>
+                    <select
+                      value={editSurveyStatus}
+                      onChange={(e) => setEditSurveyStatus(e.target.value as Survey['status'])}
+                      className="w-full bg-card border border-border rounded-lg py-2 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
+                    >
+                      <option value="SCHEDULED">SCHEDULED</option>
+                      <option value="COMPLETED">COMPLETED</option>
+                      <option value="CANCELLED">CANCELLED</option>
+                    </select>
+                  </div>
+                </div>
+
+                <div className="flex justify-end gap-2 pt-2 border-t border-border">
+                  <button
+                    onClick={() => setEditingSurvey(null)}
+                    className="px-4 py-2 rounded-lg bg-card border border-border hover:bg-muted text-xs font-bold text-foreground transition-colors shadow-sm"
+                  >
+                    Batal
+                  </button>
+                  <button
+                    onClick={handleSaveEditSurvey}
+                    className="px-4 py-2 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-xs font-bold transition-colors shadow-sm"
+                  >
+                    Simpan Perubahan
                   </button>
                 </div>
               </div>
