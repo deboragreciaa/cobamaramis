@@ -2110,7 +2110,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               className="h-8 w-auto"
             />
             <span className="text-base font-extrabold tracking-tight text-white select-none">
-              Gedung AA Maramis
+              Gedung A.A. Maramis
             </span>
           </div>
         </div>
@@ -3934,7 +3934,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Kunjungan Survei</label>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1 min-h-[26px]">Tanggal Kunjungan Survei</label>
                           <input
                             type="date"
                             required
@@ -3944,7 +3944,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           />
                         </div>
                         <div>
-                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Waktu Slot</label>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1 min-h-[26px]">Waktu Slot</label>
                           <select
                             value={surveyTimeSlot}
                             onChange={(e) => setSurveyTimeSlot(e.target.value as '10:00' | '14:00')}
@@ -4847,7 +4847,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                 <div className="grid grid-cols-2 gap-3">
                   <div>
-                    <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Kunjungan Survei</label>
+                    <label className="text-[10px] font-semibold text-muted-foreground block mb-1 min-h-[26px]">Tanggal Kunjungan Survei</label>
                     <input
                       type="date"
                       required
@@ -4857,7 +4857,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     />
                   </div>
                   <div>
-                    <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Waktu Slot</label>
+                    <label className="text-[10px] font-semibold text-muted-foreground block mb-1 min-h-[26px]">Waktu Slot</label>
                     <select
                       value={editSurveyTimeSlot}
                       onChange={(e) => setEditSurveyTimeSlot(e.target.value as '10:00' | '14:00')}
