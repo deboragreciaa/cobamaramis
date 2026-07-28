@@ -1573,23 +1573,35 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
   // SCREEN 1: LOGIN FORM
   if (!user) {
     return (
-      <div className="flex-1 flex items-center justify-center p-4 bg-[#f4f6f9] dark:bg-background relative overflow-hidden font-sans">
-        {/* Decorative Gradients */}
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/5 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-yellow-400/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div
+        className="flex-1 flex items-center justify-center p-4 relative overflow-hidden font-sans bg-cover bg-center"
+        style={{ backgroundImage: "url('/foto_aa_maramis.webp')" }}
+      >
+        {/* Readability overlay over background photo */}
+        <div className="absolute inset-0 bg-[rgba(0,0,0,0.55)] pointer-events-none"></div>
 
-        <div className="w-full max-w-md bg-card border border-border rounded-2xl shadow-xl p-8 z-10">
+        <div
+          className="w-full max-w-md border border-border rounded-2xl shadow-xl p-8 z-10"
+          style={{ background: 'rgba(30, 30, 30, 0.70)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
+        >
           <div className="flex flex-col items-center mb-8">
-            <div className="p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-150 dark:border-blue-900 rounded-xl mb-4 text-[#0073C2] dark:text-sky-300">
-              <Building className="h-8 w-8" />
-            </div>
+            <img
+              src="/logo_aa_maramis_hitam.png"
+              alt="Logo Gedung A.A. Maramis"
+              className="block dark:hidden w-[300px] h-auto mb-4"
+            />
+            <img
+              src="/logo_aa_maramis_putih.png"
+              alt="Logo Gedung A.A. Maramis"
+              className="hidden dark:block w-[300px] h-auto mb-4"
+            />
             <h1 className="text-2xl font-bold text-center text-[#0073C2] dark:text-sky-300 tracking-wide">Gedung A.A. Maramis</h1>
             <p className="text-muted-foreground text-xs mt-1 text-center font-bold tracking-wider">SISTEM KELOLA SEWA INTERNAL — LMAN</p>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-foreground uppercase tracking-wider block">Username</label>
+              <label className="text-xs font-semibold text-white/90 uppercase tracking-wider block">Username</label>
               <input
                 type="text"
                 required
@@ -1605,7 +1617,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-foreground uppercase tracking-wider block">Kata Sandi</label>
+              <label className="text-xs font-semibold text-white/90 uppercase tracking-wider block">Kata Sandi</label>
               <input
                 type="password"
                 required
@@ -1650,11 +1662,17 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
   // SCREEN 2: ROLE SELECTION
   if (user && !role) {
     return (
-      <div className="flex-1 flex items-center justify-center p-4 bg-[#f4f6f9] dark:bg-background relative overflow-hidden font-sans">
-        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/5 rounded-full blur-3xl pointer-events-none"></div>
-        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-yellow-400/5 rounded-full blur-3xl pointer-events-none"></div>
+      <div
+        className="flex-1 flex items-center justify-center p-4 relative overflow-hidden font-sans bg-cover bg-center"
+        style={{ backgroundImage: "url('/foto_aa_maramis.webp')" }}
+      >
+        {/* Readability overlay over background photo */}
+        <div className="absolute inset-0 bg-[rgba(0,0,0,0.55)] pointer-events-none"></div>
 
-        <div className="w-full max-w-xl bg-card border border-border rounded-2xl shadow-xl p-8 z-10">
+        <div
+          className="w-full max-w-xl border border-border rounded-2xl shadow-xl p-8 z-10"
+          style={{ background: 'rgba(30, 30, 30, 0.70)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
+        >
           <div className="flex flex-col items-center mb-6">
             <h1 className="text-xl font-bold text-[#0073C2] dark:text-sky-300 tracking-wide">Pilih Peran Sesi Anda</h1>
             <p className="text-muted-foreground text-xs mt-1 font-semibold">Gedung A.A. Maramis — LMAN</p>
@@ -1664,13 +1682,14 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             {/* PENGINPUT BUTTON */}
             <button
               onClick={() => selectRole('PENGINPUT')}
-              className="group text-left p-6 bg-muted hover:bg-muted border border-border hover:border-amber-400 hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between"
+              className="group text-left p-6 border border-border hover:border-amber-400 hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between"
+              style={{ background: 'rgba(30, 30, 30, 0.70)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
             >
               <div>
                 <div className="h-10 w-10 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-amber-650 dark:text-amber-200 flex items-center justify-center mb-4 group-hover:bg-amber-100 transition-colors">
                   <Calculator className="h-5 w-5" />
                 </div>
-                <h3 className="text-foreground font-bold group-hover:text-amber-600 dark:text-amber-300 transition-colors">Penginput</h3>
+                <h3 className="text-white/90 font-bold group-hover:text-amber-600 dark:text-amber-300 transition-colors">Penginput</h3>
                 <p className="text-muted-foreground text-xs mt-2 leading-relaxed font-medium">
                   Akses penuh untuk input data klien, survei, booking, kelola parameter hitungan, membuat LOI/Perjanjian, serta mengunduh dokumen.
                 </p>
@@ -1681,13 +1700,14 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             {/* PEREVIEW BUTTON */}
             <button
               onClick={() => selectRole('PEREVIEW')}
-              className="group text-left p-6 bg-muted hover:bg-muted border border-border hover:border-blue-400 hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between"
+              className="group text-left p-6 border border-border hover:border-blue-400 hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between"
+              style={{ background: 'rgba(30, 30, 30, 0.70)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
             >
               <div>
                 <div className="h-10 w-10 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 text-blue-650 dark:text-blue-300 flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
                   <Layers className="h-5 w-5" />
                 </div>
-                <h3 className="text-foreground font-bold group-hover:text-[#0073C2] dark:text-sky-300 transition-colors">Pereview</h3>
+                <h3 className="text-white/90 font-bold group-hover:text-[#0073C2] dark:text-sky-300 transition-colors">Pereview</h3>
                 <p className="text-muted-foreground text-xs mt-2 leading-relaxed font-medium">
                   Akses pantau dan monitoring saja. Melihat progres tahap pemesanan, melihat katalog ruangan, dan menggunakan kalkulator penawaran.
                 </p>
@@ -1698,7 +1718,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
           <div className="flex justify-between items-center pt-6 border-t border-border mt-4">
             <span className="text-[11px] text-muted-foreground font-medium">
-              Sesi aktif: <span className="font-semibold text-foreground">{toUsernameDisplay(user.email)}</span>
+              Sesi aktif: <span className="font-semibold text-white/90">{toUsernameDisplay(user.email)}</span>
             </span>
             <button
               onClick={logout}
@@ -1720,11 +1740,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
       <header className="border-b border-[#0060a3] dark:border-[#0A4C87] bg-[#0073C2] dark:bg-[#0E5EA8] text-white sticky top-0 z-50 px-6 py-3 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
-            {/* Logo style: White door/book shape */}
-            <div className="h-7 w-6 bg-card rounded-r-md flex items-center justify-center relative shadow-sm">
-              <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#0073C2]"></div>
-              <div className="w-1.5 h-3 bg-[#0073C2]/20 rounded-sm"></div>
-            </div>
+            <img
+              src="/logo-lman-remove-bg.png"
+              alt="Logo LMAN"
+              className="h-8 w-auto"
+            />
             <span className="text-base font-extrabold tracking-tight text-white select-none">
               Gedung AA Maramis
             </span>
