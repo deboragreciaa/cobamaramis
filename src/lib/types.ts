@@ -3,8 +3,12 @@ export interface Client {
   companyName: string;
   picName: string;
   picPhone: string;
+  picTitle: string; // e.g. "Producer Summerland"
   createdAt: string;
   isActive?: boolean;
+  institutionName?: string;
+  signatoryName?: string;
+  signatoryTitle?: string;
 }
 
 export interface Submission {
@@ -22,6 +26,31 @@ export interface Submission {
   picInternal: string;
   createdAt: string;
   updatedAt: string;
+  
+  // Revised LOI fields
+  institutionName?: string;
+  signatoryName?: string;
+  signatoryTitle?: string;
+  eventName?: string;
+  objectDescription?: string;
+  areaText?: string;
+  eventDate?: string;
+  applicationLetterNo?: string;
+  applicationLetterDate?: string;
+  applicationSubject?: string;
+  offerValue?: number;
+
+  // Custom LOI Fields
+  loiNomorSurat?: string;
+  loiNomorSuratPemohon?: string;
+  loiTanggalSuratPemohon?: string;
+  loiPerihalSuratPemohon?: string;
+  loiTautanPerjanjian?: string;
+  loiTautanTataTertib?: string;
+  loiLuasAreaCustom?: string;
+  loiVerified?: boolean;
+  loiOfficialName?: string;
+  loiOfficialTitle?: string;
 }
 
 export type BookingType = 'TENTATIVE' | 'CONFIRMED' | 'UNAVAILABLE';
@@ -60,4 +89,13 @@ export interface AuditLog {
   action: string;
   details: string;
   createdAt: string;
+}
+
+export interface Official {
+  id: string;
+  name: string;
+  title: string;
+  ordinanceNumber: string;
+  ordinanceDate: string;
+  isActive: boolean;
 }

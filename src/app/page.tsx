@@ -25,14 +25,18 @@ import {
   getClosedSurveySlots,
   closeSurveySlot,
   openSurveySlot,
-  deleteSubmission
+  deleteSubmission,
+  getOfficials,
+  createOfficial,
+  updateOfficial,
+  setActiveOfficial
 } from '@/app/actions/db';
 import { Room, getQuickPackages, QuickPackage } from '@/lib/rooms-data';
 import { buildLoiText, buildPerjanjianText, formatTanggalIndo, formatJangkaWaktu, terbilang } from '@/lib/documents';
 import PizZip from 'pizzip';
 import Docxtemplater from 'docxtemplater';
 import { calculatePenawaran, formatRupiah, PURPOSE_OPTIONS, PurposeOption } from '@/lib/calculator';
-import { Client, Submission, Booking, Survey, ClosedSurveySlot, BookingType } from '@/lib/types';
+import { Client, Submission, Booking, Survey, ClosedSurveySlot, BookingType, Official } from '@/lib/types';
 import {
   Search,
   Filter,
@@ -58,7 +62,8 @@ import {
   Clock,
   ChevronLeft,
   ChevronRight,
-  X
+  X,
+  Award
 } from 'lucide-react';
 
 interface QuickPackageNew {
@@ -90,6 +95,9 @@ const EXCEL_PACKAGES: QuickPackageNew[] = [
   { id: 'L3-Total', floor: 3, label: 'Total Lantai 3', areaSqm: 3342 },
 ];
 
+// Strips the internal fixed domain so users only ever see the username they typed.
+const toUsernameDisplay = (email?: string | null) => email?.replace(/@maramis\.local$/, '') || '';
+
 export default function Home() {
   const { user, role, loading, error, login, selectRole, logout, isMock } = useAuth();
   
@@ -105,7 +113,7 @@ export default function Home() {
   }, []);
 
   // App States
-  const [emailInput, setEmailInput] = useState('team@maramis.go.id');
+  const [usernameInput, setUsernameInput] = useState('maramis');
   const [passwordInput, setPasswordInput] = useState('');
   const [activeTab, setActiveTab] = useState<'catalog' | 'calculator' | 'clients' | 'submissions' | 'calendar' | 'surveys' | 'documents' | 'doc_loi' | 'doc_prj'>('catalog');
   const [selectedPackageIds, setSelectedPackageIds] = useState<string[]>([]);
@@ -119,6 +127,7 @@ export default function Home() {
   const [bookings, setBookings] = useState<Booking[]>([]);
   const [surveys, setSurveys] = useState<Survey[]>([]);
   const [closedSlots, setClosedSlots] = useState<ClosedSurveySlot[]>([]);
+  const [officials, setOfficials] = useState<Official[]>([]);
   
   const [systemSettings, setSystemSettings] = useState<SystemSettings>({
     fairValuePerSqm: 50000,
@@ -158,8 +167,16 @@ export default function Home() {
   const [clientCompanyName, setClientCompanyName] = useState('');
   const [clientPicName, setClientPicName] = useState('');
   const [clientPicPhone, setClientPicPhone] = useState('');
+  const [clientPicTitle, setClientPicTitle] = useState('');
   const [selectedClientId, setSelectedClientId] = useState<string | null>(null);
   const [editingClientId, setEditingClientId] = useState<string | null>(null);
+
+  // Official settings states
+  const [editingOfficialId, setEditingOfficialId] = useState<string | null>(null);
+  const [officialName, setOfficialName] = useState('');
+  const [officialTitle, setOfficialTitle] = useState('');
+  const [officialOrdinanceNumber, setOfficialOrdinanceNumber] = useState('');
+  const [officialOrdinanceDate, setOfficialOrdinanceDate] = useState('');
   
   const activeClients = useMemo(() => {
     return clients.filter((c) => c.isActive !== false);
@@ -201,6 +218,14 @@ export default function Home() {
   const [loiJabatanPenandatangan, setLoiJabatanPenandatangan] = useState('Divisi Pengembangan dan Pendayagunaan Properti 1');
   const [loiTautanPerjanjian, setLoiTautanPerjanjian] = useState('');
   const [loiTautanTataTertib, setLoiTautanTataTertib] = useState('s.kemenkeu.go.id/TataTertibMaramis');
+  const [loiVerified, setLoiVerified] = useState(false);
+  const [loiTanggalSuratPemohon, setLoiTanggalSuratPemohon] = useState('');
+  const [loiPerihalSuratPemohon, setLoiPerihalSuratPemohon] = useState('');
+  const [loiLuasAreaCustom, setLoiLuasAreaCustom] = useState('');
+
+  const activeOfficial = useMemo(() => {
+    return officials.find((o) => o.isActive);
+  }, [officials]);
 
   useEffect(() => {
     if (activeLoiSubmission) {
@@ -210,10 +235,29 @@ export default function Home() {
       const cleanDate = startDate.replace(/-/g, '');
       const cleanCompany = client ? client.companyName.replace(/\s+/g, '') : 'Summerland';
       
-      setLoiTautanPerjanjian(`s.kemenkeu.go.id/${cleanCompany.toLowerCase()}${cleanDate}`);
-      setLoiTautanTataTertib('s.kemenkeu.go.id/TataTertibMaramis');
+      // Load custom inputs if saved, otherwise load default
+      setLoiNomorSurat(activeLoiSubmission.loiNomorSurat || '');
+      setLoiNomorSuratPemohon(activeLoiSubmission.loiNomorSuratPemohon || activeLoiSubmission.applicationLetterNo || '');
+      setLoiTanggalSuratPemohon(activeLoiSubmission.loiTanggalSuratPemohon || activeLoiSubmission.applicationLetterDate || activeLoiSubmission.createdAt.split('T')[0]);
+      setLoiPerihalSuratPemohon(activeLoiSubmission.loiPerihalSuratPemohon || activeLoiSubmission.applicationSubject || 'Surat Permohonan Perizinan Lokasi Syuting');
+      setLoiLuasAreaCustom(activeLoiSubmission.loiLuasAreaCustom || activeLoiSubmission.areaText || `±${new Intl.NumberFormat('id-ID').format(activeLoiSubmission.totalAreaSqm)} m2`);
+      setLoiTautanPerjanjian(activeLoiSubmission.loiTautanPerjanjian || `s.kemenkeu.go.id/${cleanCompany.toLowerCase()}${cleanDate}`);
+      setLoiTautanTataTertib(activeLoiSubmission.loiTautanTataTertib || 's.kemenkeu.go.id/TataTertibMaramis');
+      setLoiVerified(activeLoiSubmission.loiVerified || false);
+
+      // Load official snapshot if saved, otherwise load current active LMAN official
+      if (activeLoiSubmission.loiOfficialName) {
+        setLoiNamaPenandatangan(activeLoiSubmission.loiOfficialName);
+        setLoiJabatanPenandatangan(activeLoiSubmission.loiOfficialTitle || '');
+      } else if (activeOfficial) {
+        setLoiNamaPenandatangan(activeOfficial.name);
+        setLoiJabatanPenandatangan(activeOfficial.title);
+      } else {
+        setLoiNamaPenandatangan('Mahdi');
+        setLoiJabatanPenandatangan('Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan LMAN');
+      }
     }
-  }, [activeLoiSubmission, clients, bookings]);
+  }, [activeLoiSubmission, clients, bookings, activeOfficial]);
 
   const [activeAgreementSubmission, setActiveAgreementSubmission] = useState<Submission | null>(null);
   const [agreementNomor, setAgreementNomor] = useState('');
@@ -236,22 +280,23 @@ export default function Home() {
     return buildLoiText({
       nomorSurat: loiNomorSurat || '001/LMAN-P3/2026',
       tanggalSurat: new Date().toISOString().split('T')[0],
-      namaPemohon: client.picName,
-      jabatanPemohon: 'Pimpinan / Perwakilan ' + client.companyName,
-      instansiPemohon: client.companyName,
+      namaPemohon: client.signatoryName || client.picName,
+      jabatanPemohon: client.signatoryTitle || client.picTitle || ('Perwakilan ' + (client.institutionName || client.companyName)),
+      instansiPemohon: client.institutionName || client.companyName,
       nomorSuratPemohon: loiNomorSuratPemohon || '123/EXT/2026',
-      tanggalSuratPemohon: activeLoiSubmission.createdAt.split('T')[0],
-      perihalSuratPemohon: 'Permohonan Pemanfaatan Gedung A.A. Maramis',
-      objekPemanfaatan: activeLoiSubmission.roomCodes.join(', '),
+      tanggalSuratPemohon: loiTanggalSuratPemohon || activeLoiSubmission.createdAt.split('T')[0],
+      perihalSuratPemohon: loiPerihalSuratPemohon || 'Permohonan Pemanfaatan Gedung A.A. Maramis',
+      objekPemanfaatan: activeLoiSubmission.objectDescription || activeLoiSubmission.roomCodes.join(', '),
       luasAreaSqm: activeLoiSubmission.totalAreaSqm,
-      peruntukan: activeLoiSubmission.activityName,
+      luasAreaCustom: loiLuasAreaCustom,
+      peruntukan: activeLoiSubmission.eventName || activeLoiSubmission.activityName,
       tanggalMulai: startDate,
       tanggalSelesai: endDate,
       tarifDpp: dpp,
       ppn: ppn,
       totalTarif: activeLoiSubmission.estimatedCost,
       ppnRatePersen: systemSettings.ppnRate * 100,
-      tautanPerjanjian: loiTautanPerjanjian || `s.kemenkeu.go.id/${client.companyName.replace(/\s+/g, '').toLowerCase()}${startDate.replace(/-/g, '')}`,
+      tautanPerjanjian: loiTautanPerjanjian || `s.kemenkeu.go.id/${(client.institutionName || client.companyName).replace(/\s+/g, '').toLowerCase()}${startDate.replace(/-/g, '')}`,
       tautanTataTertib: loiTautanTataTertib || 's.kemenkeu.go.id/TataTertibMaramis',
       namaPenandatangan: loiNamaPenandatangan,
       jabatanPenandatangan: loiJabatanPenandatangan
@@ -263,6 +308,9 @@ export default function Home() {
     systemSettings,
     loiNomorSurat,
     loiNomorSuratPemohon,
+    loiTanggalSuratPemohon,
+    loiPerihalSuratPemohon,
+    loiLuasAreaCustom,
     loiNamaPenandatangan,
     loiJabatanPenandatangan,
     loiTautanPerjanjian,
@@ -366,25 +414,27 @@ export default function Home() {
         getSubmissions(),
         getBookings(),
         getSurveys(),
-        getClosedSurveySlots()
+        getClosedSurveySlots(),
+        getOfficials()
       ])
-        .then(([fetchedRooms, fetchedSettings, fetchedClients, fetchedSubmissions, fetchedBookings, fetchedSurveys, fetchedClosedSlots]) => {
+        .then(([fetchedRooms, fetchedSettings, fetchedClients, fetchedSubmissions, fetchedBookings, fetchedSurveys, fetchedClosedSlots, fetchedOfficials]) => {
           setRooms(fetchedRooms);
           setSystemSettings(fetchedSettings);
+          setOfficials(fetchedOfficials);
           
-          // Merge fetched database items with current client-side state synchronously
+          // Merge fetched database items with current client-side state synchronously (Database overrides localStorage)
           const localSubs = typeof window !== 'undefined' ? localStorage.getItem('maramis_submissions') : null;
           const currentSubs: Submission[] = localSubs ? JSON.parse(localSubs) : [];
-          const mergedSubs = [...currentSubs];
-          fetchedSubmissions.forEach(s => {
+          const mergedSubs = [...fetchedSubmissions];
+          currentSubs.forEach(s => {
             if (!mergedSubs.some(m => m.id === s.id)) mergedSubs.push(s);
           });
           setSubmissions(mergedSubs);
 
           const localClients = typeof window !== 'undefined' ? localStorage.getItem('maramis_clients') : null;
           const currentClients: Client[] = localClients ? JSON.parse(localClients) : [];
-          const mergedClients = [...currentClients];
-          fetchedClients.forEach(c => {
+          const mergedClients = [...fetchedClients];
+          currentClients.forEach(c => {
             if (!mergedClients.some(m => m.id === c.id)) mergedClients.push(c);
           });
 
@@ -396,6 +446,10 @@ export default function Home() {
                 companyName: sub.companyName,
                 picName: 'PIC Kontak ' + sub.companyName,
                 picPhone: '08123456789',
+                picTitle: 'Pimpinan / Perwakilan ' + sub.companyName,
+                institutionName: sub.companyName,
+                signatoryName: 'PIC Kontak ' + sub.companyName,
+                signatoryTitle: 'Pimpinan / Perwakilan ' + sub.companyName,
                 createdAt: sub.createdAt || new Date().toISOString(),
                 isActive: true
               });
@@ -404,29 +458,29 @@ export default function Home() {
           
           setClients(mergedClients.sort((a, b) => a.companyName.localeCompare(b.companyName)));
 
-          setBookings(prev => {
-            const merged = [...prev];
-            fetchedBookings.forEach(b => {
-              if (!merged.some(m => m.id === b.id)) merged.push(b);
-            });
-            return merged;
+          const localBookings = typeof window !== 'undefined' ? localStorage.getItem('maramis_bookings') : null;
+          const currentBookings: Booking[] = localBookings ? JSON.parse(localBookings) : [];
+          const mergedBookings = [...fetchedBookings];
+          currentBookings.forEach(b => {
+            if (!mergedBookings.some(m => m.id === b.id)) mergedBookings.push(b);
           });
+          setBookings(mergedBookings);
 
-          setSurveys(prev => {
-            const merged = [...prev];
-            fetchedSurveys.forEach(s => {
-              if (!merged.some(m => m.id === s.id)) merged.push(s);
-            });
-            return merged;
+          const localSurveys = typeof window !== 'undefined' ? localStorage.getItem('maramis_surveys') : null;
+          const currentSurveys: Survey[] = localSurveys ? JSON.parse(localSurveys) : [];
+          const mergedSurveys = [...fetchedSurveys];
+          currentSurveys.forEach(s => {
+            if (!mergedSurveys.some(m => m.id === s.id)) mergedSurveys.push(s);
           });
+          setSurveys(mergedSurveys);
 
-          setClosedSlots(prev => {
-            const merged = [...prev];
-            fetchedClosedSlots.forEach(s => {
-              if (!merged.some(m => m.id === s.id)) merged.push(s);
-            });
-            return merged;
+          const localClosedSlots = typeof window !== 'undefined' ? localStorage.getItem('maramis_closed_slots') : null;
+          const currentClosedSlots: ClosedSurveySlot[] = localClosedSlots ? JSON.parse(localClosedSlots) : [];
+          const mergedClosedSlots = [...fetchedClosedSlots];
+          currentClosedSlots.forEach(s => {
+            if (!mergedClosedSlots.some(m => m.id === s.id)) mergedClosedSlots.push(s);
           });
+          setClosedSlots(mergedClosedSlots);
           
           // Seed the calculator factors with default settings
           setCustomReturnRate((fetchedSettings.returnRate * 100).toString());
@@ -440,13 +494,13 @@ export default function Home() {
   // Handle Login Submission
   const handleLoginSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    await login(passwordInput, emailInput);
+    await login(passwordInput, usernameInput);
   };
 
   // F3 Client Handlers
   const handleCreateClient = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!clientCompanyName || !clientPicName || !clientPicPhone) {
+    if (!clientCompanyName || !clientPicName || !clientPicPhone || !clientPicTitle) {
       alert('Semua field wajib diisi.');
       return;
     }
@@ -455,12 +509,17 @@ export default function Home() {
         companyName: clientCompanyName,
         picName: clientPicName,
         picPhone: clientPicPhone,
+        picTitle: clientPicTitle,
+        institutionName: clientCompanyName,
+        signatoryName: clientPicName,
+        signatoryTitle: clientPicTitle
       });
       setClients((prev) => [...prev, newClient].sort((a, b) => a.companyName.localeCompare(b.companyName)));
       // Reset form
       setClientCompanyName('');
       setClientPicName('');
       setClientPicPhone('');
+      setClientPicTitle('');
       alert('Klien baru berhasil ditambahkan!');
     } catch (err) {
       console.error(err);
@@ -471,7 +530,7 @@ export default function Home() {
   const handleUpdateClient = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingClientId) return;
-    if (!clientCompanyName || !clientPicName || !clientPicPhone) {
+    if (!clientCompanyName || !clientPicName || !clientPicPhone || !clientPicTitle) {
       alert('Semua field wajib diisi.');
       return;
     }
@@ -480,6 +539,10 @@ export default function Home() {
         companyName: clientCompanyName,
         picName: clientPicName,
         picPhone: clientPicPhone,
+        picTitle: clientPicTitle,
+        institutionName: clientCompanyName,
+        signatoryName: clientPicName,
+        signatoryTitle: clientPicTitle
       });
       if (success) {
         await createAuditLog(
@@ -494,6 +557,10 @@ export default function Home() {
                   companyName: clientCompanyName,
                   picName: clientPicName,
                   picPhone: clientPicPhone,
+                  picTitle: clientPicTitle,
+                  institutionName: clientCompanyName,
+                  signatoryName: clientPicName,
+                  signatoryTitle: clientPicTitle
                 }
               : c
           ).sort((a, b) => a.companyName.localeCompare(b.companyName))
@@ -502,6 +569,7 @@ export default function Home() {
         setClientCompanyName('');
         setClientPicName('');
         setClientPicPhone('');
+        setClientPicTitle('');
         setEditingClientId(null);
         alert('Perubahan data klien berhasil disimpan!');
       } else {
@@ -563,6 +631,151 @@ export default function Home() {
     }
   };
 
+  // LMAN Official Handlers
+  const handleCreateOfficial = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!officialName || !officialTitle || !officialOrdinanceNumber || !officialOrdinanceDate) {
+      alert('Semua field pejabat wajib diisi.');
+      return;
+    }
+    try {
+      const newOfficial = await createOfficial({
+        name: officialName,
+        title: officialTitle,
+        ordinanceNumber: officialOrdinanceNumber,
+        ordinanceDate: officialOrdinanceDate,
+        isActive: officials.length === 0
+      });
+      setOfficials((prev) => [...prev, newOfficial]);
+      setOfficialName('');
+      setOfficialTitle('');
+      setOfficialOrdinanceNumber('');
+      setOfficialOrdinanceDate('');
+      alert('Pejabat LMAN baru berhasil ditambahkan!');
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menambahkan pejabat.');
+    }
+  };
+
+  const handleUpdateOfficial = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!editingOfficialId) return;
+    if (!officialName || !officialTitle || !officialOrdinanceNumber || !officialOrdinanceDate) {
+      alert('Semua field pejabat wajib diisi.');
+      return;
+    }
+    try {
+      const success = await updateOfficial(editingOfficialId, {
+        name: officialName,
+        title: officialTitle,
+        ordinanceNumber: officialOrdinanceNumber,
+        ordinanceDate: officialOrdinanceDate,
+      });
+      if (success) {
+        setOfficials((prev) =>
+          prev.map((o) =>
+            o.id === editingOfficialId
+              ? {
+                  ...o,
+                  name: officialName,
+                  title: officialTitle,
+                  ordinanceNumber: officialOrdinanceNumber,
+                  ordinanceDate: officialOrdinanceDate,
+                }
+              : o
+          )
+        );
+        setEditingOfficialId(null);
+        setOfficialName('');
+        setOfficialTitle('');
+        setOfficialOrdinanceNumber('');
+        setOfficialOrdinanceDate('');
+        alert('Perubahan data pejabat berhasil disimpan!');
+      } else {
+        alert('Gagal menyimpan perubahan pejabat.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menyimpan perubahan pejabat.');
+    }
+  };
+
+  const handleToggleActiveOfficial = async (id: string, name: string) => {
+    try {
+      const success = await setActiveOfficial(id);
+      if (success) {
+        setOfficials((prev) =>
+          prev.map((o) => ({
+            ...o,
+            isActive: o.id === id
+          }))
+        );
+        await createAuditLog('Ubah Pejabat LMAN Aktif', `Menetapkan ${name} sebagai pejabat aktif LMAN`);
+        alert(`${name} sekarang ditetapkan sebagai pejabat aktif.`);
+      } else {
+        alert('Gagal mengubah pejabat aktif.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Gagal mengubah pejabat aktif.');
+    }
+  };
+
+  const handleSaveLoiParams = async (sub: Submission) => {
+    try {
+      const client = clients.find(c => c.id === sub.clientId);
+      const subBookings = bookings.filter(b => b.submissionId === sub.id);
+      const startDate = subBookings.length > 0 ? subBookings[0].startDate : new Date().toISOString().split('T')[0];
+      const endDate = subBookings.length > 0 ? subBookings[subBookings.length - 1].endDate : new Date().toISOString().split('T')[0];
+
+      const inputData = {
+        loiNomorSurat: loiNomorSurat || 'S-229/LMAN/LMAN.4/2026',
+        loiNomorSuratPemohon: loiNomorSuratPemohon || sub.applicationLetterNo || 'SPL/017/140126/ROSE/SUMMERLAND',
+        loiTanggalSuratPemohon: loiTanggalSuratPemohon || sub.applicationLetterDate || sub.createdAt.split('T')[0],
+        loiPerihalSuratPemohon: loiPerihalSuratPemohon || sub.applicationSubject || 'Surat Permohonan Perizinan Lokasi Syuting',
+        loiTautanPerjanjian: loiTautanPerjanjian || `s.kemenkeu.go.id/${client ? (client.institutionName || client.companyName).replace(/\s+/g, '').toLowerCase() : 'summerland'}${startDate.replace(/-/g, '')}`,
+        loiTautanTataTertib: loiTautanTataTertib || 's.kemenkeu.go.id/TataTertibMaramis',
+        loiLuasArea: loiLuasAreaCustom || sub.areaText || `±${new Intl.NumberFormat('id-ID').format(sub.totalAreaSqm)} m2`,
+        loiNamaPenandatangan: loiNamaPenandatangan || 'Mahdi',
+      };
+
+      const updatedSub = {
+        ...sub,
+        loiNomorSurat: inputData.loiNomorSurat,
+        loiNomorSuratPemohon: inputData.loiNomorSuratPemohon,
+        loiTanggalSuratPemohon: inputData.loiTanggalSuratPemohon,
+        loiPerihalSuratPemohon: inputData.loiPerihalSuratPemohon,
+        loiTautanPerjanjian: inputData.loiTautanPerjanjian,
+        loiTautanTataTertib: inputData.loiTautanTataTertib,
+        loiLuasAreaCustom: inputData.loiLuasArea,
+        loiVerified: loiVerified,
+        loiOfficialName: inputData.loiNamaPenandatangan,
+        loiOfficialTitle: loiJabatanPenandatangan || 'Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan LMAN',
+        
+        // Sync revised prompt fields
+        institutionName: client ? (client.institutionName || client.companyName) : sub.companyName,
+        signatoryName: client ? (client.signatoryName || client.picName) : 'Razka Robby Ertanto',
+        signatoryTitle: client ? (client.signatoryTitle || client.picTitle) : 'Producer Summerland',
+        eventName: sub.eventName || sub.activityName,
+        objectDescription: sub.objectDescription || sub.roomCodes.join(', '),
+        areaText: inputData.loiLuasArea,
+        eventDate: sub.eventDate || formatJangkaWaktu(startDate, endDate),
+        applicationLetterNo: inputData.loiNomorSuratPemohon,
+        applicationLetterDate: inputData.loiTanggalSuratPemohon,
+        applicationSubject: inputData.loiPerihalSuratPemohon,
+        offerValue: sub.offerValue || sub.estimatedCost
+      };
+
+      await updateSubmission(sub.id, updatedSub);
+      setSubmissions(prev => prev.map(s => s.id === sub.id ? updatedSub : s));
+      alert('Parameter LOI berhasil disimpan ke data pengajuan sewa!');
+    } catch (err) {
+      console.error(err);
+      alert('Gagal menyimpan parameter LOI.');
+    }
+  };
+
   // F7 & F8 DOCX Download Handlers
   const handleDownloadLoiDocx = async (sub: Submission) => {
     try {
@@ -584,12 +797,11 @@ export default function Home() {
       // Replace hardcoded Summerland text with dynamic placeholders in document.xml
       docXml = docXml.replaceAll('S-229/LMAN/LMAN.4/2026', '{loiNomorSurat}');
       docXml = docXml.replaceAll('22 Mei 2026', '{loiTanggalSurat}');
-      docXml = docXml.replaceAll('Sdr. Razka Robby Ertanto', '{loiNamaPemohon}');
+      docXml = docXml.replaceAll('Razka Robby Ertanto', '{loiNamaPemohon}');
       docXml = docXml.replaceAll('Producer Summerland', '{loiJabatanPemohon}');
       docXml = docXml.replaceAll('SPL/017/140126/ROSE/SUMMERLAND', '{loiNomorSuratPemohon}');
       docXml = docXml.replaceAll('28 Januari 2026', '{loiTanggalSuratPemohon}');
       docXml = docXml.replaceAll('Surat Permohonan Perizinan Lokasi Syuting', '{loiPerihalSuratPemohon}');
-      docXml = docXml.replaceAll('Razka Robby Ertanto', '{loiPemohon}');
       docXml = docXml.replaceAll('Ruangan pada Gedung A.A. Maramis', '{loiObjekPemanfaatan}');
       docXml = docXml.replaceAll('Jalan Lapangan Banteng Timur nomor 2 - 4, Kelurahan Pasar baru, Kecamatan Sawah Besar, Kota Jakarta Pusat', '{loiAlamatAset}');
       docXml = docXml.replaceAll('±1.182 m2', '{loiLuasArea}');
@@ -619,27 +831,57 @@ export default function Home() {
       const inputData = {
         loiNomorSurat: loiNomorSurat || 'S-229/LMAN/LMAN.4/2026',
         loiTanggalSurat: formatTanggalIndo(new Date().toISOString().split('T')[0]),
-        loiNamaPemohon: client ? client.picName : 'Razka Robby Ertanto',
-        loiJabatanPemohon: client ? ('Perwakilan ' + client.companyName) : 'Producer Summerland',
-        loiNomorSuratPemohon: loiNomorSuratPemohon || 'SPL/017/140126/ROSE/SUMMERLAND',
-        loiTanggalSuratPemohon: formatTanggalIndo(sub.createdAt.split('T')[0]),
-        loiPerihalSuratPemohon: 'Permohonan Pemanfaatan Gedung A.A. Maramis',
-        loiPemohon: client ? client.picName : 'Razka Robby Ertanto',
-        loiObjekPemanfaatan: sub.roomCodes.join(', '),
+        loiNamaPemohon: client ? (client.signatoryName || client.picName) : 'Razka Robby Ertanto',
+        loiJabatanPemohon: client ? (client.signatoryTitle || client.picTitle || 'Perwakilan ' + (client.institutionName || client.companyName)) : 'Producer Summerland',
+        loiNomorSuratPemohon: loiNomorSuratPemohon || sub.applicationLetterNo || 'SPL/017/140126/ROSE/SUMMERLAND',
+        loiTanggalSuratPemohon: formatTanggalIndo(loiTanggalSuratPemohon || sub.applicationLetterDate || sub.createdAt.split('T')[0]),
+        loiPerihalSuratPemohon: loiPerihalSuratPemohon || sub.applicationSubject || 'Surat Permohonan Perizinan Lokasi Syuting',
+        loiObjekPemanfaatan: sub.objectDescription || sub.roomCodes.join(', '),
         loiAlamatAset: 'Jalan Lapangan Banteng Timur nomor 2 - 4, Kelurahan Pasar baru, Kecamatan Sawah Besar, Kota Jakarta Pusat',
-        loiLuasArea: `±${new Intl.NumberFormat('id-ID').format(sub.totalAreaSqm)} m2`,
-        loiPeruntukan: sub.activityName,
-        loiJangkaWaktu: formatJangkaWaktu(startDate, endDate),
+        loiLuasArea: loiLuasAreaCustom || sub.areaText || `±${new Intl.NumberFormat('id-ID').format(sub.totalAreaSqm)} m2`,
+        loiPeruntukan: sub.eventName || sub.activityName,
+        loiJangkaWaktu: sub.eventDate || formatJangkaWaktu(startDate, endDate),
         loiTarifDpp: 'Rp' + new Intl.NumberFormat('id-ID').format(Math.floor(dpp)),
         loiTarifDppTerbilang: terbilang(dpp) + ' rupiah',
         loiPpn: 'Rp' + new Intl.NumberFormat('id-ID').format(Math.floor(ppn)),
         loiPpnTerbilang: terbilang(ppn) + ' rupiah',
         loiTotalTarif: 'Rp' + new Intl.NumberFormat('id-ID').format(sub.estimatedCost),
         loiTotalTarifTerbilang: terbilang(sub.estimatedCost) + ' rupiah',
-        loiTautanPerjanjian: loiTautanPerjanjian || `s.kemenkeu.go.id/${client ? client.companyName.replace(/\s+/g, '').toLowerCase() : 'summerland'}${startDate.replace(/-/g, '')}`,
+        loiTautanPerjanjian: loiTautanPerjanjian || `s.kemenkeu.go.id/${client ? (client.institutionName || client.companyName).replace(/\s+/g, '').toLowerCase() : 'summerland'}${startDate.replace(/-/g, '')}`,
         loiTautanTataTertib: loiTautanTataTertib || 's.kemenkeu.go.id/TataTertibMaramis',
         loiNamaPenandatangan: loiNamaPenandatangan || 'Mahdi'
       };
+
+      // Save snapshots and revised fields to database
+      const updatedSub = {
+        ...sub,
+        loiNomorSurat: inputData.loiNomorSurat,
+        loiNomorSuratPemohon: inputData.loiNomorSuratPemohon,
+        loiTanggalSuratPemohon: loiTanggalSuratPemohon || sub.applicationLetterDate || sub.createdAt.split('T')[0],
+        loiPerihalSuratPemohon: inputData.loiPerihalSuratPemohon,
+        loiTautanPerjanjian: inputData.loiTautanPerjanjian,
+        loiTautanTataTertib: inputData.loiTautanTataTertib,
+        loiLuasAreaCustom: inputData.loiLuasArea,
+        loiVerified: true,
+        loiOfficialName: inputData.loiNamaPenandatangan,
+        loiOfficialTitle: loiJabatanPenandatangan || 'Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan LMAN',
+        
+        // Sync revised prompt fields
+        institutionName: client ? (client.institutionName || client.companyName) : sub.companyName,
+        signatoryName: inputData.loiNamaPemohon,
+        signatoryTitle: inputData.loiJabatanPemohon,
+        eventName: inputData.loiPeruntukan,
+        objectDescription: inputData.loiObjekPemanfaatan,
+        areaText: inputData.loiLuasArea,
+        eventDate: inputData.loiJangkaWaktu,
+        applicationLetterNo: inputData.loiNomorSuratPemohon,
+        applicationLetterDate: loiTanggalSuratPemohon || sub.applicationLetterDate || sub.createdAt.split('T')[0],
+        applicationSubject: inputData.loiPerihalSuratPemohon,
+        offerValue: sub.estimatedCost
+      };
+      await updateSubmission(sub.id, updatedSub);
+      setSubmissions(prev => prev.map(s => s.id === sub.id ? updatedSub : s));
+      setLoiVerified(true);
 
       doc.render(inputData);
 
@@ -807,6 +1049,24 @@ export default function Home() {
         estimatedCost: currentCost,
         notes: subNotes,
         picInternal: subPicInternal,
+        institutionName: client.companyName,
+        signatoryName: client.picName,
+        signatoryTitle: client.picTitle,
+        eventName: subActivityName,
+        objectDescription: currentRooms.join(', '),
+        areaText: `±${new Intl.NumberFormat('id-ID').format(totalSelectedArea)} m2`,
+        offerValue: currentCost,
+        applicationLetterNo: '',
+        applicationLetterDate: '',
+        applicationSubject: 'Surat Permohonan Perizinan Lokasi Syuting',
+        eventDate: '',
+        loiNomorSurat: '',
+        loiNomorSuratPemohon: '',
+        loiTanggalSuratPemohon: '',
+        loiPerihalSuratPemohon: 'Surat Permohonan Perizinan Lokasi Syuting',
+        loiTautanPerjanjian: '',
+        loiTautanTataTertib: 's.kemenkeu.go.id/TataTertibMaramis',
+        loiLuasAreaCustom: `±${new Intl.NumberFormat('id-ID').format(totalSelectedArea)} m2`
       });
       setSubmissions((prev) => [newSub, ...prev]);
       setSubClientId('');
@@ -900,6 +1160,20 @@ export default function Home() {
       }
 
       setBookings((prev) => [...prev, res]);
+      
+      if (bookingSubmissionId) {
+        const formattedDateRange = formatJangkaWaktu(bookingStartDate, bookingEndDate);
+        const subToUpdate = submissions.find(s => s.id === bookingSubmissionId);
+        if (subToUpdate) {
+          const updated = {
+            ...subToUpdate,
+            eventDate: formattedDateRange
+          };
+          await updateSubmission(bookingSubmissionId, { eventDate: formattedDateRange });
+          setSubmissions(prev => prev.map(s => s.id === bookingSubmissionId ? updated : s));
+        }
+      }
+
       // Reset form
       setBookingStartDate('');
       setBookingEndDate('');
@@ -1315,13 +1589,16 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
           <form onSubmit={handleLoginSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider block">Email Tim</label>
+              <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider block">Username</label>
               <input
-                type="email"
+                type="text"
                 required
-                value={emailInput}
-                onChange={(e) => setEmailInput(e.target.value)}
-                placeholder="Masukkan email tim terdaftar"
+                value={usernameInput}
+                onChange={(e) => setUsernameInput(e.target.value)}
+                placeholder="username"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
                 className="w-full bg-white border border-slate-300 rounded-lg py-2.5 px-3 text-slate-800 text-sm focus:outline-none focus:border-[#0073C2] focus:ring-1 focus:ring-[#0073C2] transition-colors"
               />
               <span className="text-[10px] text-slate-400 block">Satu akun bersama untuk seluruh tim pengelola.</span>
@@ -1421,7 +1698,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
           <div className="flex justify-between items-center pt-6 border-t border-slate-100 mt-4">
             <span className="text-[11px] text-slate-500 font-medium">
-              Sesi aktif: <span className="font-semibold text-slate-800">{user.email}</span>
+              Sesi aktif: <span className="font-semibold text-slate-800">{toUsernameDisplay(user.email)}</span>
             </span>
             <button
               onClick={logout}
@@ -1475,7 +1752,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   {role === 'PENGINPUT' ? 'TIM PENGINPUT LMAN' : 'TIM PEREVIEW LMAN'}
                 </div>
                 <div className="text-[10px] text-sky-200 font-mono mt-0.5 tracking-wider truncate">
-                  {user?.email || 'team@maramis.go.id'}
+                  {toUsernameDisplay(user?.email) || 'maramis'}
                 </div>
                 <div className="text-[9px] text-white/80 mt-1.5 leading-relaxed">
                   Divisi Pengembangan dan Pendayagunaan Properti 1, Lembaga Manajemen Aset Negara
@@ -2387,8 +2664,9 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
           {/* TAB: CLIENTS (F3) */}
           {activeTab === 'clients' && (
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
-              {/* LEFT: Client Form (Penginput Only) */}
-              <div className="lg:col-span-1">
+              {/* LEFT: Client Form (Penginput Only) & LMAN Officials Settings */}
+              <div className="lg:col-span-1 flex flex-col gap-6">
+                {/* Client Form Card */}
                 <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
                   <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
                     {editingClientId ? (
@@ -2441,6 +2719,18 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Sebutan/Jabatan PIC Klien (e.g. Producer Summerland)</label>
+                        <input
+                          type="text"
+                          required
+                          value={clientPicTitle}
+                          onChange={(e) => setClientPicTitle(e.target.value)}
+                          placeholder="e.g., Producer Summerland"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
                       <div className="p-2.5 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg text-[9px] leading-relaxed">
                         ⚠️ <strong>Perlindungan Data Klien (A3)</strong>: Dilarang keras menginput identitas pribadi sensitif seperti NIK, data KTP, paspor, tanggal lahir, atau alamat pribadi.
                       </div>
@@ -2465,10 +2755,161 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               setClientCompanyName('');
                               setClientPicName('');
                               setClientPicPhone('');
+                              setClientPicTitle('');
                             }}
                             className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-xs transition-colors"
                           >
                             Batal Edit
+                          </button>
+                        )}
+                      </div>
+                    </form>
+                  )}
+                </div>
+
+                {/* LMAN Officials settings card */}
+                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
+                  <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                    <Award className="h-4 w-4 text-[#0073C2]" />
+                    <span>Daftar Pejabat LMAN</span>
+                  </h2>
+                  
+                  {activeOfficial ? (
+                    <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs">
+                      <div className="flex justify-between items-start">
+                        <span className="font-extrabold text-[9px] text-emerald-800 uppercase tracking-wider">Pejabat Aktif</span>
+                        <span className="bg-emerald-200 text-emerald-800 text-[8px] font-extrabold px-1.5 py-0.5 rounded">Aktif</span>
+                      </div>
+                      <div className="font-bold mt-1 text-slate-800">{activeOfficial.name}</div>
+                      <div className="text-[10px] text-slate-600 mt-0.5 leading-normal">{activeOfficial.title}</div>
+                      <div className="text-[9px] text-slate-500 mt-1.5">SK: {activeOfficial.ordinanceNumber} ({formatTanggalIndo(activeOfficial.ordinanceDate)})</div>
+                    </div>
+                  ) : (
+                    <div className="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-xs italic">
+                      Belum ada pejabat LMAN yang ditandai aktif. LOI akan menggunakan nama default.
+                    </div>
+                  )}
+
+                  <div className="space-y-2 mt-2">
+                    <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pilih Pejabat Penandatangan</h3>
+                    {officials.length === 0 ? (
+                      <p className="text-[10px] text-slate-500 italic">Belum ada daftar pejabat.</p>
+                    ) : (
+                      <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
+                        {officials.map((o) => (
+                          <div key={o.id} className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between gap-3">
+                            <div className="min-w-0 flex-1">
+                              <div className="font-bold text-xs text-slate-800 truncate">{o.name}</div>
+                              <div className="text-[9px] text-slate-500 truncate">{o.title}</div>
+                            </div>
+                            <div className="flex items-center gap-1.5 shrink-0">
+                              {o.isActive ? (
+                                <span className="text-[8px] text-emerald-600 font-extrabold bg-emerald-100 border border-emerald-200 px-1.5 py-0.5 rounded">Aktif</span>
+                              ) : (
+                                <button
+                                  onClick={() => handleToggleActiveOfficial(o.id, o.name)}
+                                  className="px-2 py-0.5 text-[8px] font-bold bg-white border border-slate-250 hover:bg-slate-50 text-slate-700 rounded transition-all shadow-sm"
+                                >
+                                  Aktifkan
+                                </button>
+                              )}
+                              
+                              {role === 'PENGINPUT' && (
+                                <button
+                                  onClick={() => {
+                                    setEditingOfficialId(o.id);
+                                    setOfficialName(o.name);
+                                    setOfficialTitle(o.title);
+                                    setOfficialOrdinanceNumber(o.ordinanceNumber);
+                                    setOfficialOrdinanceDate(o.ordinanceDate);
+                                  }}
+                                  className="p-0.5 text-slate-400 hover:text-slate-650 transition-colors"
+                                  title="Edit Data Pejabat"
+                                >
+                                  <Settings className="h-3.5 w-3.5 text-slate-500" />
+                                </button>
+                              )}
+                            </div>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+
+                  {role === 'PENGINPUT' && (
+                    <form onSubmit={editingOfficialId ? handleUpdateOfficial : handleCreateOfficial} className="space-y-3 pt-3 border-t border-slate-100">
+                      <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                        {editingOfficialId ? 'Edit Pejabat LMAN' : 'Tambah Pejabat LMAN'}
+                      </h3>
+                      <div>
+                        <label className="text-[9px] font-semibold text-slate-500 block mb-1">Nama Pejabat</label>
+                        <input
+                          type="text"
+                          required
+                          value={officialName}
+                          onChange={(e) => setOfficialName(e.target.value)}
+                          placeholder="e.g. Mahdi"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-[11px] text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-[9px] font-semibold text-slate-500 block mb-1">Jabatan Resmi</label>
+                        <input
+                          type="text"
+                          required
+                          value={officialTitle}
+                          onChange={(e) => setOfficialTitle(e.target.value)}
+                          placeholder="e.g. Pelaksana Tugas Direktur Pengembangan..."
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-[11px] text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+                      <div className="grid grid-cols-2 gap-2">
+                        <div>
+                          <label className="text-[9px] font-semibold text-slate-500 block mb-1">Nomor SK / Ordinance</label>
+                          <input
+                            type="text"
+                            required
+                            value={officialOrdinanceNumber}
+                            onChange={(e) => setOfficialOrdinanceNumber(e.target.value)}
+                            placeholder="e.g. PRIN-10/LMAN/2024"
+                            className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-[11px] text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[9px] font-semibold text-slate-500 block mb-1">Tanggal SK</label>
+                          <input
+                            type="date"
+                            required
+                            value={officialOrdinanceDate}
+                            onChange={(e) => setOfficialOrdinanceDate(e.target.value)}
+                            className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-[11px] text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          />
+                        </div>
+                      </div>
+                      <div className="flex gap-2">
+                        <button
+                          type="submit"
+                          className={`flex-1 font-bold py-1.5 rounded-lg text-[10px] transition-colors shadow-sm ${
+                            editingOfficialId 
+                              ? 'bg-yellow-400 hover:bg-yellow-500 text-black' 
+                              : 'bg-[#0073C2] hover:bg-[#0284c7] text-white'
+                          }`}
+                        >
+                          {editingOfficialId ? 'Simpan Pejabat' : 'Tambah Pejabat'}
+                        </button>
+                        {editingOfficialId && (
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setEditingOfficialId(null);
+                              setOfficialName('');
+                              setOfficialTitle('');
+                              setOfficialOrdinanceNumber('');
+                              setOfficialOrdinanceDate('');
+                            }}
+                            className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-1.5 px-3 rounded-lg text-[10px] transition-colors"
+                          >
+                            Batal
                           </button>
                         )}
                       </div>
@@ -2524,6 +2965,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                           setClientCompanyName(c.companyName);
                                           setClientPicName(c.picName);
                                           setClientPicPhone(c.picPhone);
+                                          setClientPicTitle(c.picTitle || '');
                                         }}
                                         className="px-2.5 py-1 rounded bg-yellow-400 hover:bg-yellow-500 text-black font-bold transition-all text-[10px]"
                                       >
@@ -2575,13 +3017,24 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                   Dibuat pada: {new Date(sub.createdAt).toLocaleDateString('id-ID')}
                                 </div>
                               </div>
-                              <div className="text-right">
+                              <div className="text-right flex flex-col items-end gap-1.5">
                                 <div className="text-xs font-mono font-bold text-[#0073C2]">
                                   {formatRupiah(sub.estimatedCost)}
                                 </div>
-                                <span className="inline-block text-[9px] bg-[#e0f2fe] text-[#0073C2] border border-[#bae6fd] px-2 py-0.5 rounded font-bold mt-1.5">
-                                  Tahap {sub.stage}
-                                </span>
+                                <div className="flex items-center gap-1.5">
+                                  <span className="inline-block text-[9px] bg-[#e0f2fe] text-[#0073C2] border border-[#bae6fd] px-2 py-0.5 rounded font-bold">
+                                    Tahap {sub.stage}
+                                  </span>
+                                  <button
+                                    onClick={() => {
+                                      setActiveLoiSubmission(sub);
+                                      setActiveTab('doc_loi');
+                                    }}
+                                    className="px-2 py-0.5 bg-[#0073C2] hover:bg-[#0284c7] text-white text-[9px] font-bold rounded transition-colors shadow-sm"
+                                  >
+                                    Buat LOI
+                                  </button>
+                                </div>
                               </div>
                             </div>
                           ))}
@@ -3389,6 +3842,58 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
 
                       <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal Surat Permohonan Klien</label>
+                        <input
+                          type="date"
+                          value={loiTanggalSuratPemohon}
+                          onChange={(e) => setLoiTanggalSuratPemohon(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Perihal Surat Permohonan Klien</label>
+                        <input
+                          type="text"
+                          value={loiPerihalSuratPemohon}
+                          onChange={(e) => setLoiPerihalSuratPemohon(e.target.value)}
+                          placeholder="e.g. Surat Permohonan Perizinan Lokasi Syuting"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Luas Area Pemanfaatan (Format Bebas)</label>
+                        <input
+                          type="text"
+                          value={loiLuasAreaCustom}
+                          onChange={(e) => setLoiLuasAreaCustom(e.target.value)}
+                          placeholder="e.g. ±1.182 m2"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tautan Perjanjian (10.a)</label>
+                        <input
+                          type="text"
+                          value={loiTautanPerjanjian}
+                          onChange={(e) => setLoiTautanPerjanjian(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tautan Tata Tertib (10.b)</label>
+                        <input
+                          type="text"
+                          value={loiTautanTataTertib}
+                          onChange={(e) => setLoiTautanTataTertib(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
                         <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Penandatangan LMAN</label>
                         <input
                           type="text"
@@ -3409,8 +3914,20 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
                     </div>
 
+                    <label className="flex items-start gap-2.5 p-3.5 bg-blue-50 border border-blue-200 rounded-xl cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={loiVerified}
+                        onChange={(e) => setLoiVerified(e.target.checked)}
+                        className="mt-1 h-3.5 w-3.5 rounded border-slate-300 text-[#0073C2] focus:ring-[#0073C2]"
+                      />
+                      <div className="text-[10px] text-blue-750 leading-normal font-medium">
+                        <strong>Verifikasi Data & Terbilang (F7)</strong>: Saya menyatakan telah memeriksa kebenaran data LOI, perhitungan tarif dasar, PPN 11%, dan ejaan terbilang rupiah.
+                      </div>
+                    </label>
+
                     <div className="p-3 bg-yellow-50 border border-yellow-250 text-yellow-800 rounded-lg text-[9px] leading-relaxed">
-                      💡 <strong>Petunjuk F7</strong>: Nomor surat dan tanda tangan elektronik akan dicantumkan secara otomatis pada keluaran naskah dinas LOI di sebelah kanan.
+                      💡 <strong>Petunjuk F7</strong>: Nomor surat, tautan eksternal, dan tanda tangan elektronik akan dicantumkan secara otomatis pada keluaran naskah dinas LOI di sebelah kanan.
                     </div>
                   </div>
 
@@ -3419,6 +3936,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     <div className="flex justify-between items-center">
                       <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Pratinjau Naskah LOI</h4>
                       <div className="flex gap-2">
+                        <button
+                          onClick={() => handleSaveLoiParams(activeLoiSubmission)}
+                          className="px-3 py-1.5 rounded-lg bg-yellow-400 hover:bg-yellow-500 text-black text-[10px] font-bold transition-colors shadow-sm"
+                        >
+                          Simpan Parameter
+                        </button>
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(loiTextGenerated);
@@ -3443,8 +3966,14 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           Unduh (.txt)
                         </button>
                         <button
+                          disabled={!loiVerified}
                           onClick={() => handleDownloadLoiDocx(activeLoiSubmission)}
-                          className="px-3 py-1.5 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-[10px] font-bold transition-colors shadow-sm"
+                          className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all shadow-sm ${
+                            loiVerified
+                              ? 'bg-[#0073C2] hover:bg-[#0284c7] text-white'
+                              : 'bg-slate-200 text-slate-400 cursor-not-allowed border border-slate-300'
+                          }`}
+                          title={!loiVerified ? "Harap centang kotak verifikasi data & terbilang sewa terlebih dahulu" : "Unduh Surat LOI (.docx)"}
                         >
                           Unduh Word (.docx)
                         </button>
@@ -3656,6 +4185,38 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
 
                       <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal Surat Permohonan Klien</label>
+                        <input
+                          type="date"
+                          value={loiTanggalSuratPemohon}
+                          onChange={(e) => setLoiTanggalSuratPemohon(e.target.value)}
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Perihal Surat Permohonan Klien</label>
+                        <input
+                          type="text"
+                          value={loiPerihalSuratPemohon}
+                          onChange={(e) => setLoiPerihalSuratPemohon(e.target.value)}
+                          placeholder="e.g. Surat Permohonan Perizinan Lokasi Syuting"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Luas Area Pemanfaatan (Format Bebas)</label>
+                        <input
+                          type="text"
+                          value={loiLuasAreaCustom}
+                          onChange={(e) => setLoiLuasAreaCustom(e.target.value)}
+                          placeholder="e.g. ±1.182 m2"
+                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                        />
+                      </div>
+
+                      <div>
                         <label className="text-[10px] font-semibold text-slate-500 block mb-1">Jabatan Penandatangan LMAN</label>
                         <input
                           type="text"
@@ -3686,8 +4247,20 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
                     </div>
 
+                    <label className="flex items-start gap-2.5 p-3.5 bg-blue-50 border border-blue-200 rounded-xl cursor-pointer">
+                      <input
+                        type="checkbox"
+                        checked={loiVerified}
+                        onChange={(e) => setLoiVerified(e.target.checked)}
+                        className="mt-1 h-3.5 w-3.5 rounded border-slate-300 text-[#0073C2] focus:ring-[#0073C2]"
+                      />
+                      <div className="text-[10px] text-blue-750 leading-normal font-medium">
+                        <strong>Verifikasi Data & Terbilang (F7)</strong>: Saya menyatakan telah memeriksa kebenaran data LOI, perhitungan tarif dasar, PPN 11%, dan ejaan terbilang rupiah.
+                      </div>
+                    </label>
+
                     <div className="p-3 bg-yellow-50 border border-yellow-250 text-yellow-800 rounded-lg text-[9px] leading-relaxed">
-                      💡 <strong>Petunjuk F7</strong>: Nomor surat dan tanda tangan elektronik akan dicantumkan secara otomatis pada keluaran naskah dinas LOI di sebelah kanan.
+                      💡 <strong>Petunjuk F7</strong>: Nomor surat, tautan eksternal, dan tanda tangan elektronik akan dicantumkan secara otomatis pada keluaran naskah dinas LOI di sebelah kanan.
                     </div>
                   </div>
 
@@ -3727,9 +4300,15 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   >
                     Unduh File LOI (.txt)
                   </button>
-                  <button
+                   <button
+                    disabled={!loiVerified}
                     onClick={() => handleDownloadLoiDocx(activeLoiSubmission)}
-                    className="px-4 py-2 rounded-lg bg-[#0073C2] hover:bg-[#0284c7] text-white text-xs font-bold transition-colors shadow-sm"
+                    className={`px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-sm ${
+                      loiVerified
+                        ? 'bg-[#0073C2] hover:bg-[#0284c7] text-white'
+                        : 'bg-slate-200 text-slate-400 cursor-not-allowed border border-slate-300'
+                    }`}
+                    title={!loiVerified ? "Harap centang kotak verifikasi data & terbilang sewa terlebih dahulu" : "Unduh Surat LOI (.docx)"}
                   >
                     Unduh Word (.docx)
                   </button>

@@ -138,6 +138,7 @@ export interface LoiInput {
   perihalSuratPemohon: string;
   objekPemanfaatan: string;
   luasAreaSqm: number;
+  luasAreaCustom?: string;
   peruntukan: string;
   tanggalMulai: string; // YYYY-MM-DD
   tanggalSelesai: string; // YYYY-MM-DD
@@ -154,6 +155,7 @@ export interface LoiInput {
 /** F7 — builds the Surat Penawaran Harga / LOI as plain text. */
 export function buildLoiText(input: LoiInput): string {
   const luas = new Intl.NumberFormat('id-ID').format(input.luasAreaSqm);
+  const luasAreaText = input.luasAreaCustom || `±${luas} m2`;
 
   return `LEMBAGA MANAJEMEN ASET NEGARA
 KEMENTERIAN KEUANGAN REPUBLIK INDONESIA
@@ -173,7 +175,7 @@ Sehubungan dengan Surat Saudara nomor ${input.nomorSuratPemohon} tanggal ${forma
 ${baris('1.', 'Pemohon', input.namaPemohon)}
 ${baris('2.', 'Objek pemanfaatan', input.objekPemanfaatan)}
 ${baris('3.', 'Alamat aset', ASET_ALAMAT)}
-${baris('4.', 'Luas area pemanfaatan', `±${luas} m2`)}
+${baris('4.', 'Luas area pemanfaatan', luasAreaText)}
 ${baris('5.', 'Peruntukan', input.peruntukan)}
 ${baris('6.', 'Jangka waktu pemanfaatan', formatJangkaWaktu(input.tanggalMulai, input.tanggalSelesai))}
 ${baris('7.', 'Tarif pemanfaatan', formatRupiahTerbilang(input.tarifDpp))}

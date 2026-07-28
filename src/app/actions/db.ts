@@ -2,7 +2,7 @@
 
 import { db } from '@/lib/firebase';
 import { Room, staticRooms } from '@/lib/rooms-data';
-import { Client, Submission, Booking, Survey, ClosedSurveySlot, AuditLog } from '@/lib/types';
+import { Client, Submission, Booking, Survey, ClosedSurveySlot, AuditLog, Official } from '@/lib/types';
 import { validateBookingLock } from '@/lib/validation';
 
 export interface SystemSettings {
@@ -149,12 +149,71 @@ export async function updateSystemSettings(settings: SystemSettings) {
 }
 
 // Server-side mock stores (in-memory) for demo mode
-let mockClients: Client[] = [];
-let mockSubmissions: Submission[] = [];
-let mockBookings: Booking[] = [];
+let mockClients: Client[] = [
+  {
+    id: 'summerland-id',
+    companyName: 'Summerland',
+    picName: 'Razka Robby Ertanto',
+    picPhone: '08123456789',
+    picTitle: 'Producer Summerland',
+    institutionName: 'Summerland',
+    signatoryName: 'Razka Robby Ertanto',
+    signatoryTitle: 'Producer Summerland',
+    createdAt: new Date().toISOString(),
+    isActive: true,
+  }
+];
+let mockSubmissions: Submission[] = [
+  {
+    id: 'summerland-sub-id',
+    clientId: 'summerland-id',
+    companyName: 'Summerland',
+    activityName: 'Produksi Film Rose Pandanwangi',
+    stage: 7, // Penerbitan LOI (F7)
+    roomCodes: ['Ruangan pada Gedung A.A. Maramis'],
+    totalAreaSqm: 1182,
+    eventDays: 1,
+    loadingDays: 0,
+    estimatedCost: 10500000,
+    picInternal: 'Mahdi',
+    createdAt: '2026-01-28T09:00:00.000Z',
+    updatedAt: '2026-01-28T09:00:00.000Z',
+    loiNomorSurat: 'S-229/LMAN/LMAN.4/2026',
+    loiNomorSuratPemohon: 'SPL/017/140126/ROSE/SUMMERLAND',
+    loiTanggalSuratPemohon: '2026-01-28',
+    loiPerihalSuratPemohon: 'Surat Permohonan Perizinan Lokasi Syuting',
+    loiTautanPerjanjian: 's.kemenkeu.go.id/FilmRosePandanwangi30Januari2026',
+    loiTautanTataTertib: 's.kemenkeu.go.id/TataTertibMaramis',
+    loiLuasAreaCustom: '±1.182 m2',
+    loiVerified: true,
+    loiOfficialName: 'Mahdi',
+    loiOfficialTitle: 'Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan LMAN'
+  }
+];
+let mockBookings: Booking[] = [
+  {
+    id: 'summerland-booking-id',
+    submissionId: 'summerland-sub-id',
+    type: 'CONFIRMED',
+    roomCodes: ['Ruangan pada Gedung A.A. Maramis'],
+    startDate: '2026-01-30',
+    endDate: '2026-01-30',
+    activityName: 'Produksi Film Rose Pandanwangi',
+  }
+];
 let mockSurveys: Survey[] = [];
 let mockClosedSlots: ClosedSurveySlot[] = [];
 let mockAuditLogs: AuditLog[] = [];
+let mockOfficials: Official[] = [
+  {
+    id: 'mock-official-1',
+    name: 'Mahdi',
+    title: 'Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan LMAN',
+    ordinanceNumber: 'PRIN-10/LMAN/2024',
+    ordinanceDate: '2024-10-09',
+    isActive: true
+  }
+];
 
 /**
  * Clients actions
@@ -646,6 +705,89 @@ export async function deleteSubmission(id: string): Promise<boolean> {
   } catch (error) {
     console.error('Failed to delete submission in Firestore, falling back to mock:', error);
     return performMockDelete();
+  }
+}
+
+export async function getOfficials(): Promise<Official[]> {
+  if (!isFirebaseConfigured) {
+    return mockOfficials;
+  }
+  try {
+    const snapshot = await db.collection('officials').get();
+    return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Official));
+  } catch (error) {
+    console.error('Failed to get officials:', error);
+    return mockOfficials;
+  }
+}
+
+export async function createOfficial(data: Omit<Official, 'id'>): Promise<Official> {
+  if (!isFirebaseConfigured) {
+    const newOfficial = {
+      id: 'mock-official-' + Math.random().toString(36).substring(2, 11),
+      ...data
+    };
+    mockOfficials.push(newOfficial);
+    return newOfficial;
+  }
+  try {
+    const docRef = await db.collection('officials').add(data);
+    return { id: docRef.id, ...data };
+  } catch (error) {
+    console.error('Failed to create official:', error);
+    const newOfficial = {
+      id: 'mock-official-fallback-' + Math.random().toString(36).substring(2, 11),
+      ...data
+    };
+    mockOfficials.push(newOfficial);
+    return newOfficial;
+  }
+}
+
+export async function updateOfficial(id: string, data: Partial<Official>): Promise<boolean> {
+  const performMockUpdate = () => {
+    const idx = mockOfficials.findIndex(o => o.id === id);
+    if (idx !== -1) {
+      mockOfficials[idx] = { ...mockOfficials[idx], ...data };
+    }
+    return true;
+  };
+  if (!isFirebaseConfigured) {
+    return performMockUpdate();
+  }
+  try {
+    await db.collection('officials').doc(id).update(data);
+    return true;
+  } catch (error) {
+    console.error('Failed to update official:', error);
+    return performMockUpdate();
+  }
+}
+
+export async function setActiveOfficial(id: string): Promise<boolean> {
+  const performMockSetActive = () => {
+    mockOfficials = mockOfficials.map(o => ({
+      ...o,
+      isActive: o.id === id
+    }));
+    return true;
+  };
+
+  if (!isFirebaseConfigured) {
+    return performMockSetActive();
+  }
+
+  try {
+    const snapshot = await db.collection('officials').get();
+    const batch = db.batch();
+    snapshot.docs.forEach(doc => {
+      batch.update(doc.ref, { isActive: doc.id === id });
+    });
+    await batch.commit();
+    return true;
+  } catch (error) {
+    console.error('Failed to set active official:', error);
+    return performMockSetActive();
   }
 }
 

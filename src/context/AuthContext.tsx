@@ -11,7 +11,7 @@ interface AuthContextType {
   role: UserRole | null;
   loading: boolean;
   error: string | null;
-  login: (password: string, email?: string) => Promise<boolean>;
+  login: (password: string, username?: string) => Promise<boolean>;
   selectRole: (role: UserRole) => void;
   logout: () => Promise<void>;
   isMock: boolean;
@@ -64,9 +64,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     return () => unsubscribe();
   }, []);
 
-  const login = async (password: string, email = 'team@maramis.go.id') => {
+  const login = async (password: string, username = 'maramis') => {
     setError(null);
     setLoading(true);
+
+    // Fixed internal domain — never shown to or typed by the user.
+    const email = `${username}@maramis.local`;
 
     if (!checkFirebase()) {
       // Mock Login Fallback
@@ -78,7 +81,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
         setIsMock(true);
         return true;
       } else {
-        setError('Kata sandi salah (Mode Demo: gunakan "maramis2026")');
+        setError('Username atau kata sandi salah (Mode Demo: gunakan "maramis2026")');
         setLoading(false);
         return false;
       }
@@ -91,12 +94,14 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     } catch (err: any) {
       console.error('Firebase Auth error:', err);
       let errMsg = 'Terjadi kesalahan login.';
-      if (err.code === 'auth/wrong-password' || err.code === 'auth/user-not-found') {
-        errMsg = 'Kata sandi atau email salah.';
-      } else if (err.code === 'auth/invalid-credential') {
-        errMsg = 'Kredensial tidak valid.';
+      if (
+        err.code === 'auth/wrong-password' ||
+        err.code === 'auth/user-not-found' ||
+        err.code === 'auth/invalid-credential'
+      ) {
+        errMsg = 'Username atau kata sandi salah.';
       } else {
-        errMsg = err.message || errMsg;
+        errMsg = 'Terjadi kesalahan login.';
       }
       setError(errMsg);
       setLoading(false);
