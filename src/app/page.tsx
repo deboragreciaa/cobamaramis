@@ -1563,9 +1563,9 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
   // Render Spinner
   if (loading) {
     return (
-      <div className="flex-1 flex flex-col items-center justify-center bg-[#f4f6f9] text-[#0073C2] font-sans">
+      <div className="flex-1 flex flex-col items-center justify-center bg-[#f4f6f9] text-[#0073C2] dark:text-sky-300 font-sans">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0073C2] mb-4"></div>
-        <p className="text-slate-600 text-xs font-bold uppercase tracking-wider">Memuat Autentikasi...</p>
+        <p className="text-muted-foreground text-xs font-bold uppercase tracking-wider">Memuat Autentikasi...</p>
       </div>
     );
   }
@@ -1578,18 +1578,18 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/5 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-yellow-400/5 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div className="w-full max-w-md bg-white border border-slate-200/80 rounded-2xl shadow-xl p-8 z-10">
+        <div className="w-full max-w-md bg-card border border-border rounded-2xl shadow-xl p-8 z-10">
           <div className="flex flex-col items-center mb-8">
-            <div className="p-3 bg-blue-50 border border-blue-150 rounded-xl mb-4 text-[#0073C2]">
+            <div className="p-3 bg-blue-50 dark:bg-blue-950/30 border border-blue-150 dark:border-blue-900 rounded-xl mb-4 text-[#0073C2] dark:text-sky-300">
               <Building className="h-8 w-8" />
             </div>
-            <h1 className="text-2xl font-bold text-center text-[#0073C2] tracking-wide">Gedung A.A. Maramis</h1>
-            <p className="text-slate-500 text-xs mt-1 text-center font-bold tracking-wider">SISTEM KELOLA SEWA INTERNAL — LMAN</p>
+            <h1 className="text-2xl font-bold text-center text-[#0073C2] dark:text-sky-300 tracking-wide">Gedung A.A. Maramis</h1>
+            <p className="text-muted-foreground text-xs mt-1 text-center font-bold tracking-wider">SISTEM KELOLA SEWA INTERNAL — LMAN</p>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider block">Username</label>
+              <label className="text-xs font-semibold text-foreground uppercase tracking-wider block">Username</label>
               <input
                 type="text"
                 required
@@ -1599,25 +1599,25 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                className="w-full bg-white border border-slate-300 rounded-lg py-2.5 px-3 text-slate-800 text-sm focus:outline-none focus:border-[#0073C2] focus:ring-1 focus:ring-[#0073C2] transition-colors"
+                className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-foreground text-sm focus:outline-none focus:border-[#0073C2] focus:ring-1 focus:ring-[#0073C2] transition-colors"
               />
-              <span className="text-[10px] text-slate-400 block">Satu akun bersama untuk seluruh tim pengelola.</span>
+              <span className="text-[10px] text-muted-foreground block">Satu akun bersama untuk seluruh tim pengelola.</span>
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-slate-700 uppercase tracking-wider block">Kata Sandi</label>
+              <label className="text-xs font-semibold text-foreground uppercase tracking-wider block">Kata Sandi</label>
               <input
                 type="password"
                 required
                 placeholder="Masukkan kata sandi tim"
                 value={passwordInput}
                 onChange={(e) => setPasswordInput(e.target.value)}
-                className="w-full bg-white border border-slate-300 rounded-lg py-2.5 px-3 text-slate-800 text-sm placeholder:text-slate-400 focus:outline-none focus:border-[#0073C2] focus:ring-1 focus:ring-[#0073C2] transition-colors"
+                className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-[#0073C2] focus:ring-1 focus:ring-[#0073C2] transition-colors"
               />
             </div>
 
             {error && (
-              <div className="p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-xs flex items-start gap-2">
+              <div className="p-3 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 text-red-700 dark:text-red-300 rounded-lg text-xs flex items-start gap-2">
                 <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                 <span>{error}</span>
               </div>
@@ -1625,18 +1625,18 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
             <button
               type="submit"
-              className="w-full bg-[#facc15] hover:bg-[#eab308] active:bg-[#ca8a04] text-slate-900 font-extrabold py-2.5 rounded-lg text-sm transition-colors shadow-sm"
+              className="w-full bg-[#facc15] hover:bg-[#eab308] active:bg-[#ca8a04] text-foreground font-extrabold py-2.5 rounded-lg text-sm transition-colors shadow-sm"
             >
               Masuk Gerbang Kata Sandi
             </button>
           </form>
 
           {isMock && (
-            <div className="mt-8 pt-6 border-t border-slate-100 text-center">
-              <p className="text-xs text-slate-400 mb-2">Aplikasi berjalan dalam mode demo offline.</p>
+            <div className="mt-8 pt-6 border-t border-border text-center">
+              <p className="text-xs text-muted-foreground mb-2">Aplikasi berjalan dalam mode demo offline.</p>
               <button
                 onClick={useDemoPassword}
-                className="text-xs font-bold text-[#0073C2] hover:text-[#0284c7] underline decoration-dotted transition-colors"
+                className="text-xs font-bold text-[#0073C2] dark:text-sky-300 hover:text-[#0284c7] underline decoration-dotted transition-colors"
               >
                 Gunakan sandi demo default (&quot;maramis2026&quot;)
               </button>
@@ -1654,55 +1654,55 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
         <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-blue-400/5 rounded-full blur-3xl pointer-events-none"></div>
         <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-yellow-400/5 rounded-full blur-3xl pointer-events-none"></div>
 
-        <div className="w-full max-w-xl bg-white border border-slate-200 rounded-2xl shadow-xl p-8 z-10">
+        <div className="w-full max-w-xl bg-card border border-border rounded-2xl shadow-xl p-8 z-10">
           <div className="flex flex-col items-center mb-6">
-            <h1 className="text-xl font-bold text-[#0073C2] tracking-wide">Pilih Peran Sesi Anda</h1>
-            <p className="text-slate-500 text-xs mt-1 font-semibold">Gedung A.A. Maramis — LMAN</p>
+            <h1 className="text-xl font-bold text-[#0073C2] dark:text-sky-300 tracking-wide">Pilih Peran Sesi Anda</h1>
+            <p className="text-muted-foreground text-xs mt-1 font-semibold">Gedung A.A. Maramis — LMAN</p>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 my-6">
             {/* PENGINPUT BUTTON */}
             <button
               onClick={() => selectRole('PENGINPUT')}
-              className="group text-left p-6 bg-slate-50/50 hover:bg-white border border-slate-200 hover:border-amber-400 hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between"
+              className="group text-left p-6 bg-muted hover:bg-muted border border-border hover:border-amber-400 hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between"
             >
               <div>
-                <div className="h-10 w-10 rounded-lg bg-amber-50 border border-amber-200 text-amber-650 flex items-center justify-center mb-4 group-hover:bg-amber-100 transition-colors">
+                <div className="h-10 w-10 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-amber-650 dark:text-amber-200 flex items-center justify-center mb-4 group-hover:bg-amber-100 transition-colors">
                   <Calculator className="h-5 w-5" />
                 </div>
-                <h3 className="text-slate-800 font-bold group-hover:text-amber-600 transition-colors">Penginput</h3>
-                <p className="text-slate-500 text-xs mt-2 leading-relaxed font-medium">
+                <h3 className="text-foreground font-bold group-hover:text-amber-600 dark:text-amber-300 transition-colors">Penginput</h3>
+                <p className="text-muted-foreground text-xs mt-2 leading-relaxed font-medium">
                   Akses penuh untuk input data klien, survei, booking, kelola parameter hitungan, membuat LOI/Perjanjian, serta mengunduh dokumen.
                 </p>
               </div>
-              <span className="text-[10px] text-amber-600 font-bold tracking-wider uppercase mt-4 block">PILIH PENGINPUT &rarr;</span>
+              <span className="text-[10px] text-amber-600 dark:text-amber-300 font-bold tracking-wider uppercase mt-4 block">PILIH PENGINPUT &rarr;</span>
             </button>
 
             {/* PEREVIEW BUTTON */}
             <button
               onClick={() => selectRole('PEREVIEW')}
-              className="group text-left p-6 bg-slate-50/50 hover:bg-white border border-slate-200 hover:border-blue-400 hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between"
+              className="group text-left p-6 bg-muted hover:bg-muted border border-border hover:border-blue-400 hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between"
             >
               <div>
-                <div className="h-10 w-10 rounded-lg bg-blue-50 border border-blue-200 text-blue-650 flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
+                <div className="h-10 w-10 rounded-lg bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 text-blue-650 dark:text-blue-300 flex items-center justify-center mb-4 group-hover:bg-blue-100 transition-colors">
                   <Layers className="h-5 w-5" />
                 </div>
-                <h3 className="text-slate-800 font-bold group-hover:text-[#0073C2] transition-colors">Pereview</h3>
-                <p className="text-slate-500 text-xs mt-2 leading-relaxed font-medium">
+                <h3 className="text-foreground font-bold group-hover:text-[#0073C2] dark:text-sky-300 transition-colors">Pereview</h3>
+                <p className="text-muted-foreground text-xs mt-2 leading-relaxed font-medium">
                   Akses pantau dan monitoring saja. Melihat progres tahap pemesanan, melihat katalog ruangan, dan menggunakan kalkulator penawaran.
                 </p>
               </div>
-              <span className="text-[10px] text-[#0073C2] font-bold tracking-wider uppercase mt-4 block">PILIH PEREVIEW &rarr;</span>
+              <span className="text-[10px] text-[#0073C2] dark:text-sky-300 font-bold tracking-wider uppercase mt-4 block">PILIH PEREVIEW &rarr;</span>
             </button>
           </div>
 
-          <div className="flex justify-between items-center pt-6 border-t border-slate-100 mt-4">
-            <span className="text-[11px] text-slate-500 font-medium">
-              Sesi aktif: <span className="font-semibold text-slate-800">{toUsernameDisplay(user.email)}</span>
+          <div className="flex justify-between items-center pt-6 border-t border-border mt-4">
+            <span className="text-[11px] text-muted-foreground font-medium">
+              Sesi aktif: <span className="font-semibold text-foreground">{toUsernameDisplay(user.email)}</span>
             </span>
             <button
               onClick={logout}
-              className="text-xs text-slate-500 hover:text-red-650 transition-colors flex items-center gap-1.5 font-bold"
+              className="text-xs text-muted-foreground hover:text-red-650 dark:text-red-300 transition-colors flex items-center gap-1.5 font-bold"
             >
               <LogOut className="h-3.5 w-3.5" />
               Keluar akun
@@ -1715,13 +1715,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
   // SCREEN 3: MAIN APPLICATION DASHBOARD
   return (
-    <div className="flex-1 flex flex-col bg-[#f8fafc] text-slate-800 font-sans min-h-screen">
+    <div className="flex-1 flex flex-col bg-background text-foreground font-sans min-h-screen">
       {/* HEADER BANNER - Blue Kemenkeu style */}
       <header className="border-b border-[#0060a3] bg-[#0073C2] text-white sticky top-0 z-50 px-6 py-3 flex items-center justify-between shadow-md">
         <div className="flex items-center gap-3">
           <div className="flex items-center gap-2">
             {/* Logo style: White door/book shape */}
-            <div className="h-7 w-6 bg-white rounded-r-md flex items-center justify-center relative shadow-sm">
+            <div className="h-7 w-6 bg-card rounded-r-md flex items-center justify-center relative shadow-sm">
               <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#0073C2]"></div>
               <div className="w-1.5 h-3 bg-[#0073C2]/20 rounded-sm"></div>
             </div>
@@ -1743,7 +1743,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
       {/* DASHBOARD BODY CONTAINER (Sidebar + Content) */}
       <div className="flex-1 flex overflow-hidden relative">
         {/* SIDEBAR NAVIGATION - Satu Kemenkeu style */}
-        <aside className={`bg-white border-r border-slate-200 flex flex-col justify-between shrink-0 h-full transition-all duration-300 ${isSidebarCollapsed ? 'w-0 overflow-hidden border-r-0' : 'w-72'}`}>
+        <aside className={`bg-card border-r border-border flex flex-col justify-between shrink-0 h-full transition-all duration-300 ${isSidebarCollapsed ? 'w-0 overflow-hidden border-r-0' : 'w-72'}`}>
           <div className="flex flex-col overflow-y-auto">
             {/* User Profile Header Blue Card */}
             <div className="p-4 bg-[#0073C2] text-white relative flex items-center justify-between gap-3 shadow-md select-none">
@@ -1762,7 +1762,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
             {/* Nav list */}
             <div className="py-4 flex flex-col gap-1">
-              <div className="text-[9px] font-bold text-slate-400 tracking-wider px-4 py-2 uppercase mt-2 select-none">
+              <div className="text-[9px] font-bold text-muted-foreground tracking-wider px-4 py-2 uppercase mt-2 select-none">
                 MENU UTAMA SEWA
               </div>
               
@@ -1770,11 +1770,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('catalog')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
                   activeTab === 'catalog'
-                    ? 'bg-[#e0f2fe] text-[#0073C2]'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
-                <Layers className={`h-4 w-4 shrink-0 ${activeTab === 'catalog' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                <Layers className={`h-4 w-4 shrink-0 ${activeTab === 'catalog' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
                 <span>Katalog Ruangan</span>
               </button>
 
@@ -1782,12 +1782,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('calculator')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
                   activeTab === 'calculator'
-                    ? 'bg-[#e0f2fe] text-[#0073C2]'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Calculator className={`h-4 w-4 shrink-0 ${activeTab === 'calculator' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                  <Calculator className={`h-4 w-4 shrink-0 ${activeTab === 'calculator' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
                   <span>Kalkulator Sewa</span>
                 </div>
                 {selectedRoomCodes.length > 0 && (
@@ -1801,16 +1801,16 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('clients')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
                   activeTab === 'clients'
-                    ? 'bg-[#e0f2fe] text-[#0073C2]'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <Users className={`h-4 w-4 shrink-0 ${activeTab === 'clients' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                  <Users className={`h-4 w-4 shrink-0 ${activeTab === 'clients' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
                   <span>Basis Data Klien</span>
                 </div>
                 {activeClients.length > 0 && (
-                  <span className="bg-slate-100 text-slate-500 rounded px-1 text-[9px] font-extrabold">
+                  <span className="bg-muted text-muted-foreground rounded px-1 text-[9px] font-extrabold">
                     {activeClients.length}
                   </span>
                 )}
@@ -1820,16 +1820,16 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('submissions')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
                   activeTab === 'submissions'
-                    ? 'bg-[#e0f2fe] text-[#0073C2]'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
                 <div className="flex items-center gap-3">
-                  <FileText className={`h-4 w-4 shrink-0 ${activeTab === 'submissions' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                  <FileText className={`h-4 w-4 shrink-0 ${activeTab === 'submissions' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
                   <span>Pengajuan Sewa</span>
                 </div>
                 {submissions.length > 0 && (
-                  <span className="bg-slate-100 text-slate-500 rounded px-1 text-[9px] font-extrabold">
+                  <span className="bg-muted text-muted-foreground rounded px-1 text-[9px] font-extrabold">
                     {submissions.length}
                   </span>
                 )}
@@ -1839,11 +1839,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('calendar')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
                   activeTab === 'calendar'
-                    ? 'bg-[#e0f2fe] text-[#0073C2]'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
-                <MapPin className={`h-4 w-4 shrink-0 ${activeTab === 'calendar' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                <MapPin className={`h-4 w-4 shrink-0 ${activeTab === 'calendar' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
                 <span>Kalender Kegiatan</span>
               </button>
 
@@ -1853,12 +1853,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   onClick={() => setIsDocMenuOpen(!isDocMenuOpen)}
                   className={`w-full py-2.5 px-4 rounded-lg text-xs font-bold transition-all flex items-center justify-between ${
                     activeTab === 'doc_loi' || activeTab === 'doc_prj'
-                      ? 'bg-[#e0f2fe] text-[#0073C2]'
-                      : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                      ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                      : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                   }`}
                 >
                   <div className="flex items-center gap-3">
-                    <FileText className={`h-4 w-4 shrink-0 ${activeTab === 'doc_loi' || activeTab === 'doc_prj' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                    <FileText className={`h-4 w-4 shrink-0 ${activeTab === 'doc_loi' || activeTab === 'doc_prj' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
                     <span>Pembuatan Dokumen</span>
                   </div>
                   <ChevronDown className={`h-3.5 w-3.5 transition-transform duration-200 ${isDocMenuOpen ? 'rotate-180' : ''}`} />
@@ -1870,22 +1870,22 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       onClick={() => setActiveTab('doc_loi')}
                       className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
                         activeTab === 'doc_loi'
-                          ? 'bg-[#e0f2fe] text-[#0073C2]'
-                          : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+                          ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }`}
                     >
-                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'doc_loi' ? 'bg-[#0073C2]' : 'bg-slate-300'}`} />
+                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'doc_loi' ? 'bg-[#0073C2]' : 'bg-muted'}`} />
                       LOI (Letter of Intent)
                     </button>
                     <button
                       onClick={() => setActiveTab('doc_prj')}
                       className={`w-full text-left py-2 px-3 rounded-md text-[11px] font-bold transition-all flex items-center gap-1.5 ${
                         activeTab === 'doc_prj'
-                          ? 'bg-[#e0f2fe] text-[#0073C2]'
-                          : 'text-slate-500 hover:bg-slate-50 hover:text-slate-800'
+                          ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                          : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                       }`}
                     >
-                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'doc_prj' ? 'bg-[#0073C2]' : 'bg-slate-300'}`} />
+                      <span className={`h-1.5 w-1.5 rounded-full ${activeTab === 'doc_prj' ? 'bg-[#0073C2]' : 'bg-muted'}`} />
                       PRJ (Perjanjian)
                     </button>
                   </div>
@@ -1896,21 +1896,21 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 onClick={() => setActiveTab('documents')}
                 className={`py-2.5 px-4 mx-2.5 rounded-lg text-xs font-bold transition-all flex items-center gap-3 ${
                   activeTab === 'documents'
-                    ? 'bg-[#e0f2fe] text-[#0073C2]'
-                    : 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+                    ? 'bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300'
+                    : 'text-muted-foreground hover:bg-muted hover:text-foreground'
                 }`}
               >
-                <BookOpen className={`h-4 w-4 shrink-0 ${activeTab === 'documents' ? 'text-[#0073C2]' : 'text-slate-400'}`} />
+                <BookOpen className={`h-4 w-4 shrink-0 ${activeTab === 'documents' ? 'text-[#0073C2] dark:text-sky-300' : 'text-muted-foreground'}`} />
                 <span>Pusat Dokumen</span>
               </button>
             </div>
           </div>
 
           {/* Sidebar footer */}
-          <div className="p-4 border-t border-slate-100 flex flex-col gap-3 select-none">
+          <div className="p-4 border-t border-border flex flex-col gap-3 select-none">
             <button
               onClick={logout}
-              className="w-full py-1.5 border border-red-200 hover:bg-red-50 text-red-500 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5"
+              className="w-full py-1.5 border border-red-200 dark:border-red-900 hover:bg-red-50 dark:bg-red-950/30 text-red-500 dark:text-red-300 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5"
             >
               <LogOut className="h-3.5 w-3.5" />
               Keluar Sesi
@@ -1921,7 +1921,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
         {/* Collapsible toggle button */}
         <button
           onClick={() => setIsSidebarCollapsed(!isSidebarCollapsed)}
-          className="absolute top-6 h-7 w-7 rounded-full bg-white border border-slate-200 text-[#0073C2] flex items-center justify-center shadow-md hover:bg-slate-50 transition-all duration-300 z-50"
+          className="absolute top-6 h-7 w-7 rounded-full bg-card border border-border text-[#0073C2] dark:text-sky-300 flex items-center justify-center shadow-md hover:bg-muted transition-all duration-300 z-50"
           style={{ left: isSidebarCollapsed ? '12px' : '274px' }}
           title={isSidebarCollapsed ? 'Buka Menu' : 'Sembunyikan Menu'}
         >
@@ -1931,7 +1931,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
         {/* MAIN PANEL CONTENT - White scrollable area */}
         <main className="flex-1 bg-[#f8fafc] overflow-y-auto p-6 flex flex-col gap-6">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-bold text-slate-800 tracking-tight select-none">
+            <h2 className="text-xl font-bold text-foreground tracking-tight select-none">
               {activeTab === 'catalog' && 'Katalog Ruangan & Gedung'}
               {activeTab === 'calculator' && 'Sasaran Perhitungan Tarif Penawaran'}
               {activeTab === 'clients' && 'Basis Data Kelola Klien'}
@@ -1942,7 +1942,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             </h2>
             
             {role === 'PENGINPUT' && (
-              <div className="text-[10px] text-[#0073C2] font-bold bg-[#e0f2fe] border border-[#bae6fd] rounded-full px-3 py-1 tracking-wider uppercase">
+              <div className="text-[10px] text-[#0073C2] dark:text-sky-300 font-bold bg-[#e0f2fe] border border-[#bae6fd] rounded-full px-3 py-1 tracking-wider uppercase">
                 Mode Pengeditan Aktif
               </div>
             )}
@@ -1957,12 +1957,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               
               {/* LEFT COLUMN: PRIMARY ROOMS WIDGET */}
               <div className="lg:col-span-1">
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm relative overflow-hidden flex flex-col gap-4 h-full min-h-[460px]">
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm relative overflow-hidden flex flex-col gap-4 h-full min-h-[460px]">
                   <div>
-                    <h2 className="text-sm font-bold text-[#0073C2] flex items-center gap-1.5 mb-2">
+                    <h2 className="text-sm font-bold text-[#0073C2] dark:text-sky-300 flex items-center gap-1.5 mb-2">
                       <Sparkles className="h-4 w-4 shrink-0 text-[#f59e0b] animate-pulse" /> Aula Utama C Lt. 2
                     </h2>
-                    <p className="text-[11px] text-slate-500 leading-relaxed mb-4">
+                    <p className="text-[11px] text-muted-foreground leading-relaxed mb-4">
                       Enam aula acara bernama di Gedung C lantai 2 (Mataram, Sriwijaya, Bone, Ternate, Majapahit, Kutai). Bila digabung, total luasnya <strong>1.180 m²</strong> (satu lantai penuh).
                     </p>
                     
@@ -1971,7 +1971,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       className={`w-full py-2 mb-2 rounded-lg text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
                         isAllPrimarySelected
                           ? 'bg-[#0073C2] text-white shadow-md'
-                          : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
+                          : 'bg-muted hover:bg-muted text-foreground border border-border'
                       }`}
                     >
                       {isAllPrimarySelected ? <CheckSquare className="h-3.5 w-3.5" /> : <Square className="h-3.5 w-3.5" />}
@@ -1981,7 +1981,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                   <div className="grid grid-cols-2 gap-2">
                     {primaryRooms.length === 0 ? (
-                      <p className="text-[10px] text-slate-400 col-span-full py-2">Memuat data...</p>
+                      <p className="text-[10px] text-muted-foreground col-span-full py-2">Memuat data...</p>
                     ) : (
                       primaryRooms.map((room) => {
                         const isSelected = selectedRoomCodes.includes(room.code);
@@ -1991,20 +1991,20 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             onClick={() => toggleRoomSelection(room.code)}
                             className={`p-2.5 rounded-lg border cursor-pointer select-none transition-all flex flex-col justify-between ${
                               isSelected
-                                ? 'bg-sky-50 border-[#0073C2]/60 shadow-sm'
-                                : 'bg-white hover:bg-slate-50 border-slate-200'
+                                ? 'bg-sky-50 dark:bg-sky-950/30 border-[#0073C2]/60 shadow-sm'
+                                : 'bg-card hover:bg-muted border-border'
                             }`}
                           >
                             <div className="flex justify-between items-center mb-1">
-                              <span className="text-[9px] text-[#0073C2] font-extrabold">{room.code}</span>
+                              <span className="text-[9px] text-[#0073C2] dark:text-sky-300 font-extrabold">{room.code}</span>
                               <div className={`h-2.5 w-2.5 rounded-sm border flex items-center justify-center ${
-                                isSelected ? 'bg-[#0073C2] border-[#0073C2] text-white' : 'border-slate-350 bg-white'
+                                isSelected ? 'bg-[#0073C2] border-[#0073C2] text-white' : 'border-border bg-card'
                               }`}>
                                 {isSelected && <Check className="h-1.5 w-1.5 stroke-[3]" />}
                               </div>
                             </div>
-                            <div className="font-bold text-[10px] text-slate-800 truncate">{room.name}</div>
-                            <div className="text-[8px] text-slate-400 mt-0.5">{room.areaSqm} m²</div>
+                            <div className="font-bold text-[10px] text-foreground truncate">{room.name}</div>
+                            <div className="text-[8px] text-muted-foreground mt-0.5">{room.areaSqm} m²</div>
                           </div>
                         );
                       })
@@ -2017,18 +2017,18 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               <div className="lg:col-span-3 flex flex-col gap-6">
                 
                 {/* QUICK PACKAGES (EXCEL SALEABLE AREA TOTALS) */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm relative overflow-hidden">
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm relative overflow-hidden">
                   <div className="flex justify-between items-center mb-4">
                     <div>
-                      <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5">
-                        <Layers className="h-4 w-4 text-[#0073C2]" /> Paket Ruang Cepat (Saleable Area Total)
+                      <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5">
+                        <Layers className="h-4 w-4 text-[#0073C2] dark:text-sky-300" /> Paket Ruang Cepat (Saleable Area Total)
                       </h2>
-                      <p className="text-[11px] text-slate-500 mt-1">Pilih cepat berdasarkan luas gedung & lantai dari data Excel (Pilihan ini terpisah dari list di bawah)</p>
+                      <p className="text-[11px] text-muted-foreground mt-1">Pilih cepat berdasarkan luas gedung & lantai dari data Excel (Pilihan ini terpisah dari list di bawah)</p>
                     </div>
                     {selectedPackageIds.length > 0 && (
                       <button
                         onClick={() => setSelectedPackageIds([])}
-                        className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors"
+                        className="text-xs font-bold text-red-500 dark:text-red-300 hover:text-red-600 dark:text-red-300 transition-colors"
                       >
                         Batal Pilih Paket ({selectedPackageIds.length})
                       </button>
@@ -2037,8 +2037,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     {/* Lantai 1 */}
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col gap-2">
-                      <h3 className="text-[10px] font-extrabold text-[#0073C2] mb-1 border-b border-slate-200 pb-1 uppercase tracking-wider">Lantai 1 (Total: 3.220 m²)</h3>
+                    <div className="p-3 bg-muted border border-border rounded-xl flex flex-col gap-2">
+                      <h3 className="text-[10px] font-extrabold text-[#0073C2] dark:text-sky-300 mb-1 border-b border-border pb-1 uppercase tracking-wider">Lantai 1 (Total: 3.220 m²)</h3>
                       <div className="grid grid-cols-2 gap-2">
                         {EXCEL_PACKAGES.filter(p => p.floor === 1).map(pkg => {
                           const isSelected = selectedPackageIds.includes(pkg.id);
@@ -2048,12 +2048,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               onClick={() => applyQuickPackage(pkg.id)}
                               className={`p-2 rounded text-left transition-all border flex flex-col justify-between ${
                                 isSelected
-                                  ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] font-bold shadow-sm'
-                                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
+                                  ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] dark:text-sky-300 font-bold shadow-sm'
+                                  : 'bg-card hover:bg-muted border-border text-foreground'
                               }`}
                             >
                               <span className="text-[10px] truncate">{pkg.label}</span>
-                              <span className="font-mono text-[9px] text-slate-400 mt-0.5">{pkg.areaSqm} m²</span>
+                              <span className="font-mono text-[9px] text-muted-foreground mt-0.5">{pkg.areaSqm} m²</span>
                             </button>
                           );
                         })}
@@ -2061,8 +2061,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </div>
 
                     {/* Lantai 2 */}
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col gap-2">
-                      <h3 className="text-[10px] font-extrabold text-[#0073C2] mb-1 border-b border-slate-200 pb-1 uppercase tracking-wider">Lantai 2 (Total: 2.624 m²)</h3>
+                    <div className="p-3 bg-muted border border-border rounded-xl flex flex-col gap-2">
+                      <h3 className="text-[10px] font-extrabold text-[#0073C2] dark:text-sky-300 mb-1 border-b border-border pb-1 uppercase tracking-wider">Lantai 2 (Total: 2.624 m²)</h3>
                       <div className="grid grid-cols-2 gap-2">
                         {EXCEL_PACKAGES.filter(p => p.floor === 2).map(pkg => {
                           const isSelected = selectedPackageIds.includes(pkg.id);
@@ -2072,12 +2072,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               onClick={() => applyQuickPackage(pkg.id)}
                               className={`p-2 rounded text-left transition-all border flex flex-col justify-between ${
                                 isSelected
-                                  ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] font-bold shadow-sm'
-                                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
+                                  ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] dark:text-sky-300 font-bold shadow-sm'
+                                  : 'bg-card hover:bg-muted border-border text-foreground'
                               }`}
                             >
                               <span className="text-[10px] truncate">{pkg.label}</span>
-                              <span className="font-mono text-[9px] text-slate-400 mt-0.5">{pkg.areaSqm} m²</span>
+                              <span className="font-mono text-[9px] text-muted-foreground mt-0.5">{pkg.areaSqm} m²</span>
                             </button>
                           );
                         })}
@@ -2085,8 +2085,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </div>
 
                     {/* Lantai 3 */}
-                    <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex flex-col gap-2">
-                      <h3 className="text-[10px] font-extrabold text-[#0073C2] mb-1 border-b border-slate-200 pb-1 uppercase tracking-wider">Lantai 3 (Total: 3.342 m²)</h3>
+                    <div className="p-3 bg-muted border border-border rounded-xl flex flex-col gap-2">
+                      <h3 className="text-[10px] font-extrabold text-[#0073C2] dark:text-sky-300 mb-1 border-b border-border pb-1 uppercase tracking-wider">Lantai 3 (Total: 3.342 m²)</h3>
                       <div className="flex flex-col gap-2">
                         <div className="grid grid-cols-2 gap-2">
                           {EXCEL_PACKAGES.filter(p => p.floor === 3 && p.id !== 'L3-Total').map(pkg => {
@@ -2097,12 +2097,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                 onClick={() => applyQuickPackage(pkg.id)}
                                 className={`p-2 rounded text-left transition-all border flex flex-col justify-between ${
                                   isSelected
-                                    ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] font-bold shadow-sm'
-                                    : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
+                                    ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] dark:text-sky-300 font-bold shadow-sm'
+                                    : 'bg-card hover:bg-muted border-border text-foreground'
                                 }`}
                               >
                                 <span className="text-[10px] truncate">{pkg.label}</span>
-                                <span className="font-mono text-[9px] text-slate-400 mt-0.5">{pkg.areaSqm} m²</span>
+                                <span className="font-mono text-[9px] text-muted-foreground mt-0.5">{pkg.areaSqm} m²</span>
                               </button>
                             );
                           })}
@@ -2115,12 +2115,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               onClick={() => applyQuickPackage(pkg.id)}
                               className={`p-2 rounded text-center transition-all border flex justify-between items-center ${
                                 isSelected
-                                  ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] font-bold shadow-sm'
-                                  : 'bg-white hover:bg-slate-50 border-slate-200 text-slate-700'
+                                  ? 'bg-[#e0f2fe] border-[#0073C2] text-[#0073C2] dark:text-sky-300 font-bold shadow-sm'
+                                  : 'bg-card hover:bg-muted border-border text-foreground'
                               }`}
                             >
                               <span className="text-[10px]">{pkg.label}</span>
-                              <span className="font-mono text-[9px] text-slate-400">{pkg.areaSqm} m²</span>
+                              <span className="font-mono text-[9px] text-muted-foreground">{pkg.areaSqm} m²</span>
                             </button>
                           );
                         })}
@@ -2130,16 +2130,16 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 </div>
 
                 {/* FILTER BAR - Clean Full-width Search + 4 Inline Controls below */}
-                <div className="bg-white border border-slate-200 rounded-xl p-4 shadow-sm space-y-4">
+                <div className="bg-card border border-border rounded-xl p-4 shadow-sm space-y-4">
                   {/* Top Row: Full-width Search Bar */}
                   <div className="relative w-full">
-                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+                    <Search className="absolute left-3 top-2.5 h-4 w-4 text-muted-foreground" />
                     <input
                       type="text"
                       placeholder="Cari kode atau nama ruang..."
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-lg py-2.5 pl-9 pr-4 text-slate-800 text-xs placeholder:text-slate-400 focus:outline-none focus:border-[#0073C2] transition-colors focus:bg-white"
+                      className="w-full bg-muted border border-border rounded-lg py-2.5 pl-9 pr-4 text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:border-[#0073C2] transition-colors focus:bg-card"
                     />
                   </div>
 
@@ -2147,12 +2147,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   <div className="grid grid-cols-1 md:grid-cols-4 gap-3">
                     {/* Control 1: Urutkan */}
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Urutkan</label>
+                      <label className="text-[9px] font-extrabold text-muted-foreground uppercase tracking-wider">Urutkan</label>
                       <div className="flex gap-1.5">
                         <select
                           value={sortBy}
                           onChange={(e) => setSortBy(e.target.value as any)}
-                          className="flex-1 bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-[#0073C2]"
+                          className="flex-1 bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         >
                           <option value="capacity">Kapasitas</option>
                           <option value="rate">Tarif Booklet</option>
@@ -2160,7 +2160,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         </select>
                         <button
                           onClick={() => setSortOrder(prev => prev === 'asc' ? 'desc' : 'asc')}
-                          className="px-2.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-650 hover:text-slate-900 rounded-lg text-xs transition-colors font-bold"
+                          className="px-2.5 bg-card border border-border hover:bg-muted text-muted-foreground hover:text-foreground rounded-lg text-xs transition-colors font-bold"
                           title={sortOrder === 'asc' ? 'Urutkan Naik' : 'Urutkan Turun'}
                         >
                           {sortOrder === 'asc' ? '▲' : '▼'}
@@ -2170,11 +2170,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                     {/* Control 2: Gedung */}
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Gedung</label>
+                      <label className="text-[9px] font-extrabold text-muted-foreground uppercase tracking-wider">Gedung</label>
                       <select
                         value={filterBuilding}
                         onChange={(e) => setFilterBuilding(e.target.value)}
-                        className="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-[#0073C2] w-full"
+                        className="bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2] w-full"
                       >
                         <option value="all">Semua Gedung</option>
                         <option value="A">Gedung A</option>
@@ -2184,11 +2184,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                     {/* Control 3: Lantai */}
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Lantai</label>
+                      <label className="text-[9px] font-extrabold text-muted-foreground uppercase tracking-wider">Lantai</label>
                       <select
                         value={filterFloor}
                         onChange={(e) => setFilterFloor(e.target.value)}
-                        className="bg-white border border-slate-200 rounded-lg px-2.5 py-1.5 text-xs text-slate-700 focus:outline-none focus:border-[#0073C2] w-full"
+                        className="bg-card border border-border rounded-lg px-2.5 py-1.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2] w-full"
                       >
                         <option value="all">Semua Lantai</option>
                         <option value="1">Lantai 1</option>
@@ -2199,15 +2199,15 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                     {/* Control 4: Kapasitas */}
                     <div className="flex flex-col gap-1">
-                      <label className="text-[9px] font-extrabold text-slate-400 uppercase tracking-wider">Kapasitas minimal</label>
+                      <label className="text-[9px] font-extrabold text-muted-foreground uppercase tracking-wider">Kapasitas minimal</label>
                       <div className="relative flex items-center">
-                        <span className="absolute left-2.5 text-slate-400 text-xs font-semibold">&ge;</span>
+                        <span className="absolute left-2.5 text-muted-foreground text-xs font-semibold">&ge;</span>
                         <input
                           type="number"
                           min="0"
                           value={filterMinCapacity}
                           onChange={(e) => setFilterMinCapacity(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 pl-6 pr-3 text-xs text-slate-750 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 pl-6 pr-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                           placeholder="0"
                         />
                       </div>
@@ -2216,18 +2216,18 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 </div>
 
                 {/* COMPACT ROOMS LIST (TABLE) */}
-                <div className="bg-white border border-slate-200 rounded-xl overflow-hidden shadow-sm p-5">
+                <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm p-5">
                   <div className="flex justify-between items-center mb-4">
                     <div>
-                      <h3 className="text-sm font-bold text-[#0073C2] flex items-center gap-2">
-                        <Building className="h-4 w-4 text-[#0073C2]" /> Daftar Ruangan Individual (Opsional)
+                      <h3 className="text-sm font-bold text-[#0073C2] dark:text-sky-300 flex items-center gap-2">
+                        <Building className="h-4 w-4 text-[#0073C2] dark:text-sky-300" /> Daftar Ruangan Individual (Opsional)
                       </h3>
-                      <p className="text-[11px] text-slate-500 mt-1">Pilih ruangan secara manual di bawah jika penyewa ingin menyewa ruangan tertentu, bukan satu gedung penuh.</p>
+                      <p className="text-[11px] text-muted-foreground mt-1">Pilih ruangan secara manual di bawah jika penyewa ingin menyewa ruangan tertentu, bukan satu gedung penuh.</p>
                     </div>
                     {selectedRoomCodes.length > 0 && (
                       <button
                         onClick={() => setSelectedRoomCodes([])}
-                        className="text-xs font-bold text-red-500 hover:text-red-600 transition-colors flex items-center gap-1 bg-white border border-red-200 hover:bg-red-50 px-3 py-1 rounded-lg"
+                        className="text-xs font-bold text-red-500 dark:text-red-300 hover:text-red-600 dark:text-red-300 transition-colors flex items-center gap-1 bg-card border border-red-200 dark:border-red-900 hover:bg-red-50 dark:bg-red-950/30 px-3 py-1 rounded-lg"
                       >
                         Batal Pilih Semua Ruang ({selectedRoomCodes.length})
                       </button>
@@ -2235,26 +2235,26 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </div>
                   
                   {dbLoading ? (
-                    <div className="py-12 text-center text-slate-400 text-sm">
+                    <div className="py-12 text-center text-muted-foreground text-sm">
                       <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-[#0073C2] mx-auto mb-3"></div>
                       Memuat katalog ruangan...
                     </div>
                   ) : filteredRooms.length === 0 ? (
-                    <div className="py-12 text-center text-slate-500 text-sm border border-dashed border-slate-200 rounded-xl">
+                    <div className="py-12 text-center text-muted-foreground text-sm border border-dashed border-border rounded-xl">
                       Tidak ada ruangan yang cocok dengan filter.
                     </div>
                   ) : (
-                    <div className="overflow-x-auto border border-slate-200 rounded-lg">
+                    <div className="overflow-x-auto border border-border rounded-lg">
                       <table className="w-full text-left border-collapse text-xs">
                         <thead>
-                          <tr className="bg-slate-50 border-b border-slate-200 text-slate-700 font-extrabold select-none">
+                          <tr className="bg-muted border-b border-border text-foreground font-extrabold select-none">
                             <th className="p-3.5 w-12 text-center" onClick={(e) => e.stopPropagation()}>
                               <button
                                 onClick={toggleSelectAllFiltered}
                                 className={`mx-auto h-4 w-4 rounded border flex items-center justify-center transition-colors ${
                                   isAllFilteredSelected
                                     ? 'bg-[#0073C2] border-[#0073C2] text-white'
-                                    : 'border-slate-300 bg-white text-transparent hover:border-slate-400'
+                                    : 'border-border bg-card text-transparent hover:border-foreground'
                                   }`}
                                 title={isAllFilteredSelected ? "Deselect All" : "Select All"}
                               >
@@ -2278,8 +2278,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               <tr
                                 key={room.code}
                                 onClick={() => toggleRoomSelection(room.code)}
-                                className={`hover:bg-slate-50 cursor-pointer transition-colors ${
-                                  isSelected ? 'bg-sky-50/50' : 'bg-white'
+                                className={`hover:bg-muted cursor-pointer transition-colors ${
+                                  isSelected ? 'bg-sky-50/50 dark:bg-sky-950/30' : 'bg-card'
                                 }`}
                               >
                                 <td className="p-3.5 text-center" onClick={(e) => e.stopPropagation()}>
@@ -2288,25 +2288,25 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                     className={`mx-auto h-4 w-4 rounded border flex items-center justify-center transition-colors ${
                                       isSelected
                                         ? 'bg-[#0073C2] border-[#0073C2] text-white'
-                                        : 'border-slate-300 bg-white text-transparent hover:border-slate-400'
+                                        : 'border-border bg-card text-transparent hover:border-foreground'
                                     }`}
                                   >
                                     <Check className="h-2.5 w-2.5 stroke-[3]" />
                                   </button>
                                 </td>
-                                <td className="p-3.5 text-center font-extrabold text-slate-800 tracking-wide">{room.code}</td>
-                                <td className="p-3.5 text-center text-slate-650 font-semibold">{room.name || '—'}</td>
-                                <td className="p-3.5 text-center text-slate-500">{room.building}</td>
-                                <td className="p-3.5 text-center text-slate-500">{room.floor}</td>
-                                <td className="p-3.5 text-center text-slate-600 font-semibold font-mono">{room.areaSqm}</td>
-                                <td className="p-3.5 text-center text-slate-600 font-semibold font-mono">{room.capacity} pax</td>
+                                <td className="p-3.5 text-center font-extrabold text-foreground tracking-wide">{room.code}</td>
+                                <td className="p-3.5 text-center text-muted-foreground font-semibold">{room.name || '—'}</td>
+                                <td className="p-3.5 text-center text-muted-foreground">{room.building}</td>
+                                <td className="p-3.5 text-center text-muted-foreground">{room.floor}</td>
+                                <td className="p-3.5 text-center text-muted-foreground font-semibold font-mono">{room.areaSqm}</td>
+                                <td className="p-3.5 text-center text-muted-foreground font-semibold font-mono">{room.capacity} pax</td>
                                 <td className="p-3.5 text-center font-extrabold text-[#f59e0b] font-mono">
                                   {formatRupiah(room.dailyRate)}
                                 </td>
                                 <td className="p-3.5 text-center">
                                   <div className="flex justify-center gap-1.5">
                                     {room.needsVerification && (
-                                      <span className="text-[9px] bg-red-50 text-red-600 border border-red-200 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
+                                      <span className="text-[9px] bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-300 border border-red-200 dark:border-red-900 px-2 py-0.5 rounded font-bold uppercase tracking-wider">
                                         Belum Verifikasi
                                       </span>
                                     )}
@@ -2336,11 +2336,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               
               <div className="lg:col-span-2 flex flex-col gap-6">
                 {/* SELECTED ROOMS SUMMARY */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
                   <div className="flex justify-between items-start mb-4">
                     <div>
-                      <h2 className="text-base font-bold text-slate-800">1. Ruangan Terpilih</h2>
-                      <p className="text-xs text-slate-500 mt-1">Estimasi dihitung dari luas meter persegi ruangan terpilih</p>
+                      <h2 className="text-base font-bold text-foreground">1. Ruangan Terpilih</h2>
+                      <p className="text-xs text-muted-foreground mt-1">Estimasi dihitung dari luas meter persegi ruangan terpilih</p>
                     </div>
                     {(selectedRoomCodes.length > 0 || selectedPackageIds.length > 0) && (
                       <button
@@ -2348,7 +2348,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           setSelectedRoomCodes([]);
                           setSelectedPackageIds([]);
                         }}
-                        className="text-xs text-red-500 hover:text-red-600 transition-colors font-medium"
+                        className="text-xs text-red-500 dark:text-red-300 hover:text-red-600 dark:text-red-300 transition-colors font-medium"
                       >
                         Hapus Semua Pilihan
                       </button>
@@ -2356,11 +2356,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </div>
 
                   {selectedRooms.length === 0 && activePackages.length === 0 ? (
-                    <div className="p-6 text-center border border-dashed border-slate-200 rounded-lg bg-slate-50/50">
-                      <p className="text-xs text-slate-400">Belum ada ruangan atau paket terpilih.</p>
+                    <div className="p-6 text-center border border-dashed border-border rounded-lg bg-muted">
+                      <p className="text-xs text-muted-foreground">Belum ada ruangan atau paket terpilih.</p>
                       <button
                         onClick={() => setActiveTab('catalog')}
-                        className="mt-2 text-xs font-bold text-[#0073C2] hover:underline"
+                        className="mt-2 text-xs font-bold text-[#0073C2] dark:text-sky-300 hover:underline"
                       >
                         Pilih dari Katalog Ruangan &rarr;
                       </button>
@@ -2374,13 +2374,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             {activePackages.map((pkg) => (
                               <span
                                 key={pkg.id}
-                                className="inline-flex items-center gap-1.5 text-xs font-bold bg-[#e0f2fe] border border-[#bae6fd] text-[#0073C2] px-3 py-1 rounded-lg"
+                                className="inline-flex items-center gap-1.5 text-xs font-bold bg-[#e0f2fe] border border-[#bae6fd] text-[#0073C2] dark:text-sky-300 px-3 py-1 rounded-lg"
                               >
                                 <Layers className="h-3 w-3" />
                                 {pkg.label} (Lt. {pkg.floor}) — {pkg.areaSqm} m²
                                 <button
                                   onClick={() => applyQuickPackage(pkg.id)}
-                                  className="text-red-500 hover:text-red-600 font-bold ml-1.5"
+                                  className="text-red-500 dark:text-red-300 hover:text-red-600 dark:text-red-300 font-bold ml-1.5"
                                 >
                                   &times;
                                 </button>
@@ -2393,17 +2393,17 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       {/* Render Individual Rooms Summary if any */}
                       {selectedRooms.length > 0 && (
                         <div>
-                          <span className="text-[10px] text-slate-400 font-bold block mb-2 uppercase tracking-wider">Ruangan Individual</span>
-                          <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto p-2 bg-slate-50 border border-slate-200 rounded-lg">
+                          <span className="text-[10px] text-muted-foreground font-bold block mb-2 uppercase tracking-wider">Ruangan Individual</span>
+                          <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto p-2 bg-muted border border-border rounded-lg">
                             {selectedRooms.map((room) => (
                               <span
                                 key={room.code}
-                                className="inline-flex items-center gap-1 text-[10px] font-bold bg-white border border-slate-200 text-slate-700 pl-2 pr-1 py-0.5 rounded-full shadow-sm"
+                                className="inline-flex items-center gap-1 text-[10px] font-bold bg-card border border-border text-foreground pl-2 pr-1 py-0.5 rounded-full shadow-sm"
                               >
                                 {room.code} {room.name ? `(${room.name})` : ''}
                                 <button
                                   onClick={() => toggleRoomSelection(room.code)}
-                                  className="text-slate-400 hover:text-red-500 ml-1 hover:bg-slate-100 rounded-full h-3.5 w-3.5 flex items-center justify-center font-bold"
+                                  className="text-muted-foreground hover:text-red-500 dark:text-red-300 ml-1 hover:bg-muted rounded-full h-3.5 w-3.5 flex items-center justify-center font-bold"
                                 >
                                   &times;
                                 </button>
@@ -2414,20 +2414,20 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       )}
 
                       {/* Summary Metrics Grid */}
-                      <div className="grid grid-cols-3 gap-4 pt-3 border-t border-slate-100 text-center">
+                      <div className="grid grid-cols-3 gap-4 pt-3 border-t border-border text-center">
                         <div>
-                          <span className="text-[10px] text-slate-400 block">Jumlah Ruang</span>
-                          <span className="text-base font-bold text-slate-800">
+                          <span className="text-[10px] text-muted-foreground block">Jumlah Ruang</span>
+                          <span className="text-base font-bold text-foreground">
                             {activePackages.length > 0 ? `${activePackageRoomsCount} unit` : `${selectedRooms.length} unit`}
                           </span>
                         </div>
                         <div>
-                          <span className="text-[10px] text-slate-400 block">Akumulasi Luas</span>
-                          <span className="text-base font-bold text-[#0073C2]">{totalSelectedArea} m²</span>
+                          <span className="text-[10px] text-muted-foreground block">Akumulasi Luas</span>
+                          <span className="text-base font-bold text-[#0073C2] dark:text-sky-300">{totalSelectedArea} m²</span>
                         </div>
                         <div>
-                          <span className="text-[10px] text-slate-400 block">Akumulasi Kapasitas</span>
-                          <span className="text-base font-bold text-slate-800">
+                          <span className="text-[10px] text-muted-foreground block">Akumulasi Kapasitas</span>
+                          <span className="text-base font-bold text-foreground">
                             {activePackages.length > 0 ? 'Sesuai Layanan Paket' : `${totalSelectedCapacity} orang`}
                           </span>
                         </div>
@@ -2437,30 +2437,30 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 </div>
 
                 {/* PMK 144 ADJUSTMENT PARAMETERS */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm">
-                  <h2 className="text-base font-bold text-slate-800 mb-4">2. Parameter Penyesuai & Hari Sewa</h2>
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
+                  <h2 className="text-base font-bold text-foreground mb-4">2. Parameter Penyesuai & Hari Sewa</h2>
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {/* Days Inputs */}
                     <div className="space-y-4">
                       <div>
-                        <label className="text-xs font-semibold text-slate-500 block mb-1.5">Hari Acara</label>
+                        <label className="text-xs font-semibold text-muted-foreground block mb-1.5">Hari Acara</label>
                         <input
                           type="number"
                           min="1"
                           value={eventDays}
                           onChange={(e) => setEventDays(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-slate-800 text-sm focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-foreground text-sm focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-xs font-semibold text-slate-500 block mb-1.5">Hari Loading (Persiapan & Bongkar)</label>
+                        <label className="text-xs font-semibold text-muted-foreground block mb-1.5">Hari Loading (Persiapan & Bongkar)</label>
                         <input
                           type="number"
                           min="0"
                           value={loadingDays}
                           onChange={(e) => setLoadingDays(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-slate-800 text-sm focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-foreground text-sm focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                     </div>
@@ -2468,11 +2468,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     {/* PMK 144 Purpose & Custom factors */}
                     <div className="space-y-4">
                       <div>
-                        <label className="text-xs font-semibold text-slate-500 block mb-1.5">Tujuan Sewa Guna (Rentang PMK 144)</label>
+                        <label className="text-xs font-semibold text-muted-foreground block mb-1.5">Tujuan Sewa Guna (Rentang PMK 144)</label>
                         <select
                           value={selectedPurposeKey}
                           onChange={(e) => setSelectedPurposeKey(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-slate-800 text-sm focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-foreground text-sm focus:outline-none focus:border-[#0073C2]"
                         >
                           {PURPOSE_OPTIONS.map((opt) => (
                             <option key={opt.key} value={opt.key}>
@@ -2484,7 +2484,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-[10px] font-semibold text-slate-500 block mb-1">
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">
                             Faktor Tujuan (%)
                           </label>
                           <input
@@ -2492,13 +2492,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             min="0"
                             value={customPurposeFactor}
                             onChange={(e) => setCustomPurposeFactor(e.target.value)}
-                            className={`w-full bg-white border rounded-lg py-1.5 px-2.5 text-slate-800 text-xs focus:outline-none ${
-                              isPurposeFactorDeviating ? 'border-yellow-500 focus:border-yellow-500' : 'border-slate-200 focus:border-[#0073C2]'
+                            className={`w-full bg-card border rounded-lg py-1.5 px-2.5 text-foreground text-xs focus:outline-none ${
+                              isPurposeFactorDeviating ? 'border-yellow-500 focus:border-yellow-500' : 'border-border focus:border-[#0073C2]'
                             }`}
                           />
                         </div>
                         <div>
-                          <label className="text-[10px] font-semibold text-slate-500 block mb-1">
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">
                             Tingkat Pengembalian (%)
                           </label>
                           <input
@@ -2506,7 +2506,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             min="0"
                             value={customReturnRate}
                             onChange={(e) => setCustomReturnRate(e.target.value)}
-                            className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-slate-800 text-xs focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-foreground text-xs focus:outline-none focus:border-[#0073C2]"
                             placeholder="Markup 15% = 115%"
                           />
                         </div>
@@ -2514,7 +2514,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                       {/* Warnings and alerts */}
                       {isPurposeFactorDeviating && (
-                        <div className="p-2.5 bg-yellow-50 border border-yellow-200 text-yellow-700 rounded-lg text-[10px] flex items-start gap-1.5">
+                        <div className="p-2.5 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-200 dark:border-yellow-900 text-yellow-700 dark:text-yellow-200 rounded-lg text-[10px] flex items-start gap-1.5">
                           <AlertCircle className="h-3.5 w-3.5 shrink-0 mt-0.5" />
                           <span>
                             Nilai di luar rekomendasi PMK 144 ({activePurposeOption.min * 100}%–{activePurposeOption.max * 100}%). Pengetikan diizinkan untuk negosiasi khusus.
@@ -2526,13 +2526,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 </div>
 
                 {/* CONSTANT/SYSTEM SETTINGS DISPLAY */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col md:flex-row gap-4 justify-between items-center text-xs text-slate-500 shadow-sm">
+                <div className="bg-card border border-border rounded-xl p-5 flex flex-col md:flex-row gap-4 justify-between items-center text-xs text-muted-foreground shadow-sm">
                   <div className="flex items-center gap-1.5">
-                    <Info className="h-4 w-4 text-[#0073C2] shrink-0" />
+                    <Info className="h-4 w-4 text-[#0073C2] dark:text-sky-300 shrink-0" />
                     <span>Konstanta System (Settings): Nilai Wajar = {formatRupiah(systemSettings.fairValuePerSqm)}/m² · Faktor Loading = {systemSettings.loadingFactor * 100}% · PPN = {systemSettings.ppnRate * 100}%</span>
                   </div>
                   {role === 'PENGINPUT' && (
-                    <span className="text-[10px] text-slate-400 shrink-0 italic">
+                    <span className="text-[10px] text-muted-foreground shrink-0 italic">
                       Dapat diubah di bagian kelola parameter (Fase 2)
                     </span>
                   )}
@@ -2540,19 +2540,19 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               </div>
 
               {/* RIGHT: RESULTS BOARD */}
-              <div className="bg-white border border-slate-200 rounded-xl p-5 flex flex-col justify-between h-fit gap-6 shadow-sm sticky top-24 text-slate-700">
+              <div className="bg-card border border-border rounded-xl p-5 flex flex-col justify-between h-fit gap-6 shadow-sm sticky top-24 text-foreground">
                 <div>
                   <div className="flex justify-between items-center mb-4">
-                    <h2 className="text-base font-bold text-slate-800">Hasil Kalkulasi</h2>
+                    <h2 className="text-base font-bold text-foreground">Hasil Kalkulasi</h2>
                     
                     {/* Mode Toggle */}
-                    <div className="flex bg-slate-100 border border-slate-200 rounded p-0.5 text-[10px]">
+                    <div className="flex bg-muted border border-border rounded p-0.5 text-[10px]">
                       <button
                         onClick={() => setCalcMode('auto')}
                         className={`px-2 py-1 rounded font-bold transition-all ${
                           calcMode === 'auto'
                             ? 'bg-[#0073C2] text-white shadow-sm'
-                            : 'text-slate-500 hover:text-slate-700'
+                            : 'text-muted-foreground hover:text-foreground'
                         }`}
                       >
                         Otomatis
@@ -2562,7 +2562,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         className={`px-2 py-1 rounded font-bold transition-all ${
                           calcMode === 'manual'
                             ? 'bg-[#0073C2] text-white shadow-sm'
-                            : 'text-slate-500 hover:text-slate-700'
+                            : 'text-muted-foreground hover:text-foreground'
                         }`}
                       >
                         Manual
@@ -2573,71 +2573,71 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   {calcMode === 'manual' ? (
                     <div className="space-y-3 my-4">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Sewa Acara (Rp)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Sewa Acara (Rp)</label>
                         <input
                           type="number"
                           placeholder="Masukkan nilai sewa"
                           value={manualSewa}
                           onChange={(e) => setManualSewa(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded py-1 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded py-1 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">PPN Sewa (Rp)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">PPN Sewa (Rp)</label>
                         <input
                           type="number"
                           placeholder="PPN Sewa"
                           value={manualPPNSewa}
                           onChange={(e) => setManualPPNSewa(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded py-1 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded py-1 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Sewa Loading (Rp)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Sewa Loading (Rp)</label>
                         <input
                           type="number"
                           placeholder="Nilai loading"
                           value={manualLoading}
                           onChange={(e) => setManualLoading(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded py-1 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded py-1 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">PPN Loading (Rp)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">PPN Loading (Rp)</label>
                         <input
                           type="number"
                           placeholder="PPN Loading"
                           value={manualPPNLoading}
                           onChange={(e) => setManualPPNLoading(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded py-1 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded py-1 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                     </div>
                   ) : (
                     <div className="space-y-4 my-6">
-                      <div className="flex justify-between text-xs pb-2 border-b border-slate-100">
-                        <span className="text-slate-500">Sewa Acara ({eventDays} hari)</span>
-                        <span className="font-bold text-slate-800">{formatRupiah(calculatorResults.sewa)}</span>
+                      <div className="flex justify-between text-xs pb-2 border-b border-border">
+                        <span className="text-muted-foreground">Sewa Acara ({eventDays} hari)</span>
+                        <span className="font-bold text-foreground">{formatRupiah(calculatorResults.sewa)}</span>
                       </div>
-                      <div className="flex justify-between text-xs pb-2 border-b border-slate-100">
-                        <span className="text-slate-500">PPN Sewa ({(systemSettings.ppnRate * 100)}%)</span>
-                        <span className="font-bold text-slate-800">{formatRupiah(calculatorResults.ppnSewa)}</span>
+                      <div className="flex justify-between text-xs pb-2 border-b border-border">
+                        <span className="text-muted-foreground">PPN Sewa ({(systemSettings.ppnRate * 100)}%)</span>
+                        <span className="font-bold text-foreground">{formatRupiah(calculatorResults.ppnSewa)}</span>
                       </div>
-                      <div className="flex justify-between text-xs pb-2 border-b border-slate-100">
-                        <span className="text-slate-500">Loading ({loadingDays} hari)</span>
-                        <span className="font-bold text-slate-800">{formatRupiah(calculatorResults.loading)}</span>
+                      <div className="flex justify-between text-xs pb-2 border-b border-border">
+                        <span className="text-muted-foreground">Loading ({loadingDays} hari)</span>
+                        <span className="font-bold text-foreground">{formatRupiah(calculatorResults.loading)}</span>
                       </div>
-                      <div className="flex justify-between text-xs pb-2 border-b border-slate-100">
-                        <span className="text-slate-500">PPN Loading ({(systemSettings.ppnRate * 100)}%)</span>
-                        <span className="font-bold text-slate-800">{formatRupiah(calculatorResults.ppnLoading)}</span>
+                      <div className="flex justify-between text-xs pb-2 border-b border-border">
+                        <span className="text-muted-foreground">PPN Loading ({(systemSettings.ppnRate * 100)}%)</span>
+                        <span className="font-bold text-foreground">{formatRupiah(calculatorResults.ppnLoading)}</span>
                       </div>
                     </div>
                   )}
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-slate-100">
+                <div className="mt-4 pt-4 border-t border-border">
                   <div className="flex justify-between items-baseline mb-6">
-                    <span className="text-xs font-bold text-slate-400 uppercase tracking-wider">TOTAL ESTIMASI</span>
+                    <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">TOTAL ESTIMASI</span>
                     <span className="text-xl font-black text-[#f59e0b] tracking-tight">
                       {formatRupiah(calculatorResults.total)}
                     </span>
@@ -2651,7 +2651,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       <Copy className="h-4 w-4" />
                       {copySuccess ? 'Berhasil Disalin!' : 'Salin Rincian Tarif'}
                     </button>
-                    <span className="text-[9px] text-slate-500 text-center block leading-normal pt-1">
+                    <span className="text-[9px] text-muted-foreground text-center block leading-normal pt-1">
                       *Hasil di atas bersifat rekomendasi usulan tarif. Tarif final disahkan oleh Kepala LMAN pada surat penawaran resmi.
                     </span>
                   </div>
@@ -2667,8 +2667,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               {/* LEFT: Client Form (Penginput Only) & LMAN Officials Settings */}
               <div className="lg:col-span-1 flex flex-col gap-6">
                 {/* Client Form Card */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
-                  <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
+                  <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
                     {editingClientId ? (
                       <>
                         <Settings className="h-4 w-4 text-yellow-500" />
@@ -2676,62 +2676,62 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </>
                     ) : (
                       <>
-                        <Users className="h-4 w-4 text-[#0073C2]" />
+                        <Users className="h-4 w-4 text-[#0073C2] dark:text-sky-300" />
                         <span>Tambah Klien Baru</span>
                       </>
                     )}
                   </h2>
                   {role !== 'PENGINPUT' ? (
-                    <p className="text-xs text-slate-500 italic">Peran Pereview hanya memiliki akses baca (Read-only).</p>
+                    <p className="text-xs text-muted-foreground italic">Peran Pereview hanya memiliki akses baca (Read-only).</p>
                   ) : (
                     <form onSubmit={editingClientId ? handleUpdateClient : handleCreateClient} className="space-y-4">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Instansi / Badan Usaha</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nama Instansi / Badan Usaha</label>
                         <input
                           type="text"
                           required
                           value={clientCompanyName}
                           onChange={(e) => setClientCompanyName(e.target.value)}
                           placeholder="e.g., PT. Media Nusantara"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama PIC Kontak</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nama PIC Kontak</label>
                         <input
                           type="text"
                           required
                           value={clientPicName}
                           onChange={(e) => setClientPicName(e.target.value)}
                           placeholder="e.g., Budi Santoso"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Telepon PIC</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Telepon PIC</label>
                         <input
                           type="text"
                           required
                           value={clientPicPhone}
                           onChange={(e) => setClientPicPhone(e.target.value)}
                           placeholder="e.g., 08123456789"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Sebutan/Jabatan PIC Klien (e.g. Producer Summerland)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Sebutan/Jabatan PIC Klien (e.g. Producer Summerland)</label>
                         <input
                           type="text"
                           required
                           value={clientPicTitle}
                           onChange={(e) => setClientPicTitle(e.target.value)}
                           placeholder="e.g., Producer Summerland"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
-                      <div className="p-2.5 bg-blue-50 border border-blue-200 text-blue-700 rounded-lg text-[9px] leading-relaxed">
+                      <div className="p-2.5 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 text-blue-700 dark:text-blue-300 rounded-lg text-[9px] leading-relaxed">
                         ⚠️ <strong>Perlindungan Data Klien (A3)</strong>: Dilarang keras menginput identitas pribadi sensitif seperti NIK, data KTP, paspor, tanggal lahir, atau alamat pribadi.
                       </div>
                       
@@ -2757,7 +2757,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               setClientPicPhone('');
                               setClientPicTitle('');
                             }}
-                            className="w-full bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-2 rounded-lg text-xs transition-colors"
+                            className="w-full bg-muted hover:bg-muted text-foreground font-bold py-2 rounded-lg text-xs transition-colors"
                           >
                             Batal Edit
                           </button>
@@ -2768,9 +2768,9 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 </div>
 
                 {/* LMAN Officials settings card */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
-                  <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
-                    <Award className="h-4 w-4 text-[#0073C2]" />
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
+                  <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
+                    <Award className="h-4 w-4 text-[#0073C2] dark:text-sky-300" />
                     <span>Daftar Pejabat LMAN</span>
                   </h2>
                   
@@ -2780,27 +2780,27 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         <span className="font-extrabold text-[9px] text-emerald-800 uppercase tracking-wider">Pejabat Aktif</span>
                         <span className="bg-emerald-200 text-emerald-800 text-[8px] font-extrabold px-1.5 py-0.5 rounded">Aktif</span>
                       </div>
-                      <div className="font-bold mt-1 text-slate-800">{activeOfficial.name}</div>
-                      <div className="text-[10px] text-slate-600 mt-0.5 leading-normal">{activeOfficial.title}</div>
-                      <div className="text-[9px] text-slate-500 mt-1.5">SK: {activeOfficial.ordinanceNumber} ({formatTanggalIndo(activeOfficial.ordinanceDate)})</div>
+                      <div className="font-bold mt-1 text-foreground">{activeOfficial.name}</div>
+                      <div className="text-[10px] text-muted-foreground mt-0.5 leading-normal">{activeOfficial.title}</div>
+                      <div className="text-[9px] text-muted-foreground mt-1.5">SK: {activeOfficial.ordinanceNumber} ({formatTanggalIndo(activeOfficial.ordinanceDate)})</div>
                     </div>
                   ) : (
-                    <div className="p-3 bg-amber-50 border border-amber-200 text-amber-800 rounded-xl text-xs italic">
+                    <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-amber-800 dark:text-amber-200 rounded-xl text-xs italic">
                       Belum ada pejabat LMAN yang ditandai aktif. LOI akan menggunakan nama default.
                     </div>
                   )}
 
                   <div className="space-y-2 mt-2">
-                    <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Pilih Pejabat Penandatangan</h3>
+                    <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">Pilih Pejabat Penandatangan</h3>
                     {officials.length === 0 ? (
-                      <p className="text-[10px] text-slate-500 italic">Belum ada daftar pejabat.</p>
+                      <p className="text-[10px] text-muted-foreground italic">Belum ada daftar pejabat.</p>
                     ) : (
                       <div className="space-y-2 max-h-48 overflow-y-auto pr-1">
                         {officials.map((o) => (
-                          <div key={o.id} className="p-2.5 bg-slate-50 border border-slate-200 rounded-lg flex items-center justify-between gap-3">
+                          <div key={o.id} className="p-2.5 bg-muted border border-border rounded-lg flex items-center justify-between gap-3">
                             <div className="min-w-0 flex-1">
-                              <div className="font-bold text-xs text-slate-800 truncate">{o.name}</div>
-                              <div className="text-[9px] text-slate-500 truncate">{o.title}</div>
+                              <div className="font-bold text-xs text-foreground truncate">{o.name}</div>
+                              <div className="text-[9px] text-muted-foreground truncate">{o.title}</div>
                             </div>
                             <div className="flex items-center gap-1.5 shrink-0">
                               {o.isActive ? (
@@ -2808,7 +2808,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               ) : (
                                 <button
                                   onClick={() => handleToggleActiveOfficial(o.id, o.name)}
-                                  className="px-2 py-0.5 text-[8px] font-bold bg-white border border-slate-250 hover:bg-slate-50 text-slate-700 rounded transition-all shadow-sm"
+                                  className="px-2 py-0.5 text-[8px] font-bold bg-card border border-border hover:bg-muted text-foreground rounded transition-all shadow-sm"
                                 >
                                   Aktifkan
                                 </button>
@@ -2823,10 +2823,10 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                     setOfficialOrdinanceNumber(o.ordinanceNumber);
                                     setOfficialOrdinanceDate(o.ordinanceDate);
                                   }}
-                                  className="p-0.5 text-slate-400 hover:text-slate-650 transition-colors"
+                                  className="p-0.5 text-muted-foreground hover:text-muted-foreground transition-colors"
                                   title="Edit Data Pejabat"
                                 >
-                                  <Settings className="h-3.5 w-3.5 text-slate-500" />
+                                  <Settings className="h-3.5 w-3.5 text-muted-foreground" />
                                 </button>
                               )}
                             </div>
@@ -2837,52 +2837,52 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </div>
 
                   {role === 'PENGINPUT' && (
-                    <form onSubmit={editingOfficialId ? handleUpdateOfficial : handleCreateOfficial} className="space-y-3 pt-3 border-t border-slate-100">
-                      <h3 className="text-[10px] font-bold text-slate-400 uppercase tracking-wider">
+                    <form onSubmit={editingOfficialId ? handleUpdateOfficial : handleCreateOfficial} className="space-y-3 pt-3 border-t border-border">
+                      <h3 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                         {editingOfficialId ? 'Edit Pejabat LMAN' : 'Tambah Pejabat LMAN'}
                       </h3>
                       <div>
-                        <label className="text-[9px] font-semibold text-slate-500 block mb-1">Nama Pejabat</label>
+                        <label className="text-[9px] font-semibold text-muted-foreground block mb-1">Nama Pejabat</label>
                         <input
                           type="text"
                           required
                           value={officialName}
                           onChange={(e) => setOfficialName(e.target.value)}
                           placeholder="e.g. Mahdi"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-[11px] text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div>
-                        <label className="text-[9px] font-semibold text-slate-500 block mb-1">Jabatan Resmi</label>
+                        <label className="text-[9px] font-semibold text-muted-foreground block mb-1">Jabatan Resmi</label>
                         <input
                           type="text"
                           required
                           value={officialTitle}
                           onChange={(e) => setOfficialTitle(e.target.value)}
                           placeholder="e.g. Pelaksana Tugas Direktur Pengembangan..."
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-[11px] text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="text-[9px] font-semibold text-slate-500 block mb-1">Nomor SK / Ordinance</label>
+                          <label className="text-[9px] font-semibold text-muted-foreground block mb-1">Nomor SK / Ordinance</label>
                           <input
                             type="text"
                             required
                             value={officialOrdinanceNumber}
                             onChange={(e) => setOfficialOrdinanceNumber(e.target.value)}
                             placeholder="e.g. PRIN-10/LMAN/2024"
-                            className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-[11px] text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#0073C2]"
                           />
                         </div>
                         <div>
-                          <label className="text-[9px] font-semibold text-slate-500 block mb-1">Tanggal SK</label>
+                          <label className="text-[9px] font-semibold text-muted-foreground block mb-1">Tanggal SK</label>
                           <input
                             type="date"
                             required
                             value={officialOrdinanceDate}
                             onChange={(e) => setOfficialOrdinanceDate(e.target.value)}
-                            className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-[11px] text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#0073C2]"
                           />
                         </div>
                       </div>
@@ -2907,7 +2907,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               setOfficialOrdinanceNumber('');
                               setOfficialOrdinanceDate('');
                             }}
-                            className="bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold py-1.5 px-3 rounded-lg text-[10px] transition-colors"
+                            className="bg-muted hover:bg-muted text-foreground font-bold py-1.5 px-3 rounded-lg text-[10px] transition-colors"
                           >
                             Batal
                           </button>
@@ -2920,15 +2920,15 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
               {/* RIGHT: Client List & Submission History */}
               <div className="lg:col-span-2 flex flex-col gap-6">
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
-                  <h2 className="text-sm font-bold text-slate-800">Daftar Instansi Klien</h2>
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
+                  <h2 className="text-sm font-bold text-foreground">Daftar Instansi Klien</h2>
                   {activeClients.length === 0 ? (
-                    <p className="text-xs text-slate-500 italic py-8 text-center">Belum ada data klien terdaftar.</p>
+                    <p className="text-xs text-muted-foreground italic py-8 text-center">Belum ada data klien terdaftar.</p>
                   ) : (
-                    <div className="border border-slate-200 rounded-lg overflow-hidden bg-slate-50/50">
+                    <div className="border border-border rounded-lg overflow-hidden bg-muted">
                       <table className="w-full text-xs text-left border-collapse">
                         <thead>
-                          <tr className="bg-slate-100 text-slate-600 font-bold border-b border-slate-200">
+                          <tr className="bg-muted text-muted-foreground font-bold border-b border-border">
                             <th className="p-3">Nama Instansi</th>
                             <th className="p-3">Nama PIC</th>
                             <th className="p-3">Kontak</th>
@@ -2939,20 +2939,20 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           {activeClients.map((c) => (
                             <tr
                               key={c.id}
-                              className={`hover:bg-slate-50 transition-colors ${
-                                selectedClientId === c.id ? 'bg-sky-50/50' : 'bg-white'
+                              className={`hover:bg-muted transition-colors ${
+                                selectedClientId === c.id ? 'bg-sky-50/50 dark:bg-sky-950/30' : 'bg-card'
                               }`}
                             >
-                              <td className="p-3 font-bold text-slate-800">{c.companyName}</td>
-                              <td className="p-3 text-slate-600">{c.picName}</td>
-                              <td className="p-3 text-slate-500">
+                              <td className="p-3 font-bold text-foreground">{c.companyName}</td>
+                              <td className="p-3 text-muted-foreground">{c.picName}</td>
+                              <td className="p-3 text-muted-foreground">
                                 <div>{c.picPhone}</div>
                               </td>
                               <td className="p-3 text-right">
                                 <div className="flex flex-wrap justify-end gap-1.5">
                                   <button
                                     onClick={() => setSelectedClientId(c.id === selectedClientId ? null : c.id)}
-                                    className="px-2.5 py-1 rounded bg-white hover:bg-slate-50 border border-slate-200 text-slate-700 font-bold transition-all text-[10px]"
+                                    className="px-2.5 py-1 rounded bg-card hover:bg-muted border border-border text-foreground font-bold transition-all text-[10px]"
                                   >
                                     {selectedClientId === c.id ? 'Tutup Riwayat' : 'Lihat Riwayat'}
                                   </button>
@@ -2974,7 +2974,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                       
                                       <button
                                         onClick={() => handleDeleteClient(c)}
-                                        className="px-2.5 py-1 rounded bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 font-bold transition-all text-[10px]"
+                                        className="px-2.5 py-1 rounded bg-red-50 dark:bg-red-950/30 hover:bg-red-100 text-red-600 dark:text-red-300 border border-red-200 dark:border-red-900 font-bold transition-all text-[10px]"
                                       >
                                         Hapus
                                       </button>
@@ -2995,34 +2995,34 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   const client = clients.find((c) => c.id === selectedClientId);
                   const clientSubs = submissions.filter((s) => s.clientId === selectedClientId);
                   return (
-                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm animate-fadeIn text-slate-700">
-                      <h3 className="text-xs font-bold text-[#0073C2] mb-3">
+                    <div className="bg-card border border-border rounded-xl p-5 shadow-sm animate-fadeIn text-foreground">
+                      <h3 className="text-xs font-bold text-[#0073C2] dark:text-sky-300 mb-3">
                         Riwayat Pengajuan Sewa: {client?.companyName}
                       </h3>
                       {clientSubs.length === 0 ? (
-                        <p className="text-xs text-slate-500 italic py-4">Belum ada pengajuan sewa tercatat untuk instansi ini.</p>
+                        <p className="text-xs text-muted-foreground italic py-4">Belum ada pengajuan sewa tercatat untuk instansi ini.</p>
                       ) : (
                         <div className="space-y-3">
                           {clientSubs.map((sub) => (
                             <div
                               key={sub.id}
-                              className="p-3.5 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4"
+                              className="p-3.5 bg-muted border border-border rounded-xl flex items-center justify-between gap-4"
                             >
                               <div>
-                                <h4 className="text-xs font-bold text-slate-800">{sub.activityName}</h4>
-                                <p className="text-[10px] text-slate-500 mt-1">
+                                <h4 className="text-xs font-bold text-foreground">{sub.activityName}</h4>
+                                <p className="text-[10px] text-muted-foreground mt-1">
                                   Ruang: {sub.roomCodes.join(', ')} · Durasi: {sub.eventDays} hari (Loading: {sub.loadingDays} hari)
                                 </p>
-                                <div className="text-[9px] text-slate-400 mt-0.5">
+                                <div className="text-[9px] text-muted-foreground mt-0.5">
                                   Dibuat pada: {new Date(sub.createdAt).toLocaleDateString('id-ID')}
                                 </div>
                               </div>
                               <div className="text-right flex flex-col items-end gap-1.5">
-                                <div className="text-xs font-mono font-bold text-[#0073C2]">
+                                <div className="text-xs font-mono font-bold text-[#0073C2] dark:text-sky-300">
                                   {formatRupiah(sub.estimatedCost)}
                                 </div>
                                 <div className="flex items-center gap-1.5">
-                                  <span className="inline-block text-[9px] bg-[#e0f2fe] text-[#0073C2] border border-[#bae6fd] px-2 py-0.5 rounded font-bold">
+                                  <span className="inline-block text-[9px] bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300 border border-[#bae6fd] px-2 py-0.5 rounded font-bold">
                                     Tahap {sub.stage}
                                   </span>
                                   <button
@@ -3053,36 +3053,36 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               {/* LEFT COLUMN: Record New Submission (Penginput only) / Statistics (Pereview) */}
               <div className="lg:col-span-1">
                 {role === 'PENGINPUT' ? (
-                  <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
-                    <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
-                      <FileText className="h-4 w-4 text-[#0073C2]" />
+                  <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
+                    <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
+                      <FileText className="h-4 w-4 text-[#0073C2] dark:text-sky-300" />
                       Catat Pengajuan Sewa Baru
                     </h2>
                     
                     {selectedRoomCodes.length === 0 && selectedPackageIds.length === 0 ? (
-                      <div className="p-3.5 bg-amber-50 border border-yellow-200 text-yellow-750 rounded-lg text-xs flex items-start gap-2">
+                      <div className="p-3.5 bg-amber-50 dark:bg-amber-950/30 border border-yellow-200 dark:border-yellow-900 text-yellow-750 dark:text-yellow-200 rounded-lg text-xs flex items-start gap-2">
                         <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                         <span>
                           <strong>Perhatian:</strong> Silakan pilih ruangan/paket dan set waktu di tab <strong>Kalkulator</strong> terlebih dahulu untuk menautkan tarif estimasi.
                         </span>
                       </div>
                     ) : (
-                      <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg text-[11px] space-y-2 text-slate-700">
-                        <div className="font-bold text-slate-500">Data Kalkulator Tertaut:</div>
-                        <div>Ruangan: <span className="font-semibold text-slate-800">{activePackages.length > 0 ? activePackages.map(p=>p.label).join(', ') : selectedRoomCodes.join(', ')}</span></div>
-                        <div>Total Luas: <span className="font-semibold text-slate-800">{totalSelectedArea} m²</span></div>
-                        <div>Estimasi Tarif: <span className="font-semibold text-[#0073C2]">{formatRupiah(calculatorResults.total)}</span></div>
+                      <div className="p-3 bg-muted border border-border rounded-lg text-[11px] space-y-2 text-foreground">
+                        <div className="font-bold text-muted-foreground">Data Kalkulator Tertaut:</div>
+                        <div>Ruangan: <span className="font-semibold text-foreground">{activePackages.length > 0 ? activePackages.map(p=>p.label).join(', ') : selectedRoomCodes.join(', ')}</span></div>
+                        <div>Total Luas: <span className="font-semibold text-foreground">{totalSelectedArea} m²</span></div>
+                        <div>Estimasi Tarif: <span className="font-semibold text-[#0073C2] dark:text-sky-300">{formatRupiah(calculatorResults.total)}</span></div>
                       </div>
                     )}
 
                     <form onSubmit={handleCreateSubmission} className="space-y-4">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Pilih Klien Instansi</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Pilih Klien Instansi</label>
                         <select
                           required
                           value={subClientId}
                           onChange={(e) => setSubClientId(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         >
                           <option value="">-- Pilih Instansi --</option>
                           {activeClients.map((c) => (
@@ -3094,43 +3094,43 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Kegiatan (Acara)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nama Kegiatan (Acara)</label>
                         <input
                           type="text"
                           required
                           value={subActivityName}
                           onChange={(e) => setSubActivityName(e.target.value)}
                           placeholder="e.g., Produksi Film / Rapat Umum"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">PIC Internal Pendamping</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">PIC Internal Pendamping</label>
                         <input
                           type="text"
                           required
                           value={subPicInternal}
                           onChange={(e) => setSubPicInternal(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Catatan Tambahan</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Catatan Tambahan</label>
                         <textarea
                           value={subNotes}
                           onChange={(e) => setSubNotes(e.target.value)}
                           rows={3}
                           placeholder="e.g., Kebutuhan khusus kelistrikan, detail panggung."
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <button
                         type="submit"
                         disabled={selectedRoomCodes.length === 0 && selectedPackageIds.length === 0}
-                        className="w-full bg-[#0073C2] disabled:bg-slate-100 disabled:text-slate-400 hover:bg-[#0284c7] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
+                        className="w-full bg-[#0073C2] disabled:bg-muted disabled:text-muted-foreground hover:bg-[#0284c7] text-white font-bold py-2 rounded-lg text-xs transition-colors shadow-sm"
                       >
                         Buat Pengajuan Sewa
                       </button>
@@ -3138,34 +3138,34 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </div>
                 ) : (
                   // Pereview Board Statistics Dashboard
-                  <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
-                    <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
-                      <Layers className="h-4 w-4 text-[#0073C2]" />
+                  <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
+                    <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
+                      <Layers className="h-4 w-4 text-[#0073C2] dark:text-sky-300" />
                       Statistik Papan Pemantauan
                     </h2>
                     <div className="grid grid-cols-2 gap-3">
-                      <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Total Klien</span>
-                        <div className="text-xl font-bold text-slate-800 mt-1">{activeClients.length}</div>
+                      <div className="p-3 bg-muted border border-border rounded-xl">
+                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wide">Total Klien</span>
+                        <div className="text-xl font-bold text-foreground mt-1">{activeClients.length}</div>
                       </div>
-                      <div className="p-3 bg-slate-50 border border-slate-200 rounded-xl">
-                        <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wide">Total Pengajuan</span>
-                        <div className="text-xl font-bold text-slate-800 mt-1">{submissions.length}</div>
+                      <div className="p-3 bg-muted border border-border rounded-xl">
+                        <span className="text-[9px] font-bold text-muted-foreground uppercase tracking-wide">Total Pengajuan</span>
+                        <div className="text-xl font-bold text-foreground mt-1">{submissions.length}</div>
                       </div>
                     </div>
 
                     <div className="space-y-2 mt-2">
-                      <h4 className="text-[10px] font-bold text-slate-500 uppercase tracking-wide">Sebaran Pengajuan Per Tahap</h4>
+                      <h4 className="text-[10px] font-bold text-muted-foreground uppercase tracking-wide">Sebaran Pengajuan Per Tahap</h4>
                       {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((t) => {
                         const count = submissions.filter((s) => s.stage === t).length;
                         const percent = submissions.length > 0 ? (count / submissions.length) * 100 : 0;
                         return (
                           <div key={t} className="text-[10px] space-y-1">
-                            <div className="flex justify-between font-mono text-slate-500">
+                            <div className="flex justify-between font-mono text-muted-foreground">
                               <span>Tahap {t}</span>
-                              <span className="font-bold text-slate-700">{count} pengajuan</span>
+                              <span className="font-bold text-foreground">{count} pengajuan</span>
                             </div>
-                            <div className="w-full bg-slate-100 h-1.5 rounded overflow-hidden border border-slate-200">
+                            <div className="w-full bg-muted h-1.5 rounded overflow-hidden border border-border">
                               <div className="bg-[#0073C2] h-full rounded" style={{ width: `${percent}%` }}></div>
                             </div>
                           </div>
@@ -3178,10 +3178,10 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
               {/* RIGHT COLUMN: Submissions List & Checklist Detail */}
               <div className="lg:col-span-2 flex flex-col gap-6">
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
-                  <h2 className="text-sm font-bold text-slate-800">Daftar Aktif Pengajuan Sewa</h2>
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
+                  <h2 className="text-sm font-bold text-foreground">Daftar Aktif Pengajuan Sewa</h2>
                   {submissions.length === 0 ? (
-                    <p className="text-xs text-slate-500 italic py-8 text-center">Belum ada pengajuan sewa tercatat.</p>
+                    <p className="text-xs text-muted-foreground italic py-8 text-center">Belum ada pengajuan sewa tercatat.</p>
                   ) : (
                     <div className="space-y-3">
                       {submissions.map((sub) => {
@@ -3193,40 +3193,40 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         return (
                           <div
                             key={sub.id}
-                            className={`p-4 bg-white border rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 ${
+                            className={`p-4 bg-card border rounded-xl flex flex-col md:flex-row md:items-center justify-between gap-4 transition-all duration-300 ${
                               selectedSubmissionId === sub.id
-                                ? 'border-[#0073C2] bg-sky-50/20'
-                                : 'border-slate-200 hover:border-slate-350'
+                                ? 'border-[#0073C2] bg-sky-50/20 dark:bg-sky-950/30'
+                                : 'border-border hover:border-border'
                             }`}
                           >
                             <div className="space-y-1.5">
                               <div className="flex items-center flex-wrap gap-2">
-                                <span className="font-extrabold text-xs text-slate-800">{sub.companyName}</span>
+                                <span className="font-extrabold text-xs text-foreground">{sub.companyName}</span>
                                 {isStalled && (
-                                  <span className="text-[8px] bg-red-50 text-red-600 border border-red-200 px-1.5 py-0.5 rounded font-extrabold flex items-center gap-1 animate-pulse">
+                                  <span className="text-[8px] bg-red-50 dark:bg-red-950/30 text-red-600 dark:text-red-300 border border-red-200 dark:border-red-900 px-1.5 py-0.5 rounded font-extrabold flex items-center gap-1 animate-pulse">
                                     ⚠️ TERSENDAT ({diffDays} HARI)
                                   </span>
                                 )}
                               </div>
-                              <div className="text-xs text-slate-650 font-semibold">{sub.activityName}</div>
-                              <p className="text-[10px] text-slate-500 leading-normal">
-                                Ruang: {sub.roomCodes.join(', ')} · Estimasi: <span className="font-mono font-bold text-slate-600">{formatRupiah(sub.estimatedCost)}</span>
+                              <div className="text-xs text-muted-foreground font-semibold">{sub.activityName}</div>
+                              <p className="text-[10px] text-muted-foreground leading-normal">
+                                Ruang: {sub.roomCodes.join(', ')} · Estimasi: <span className="font-mono font-bold text-muted-foreground">{formatRupiah(sub.estimatedCost)}</span>
                               </p>
-                              <div className="text-[9px] text-slate-400 font-mono">
+                              <div className="text-[9px] text-muted-foreground font-mono">
                                 Diperbarui: {lastUpdate.toLocaleDateString('id-ID')}
                               </div>
                             </div>
 
                             <div className="flex items-center gap-2 shrink-0">
                               <div className="flex flex-col gap-1.5">
-                                <span className="text-[9px] bg-[#e0f2fe] text-[#0073C2] border border-[#bae6fd] px-2 py-1 rounded font-bold text-center">
+                                <span className="text-[9px] bg-[#e0f2fe] text-[#0073C2] dark:text-sky-300 border border-[#bae6fd] px-2 py-1 rounded font-bold text-center">
                                   Tahap {sub.stage}/9
                                 </span>
                                 {role === 'PENGINPUT' && (
                                   <select
                                     value={sub.stage}
                                     onChange={(e) => handleUpdateStage(sub.id, parseInt(e.target.value))}
-                                    className="bg-white border border-slate-200 text-[10px] py-1 px-1.5 rounded text-slate-700 focus:outline-none font-bold focus:border-[#0073C2]"
+                                    className="bg-card border border-border text-[10px] py-1 px-1.5 rounded text-foreground focus:outline-none font-bold focus:border-[#0073C2]"
                                   >
                                     {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((s) => (
                                       <option key={s} value={s}>
@@ -3239,7 +3239,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               
                                <button
                                  onClick={() => setSelectedSubmissionId(sub.id === selectedSubmissionId ? null : sub.id)}
-                                 className="px-3 py-2 rounded bg-white hover:bg-slate-50 border border-slate-200 text-xs font-bold text-slate-700 transition-colors shadow-sm"
+                                 className="px-3 py-2 rounded bg-card hover:bg-muted border border-border text-xs font-bold text-foreground transition-colors shadow-sm"
                                >
                                  {selectedSubmissionId === sub.id ? 'Tutup Detail' : 'Tampilkan Checklist'}
                                </button>
@@ -3247,7 +3247,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                {role === 'PENGINPUT' && (
                                  <button
                                    onClick={() => handleDeleteSubmission(sub.id, sub.companyName)}
-                                   className="px-3 py-2 rounded bg-red-50 hover:bg-red-100 text-red-650 border border-red-200 text-xs font-bold transition-all shadow-sm"
+                                   className="px-3 py-2 rounded bg-red-50 dark:bg-red-950/30 hover:bg-red-100 text-red-650 dark:text-red-300 border border-red-200 dark:border-red-900 text-xs font-bold transition-all shadow-sm"
                                  >
                                    Hapus
                                  </button>
@@ -3287,16 +3287,16 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   ];
 
                   return (
-                    <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm animate-fadeIn flex flex-col gap-4 text-slate-700">
-                      <div className="flex justify-between items-start border-b border-slate-100 pb-2">
+                    <div className="bg-card border border-border rounded-xl p-5 shadow-sm animate-fadeIn flex flex-col gap-4 text-foreground">
+                      <div className="flex justify-between items-start border-b border-border pb-2">
                         <div>
-                          <h3 className="text-xs font-bold text-[#0073C2]">
+                          <h3 className="text-xs font-bold text-[#0073C2] dark:text-sky-300">
                             Daftar Periksa 9-Tahap Pengajuan
                           </h3>
-                          <p className="text-[10px] text-slate-400 mt-0.5">Pengajuan: {sub.activityName} ({sub.companyName})</p>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">Pengajuan: {sub.activityName} ({sub.companyName})</p>
                         </div>
                         {showTMWarning && (
-                          <div className="p-2 bg-red-50 border border-red-200 text-red-650 rounded-lg text-[9px] font-bold animate-pulse">
+                          <div className="p-2 bg-red-50 dark:bg-red-950/30 border border-red-200 dark:border-red-900 text-red-650 dark:text-red-300 rounded-lg text-[9px] font-bold animate-pulse">
                             ⚠️ H-7 TECHNICAL MEETING JATUH TEMPO
                           </div>
                         )}
@@ -3311,21 +3311,21 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               key={st.t}
                               className={`p-3 rounded-lg flex items-start gap-3 border transition-colors ${
                                 isActive
-                                  ? 'bg-sky-50/50 border-[#0073C2]/40 text-slate-800'
+                                  ? 'bg-sky-50/50 dark:bg-sky-950/30 border-[#0073C2]/40 text-foreground'
                                   : isDone
-                                  ? 'bg-slate-50 border-slate-100 text-slate-400'
-                                  : 'bg-slate-50/20 border-slate-100 text-slate-350'
+                                  ? 'bg-muted border-border text-muted-foreground'
+                                  : 'bg-muted/20 border-border text-muted-foreground'
                               }`}
                             >
                               <div className={`mt-0.5 h-5 w-5 rounded-full flex items-center justify-center border font-bold text-[10px] ${
                                 isDone 
                                   ? 'bg-[#0073C2] border-[#0073C2] text-white'
-                                  : 'border-slate-300'
+                                  : 'border-border'
                               }`}>
                                 {isDone ? '✓' : st.t}
                               </div>
                               <div>
-                                <h4 className={`text-[11px] font-bold ${isActive ? 'text-[#0073C2]' : isDone ? 'text-slate-700' : 'text-slate-400'}`}>
+                                <h4 className={`text-[11px] font-bold ${isActive ? 'text-[#0073C2] dark:text-sky-300' : isDone ? 'text-foreground' : 'text-muted-foreground'}`}>
                                   {st.label}
                                 </h4>
                                 <p className="text-[10px] mt-0.5 leading-normal">{st.desc}</p>
@@ -3373,22 +3373,22 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 animate-fadeIn">
               {/* LEFT COLUMN: Reserve Date Form (Penginput only) */}
               <div className="lg:col-span-1">
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
-                  <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
-                    <MapPin className="h-4 w-4 text-[#0073C2]" />
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
+                  <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
+                    <MapPin className="h-4 w-4 text-[#0073C2] dark:text-sky-300" />
                     Pencatatan Booking Tanggal
                   </h2>
 
                   {role !== 'PENGINPUT' ? (
-                    <p className="text-xs text-slate-500 italic">Peran Pereview hanya memiliki akses baca (Read-only).</p>
+                    <p className="text-xs text-muted-foreground italic">Peran Pereview hanya memiliki akses baca (Read-only).</p>
                   ) : (
                     <form onSubmit={handleCreateBooking} className="space-y-4">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Pilih Pengajuan Terkait (Opsional)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Pilih Pengajuan Terkait (Opsional)</label>
                         <select
                           value={bookingSubmissionId}
                           onChange={(e) => setBookingSubmissionId(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         >
                           <option value="">-- Tidak Dikaitkan (e.g. UNAVAILABLE) --</option>
                           {submissions.map((s) => (
@@ -3400,11 +3400,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Status Reservasi</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Status Reservasi</label>
                         <select
                           value={bookingType}
                           onChange={(e) => setBookingType(e.target.value as BookingType)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         >
                           <option value="TENTATIVE">Tentatif (Tahap 1-4)</option>
                           <option value="CONFIRMED">Terkunci / Confirmed (Tahap 5+)</option>
@@ -3414,23 +3414,23 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                       <div className="grid grid-cols-2 gap-3">
                         <div>
-                          <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal Mulai</label>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Mulai</label>
                           <input
                             type="date"
                             required
                             value={bookingStartDate}
                             onChange={(e) => setBookingStartDate(e.target.value)}
-                            className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                           />
                         </div>
                         <div>
-                          <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal Selesai</label>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Selesai</label>
                           <input
                             type="date"
                             required
                             value={bookingEndDate}
                             onChange={(e) => setBookingEndDate(e.target.value)}
-                            className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                           />
                         </div>
                       </div>
@@ -3438,19 +3438,19 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Ruangan Di-Booking</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Ruangan Di-Booking</label>
                         {selectedRoomCodes.length > 0 ? (
-                          <div className="p-2 bg-slate-50 border border-slate-200 rounded text-[10px] text-slate-800 font-medium">
+                          <div className="p-2 bg-muted border border-border rounded text-[10px] text-foreground font-medium">
                             {selectedRoomCodes.join(', ')}
                           </div>
                         ) : (
-                          <div className="p-2 bg-slate-50 border border-slate-200 rounded text-[10px] text-slate-400 italic">
+                          <div className="p-2 bg-muted border border-border rounded text-[10px] text-muted-foreground italic">
                             Belum ada ruang dipilih. Silakan klik ruang di tab Kalkulator/Katalog.
                           </div>
                         )}
                       </div>
 
-                      <div className="p-2.5 bg-yellow-50 border border-yellow-250 text-yellow-800 rounded-lg text-[9.5px] leading-normal">
+                      <div className="p-2.5 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-250 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg text-[9.5px] leading-normal">
                         🚨 <strong>Validasi F5</strong>: Status *Terkunci* wajib divalidasi sistem. Tanggal tidak dapat dikonfirmasi/dikunci jika pengajuan belum mencapai minimal Tahap 5 (Surat Resmi Diterima).
                       </div>
 
@@ -3465,22 +3465,22 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 </div>
 
                 {/* Penjadwalan Survei Lokasi Form */}
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
-                  <h2 className="text-sm font-bold text-slate-800 flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
+                  <h2 className="text-sm font-bold text-foreground flex items-center gap-1.5 border-b border-border pb-2">
                     <CheckSquare className="h-4 w-4 text-indigo-650" />
                     Penjadwalan Survei Lokasi
                   </h2>
                   {role !== 'PENGINPUT' ? (
-                    <p className="text-xs text-slate-500 italic">Peran Pereview hanya memiliki akses baca (Read-only).</p>
+                    <p className="text-xs text-muted-foreground italic">Peran Pereview hanya memiliki akses baca (Read-only).</p>
                   ) : (
                     <form onSubmit={handleCreateSurvey} className="space-y-4">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Pilih Pengajuan Terkait</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Pilih Pengajuan Terkait</label>
                         <select
                           required
                           value={surveySubmissionId}
                           onChange={(e) => setSurveySubmissionId(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-2 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-2 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         >
                           <option value="">-- Pilih Pengajuan --</option>
                           {submissions.map((s) => (
@@ -3492,13 +3492,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal Kunjungan Survei</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Kunjungan Survei</label>
                         <input
                           type="date"
                           required
                           value={surveyDate}
                           onChange={(e) => setSurveyDate(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
@@ -3515,10 +3515,10 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
               {/* RIGHT COLUMN: Grid Calendar View */}
               <div className="lg:col-span-2 flex flex-col gap-6">
-                <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm flex flex-col gap-4 text-slate-700">
+                <div className="bg-card border border-border rounded-xl p-5 shadow-sm flex flex-col gap-4 text-foreground">
                   {/* Calendar Month Selector Header */}
-                  <div className="flex justify-between items-center border-b border-slate-100 pb-3">
-                    <h2 className="text-sm font-bold text-slate-800">Grid Kalender Pemakaian</h2>
+                  <div className="flex justify-between items-center border-b border-border pb-3">
+                    <h2 className="text-sm font-bold text-foreground">Grid Kalender Pemakaian</h2>
                     <div className="flex items-center gap-2">
                       <button
                         onClick={() => {
@@ -3529,11 +3529,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             setCurrentMonth(m => m - 1);
                           }
                         }}
-                        className="p-1.5 bg-white border border-slate-200 rounded hover:bg-slate-50 text-slate-600 font-bold transition-colors"
+                        className="p-1.5 bg-card border border-border rounded hover:bg-muted text-muted-foreground font-bold transition-colors"
                       >
                         &larr;
                       </button>
-                      <span className="text-xs font-extrabold text-slate-800 uppercase tracking-wider font-mono">
+                      <span className="text-xs font-extrabold text-foreground uppercase tracking-wider font-mono">
                         {new Date(currentYear, currentMonth).toLocaleString('id-ID', { month: 'long', year: 'numeric' })}
                       </span>
                       <button
@@ -3545,7 +3545,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             setCurrentMonth(m => m + 1);
                           }
                         }}
-                        className="p-1.5 bg-white border border-slate-200 rounded hover:bg-slate-50 text-slate-600 font-bold transition-colors"
+                        className="p-1.5 bg-card border border-border rounded hover:bg-muted text-muted-foreground font-bold transition-colors"
                       >
                         &rarr;
                       </button>
@@ -3573,16 +3573,16 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                     return (
                       <div className="space-y-4">
-                        <div className="grid grid-cols-7 gap-1.5 text-center text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                        <div className="grid grid-cols-7 gap-1.5 text-center text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
                           {weekDays.map((wd) => (
-                            <div key={wd} className="py-1 bg-slate-100 rounded">{wd}</div>
+                            <div key={wd} className="py-1 bg-muted rounded">{wd}</div>
                           ))}
                         </div>
 
                         <div className="grid grid-cols-7 gap-1.5">
                           {daysArray.map((day, idx) => {
                             if (day === null) {
-                              return <div key={`empty-${idx}`} className="aspect-square bg-slate-50 rounded-lg border border-dashed border-slate-100"></div>;
+                              return <div key={`empty-${idx}`} className="aspect-square bg-muted rounded-lg border border-dashed border-border"></div>;
                             }
 
                             const padZero = (n: number) => n.toString().padStart(2, '0');
@@ -3593,15 +3593,15 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             // Find surveys on this day
                             const daySurveys = surveys.filter((s) => s.date === dateStr && s.status !== 'CANCELLED');
 
-                            let cellBg = 'bg-white border-slate-200 hover:border-slate-350';
-                            let numColor = 'text-slate-400';
+                            let cellBg = 'bg-card border-border hover:border-border';
+                            let numColor = 'text-muted-foreground';
                             
                             if (dayBookings.length > 0) {
-                              cellBg = 'bg-[#e0f2fe] border-sky-300 text-sky-950 hover:bg-sky-200';
-                              numColor = 'text-sky-700 font-extrabold';
+                              cellBg = 'bg-[#e0f2fe] border-sky-300 dark:border-sky-800 text-sky-950 dark:text-sky-200 hover:bg-sky-200';
+                              numColor = 'text-sky-700 dark:text-sky-300 font-extrabold';
                             } else if (daySurveys.length > 0) {
-                              cellBg = 'bg-[#fef08a] border-yellow-350 text-yellow-950 hover:bg-yellow-200';
-                              numColor = 'text-yellow-750 font-extrabold';
+                              cellBg = 'bg-[#fef08a] border-yellow-350 text-yellow-950 dark:text-yellow-200 hover:bg-yellow-200';
+                              numColor = 'text-yellow-750 dark:text-yellow-200 font-extrabold';
                             }
 
                             return (
@@ -3616,7 +3616,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                       <div
                                         key={b.id}
                                         title={`${b.activityName} (${b.roomCodes.join(', ')})`}
-                                        className="text-[7.5px] px-1 py-0.5 rounded border border-sky-200/50 bg-white/80 text-sky-900 leading-none font-bold truncate"
+                                        className="text-[7.5px] px-1 py-0.5 rounded border border-sky-200/50 dark:border-sky-800 bg-card/80 text-sky-900 dark:text-sky-200 leading-none font-bold truncate"
                                       >
                                         {b.activityName}
                                       </div>
@@ -3627,7 +3627,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                     <div
                                       key={s.id}
                                       title={`Survei: ${s.companyName} (Status: ${s.status})`}
-                                      className="text-[7.5px] px-1 py-0.5 rounded border border-yellow-250 bg-white/80 text-yellow-900 leading-none font-bold truncate"
+                                      className="text-[7.5px] px-1 py-0.5 rounded border border-yellow-250 dark:border-yellow-900 bg-card/80 text-yellow-900 dark:text-yellow-200 leading-none font-bold truncate"
                                     >
                                       🕵️ {s.companyName}
                                     </div>
@@ -3642,40 +3642,40 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   })()}
 
                   {/* Calendar Bookings List View */}
-                  <div className="mt-4 pt-4 border-t border-slate-100">
-                    <h4 className="text-xs font-bold text-slate-500 mb-3">Daftar Aktif Booking Tanggal</h4>
+                  <div className="mt-4 pt-4 border-t border-border">
+                    <h4 className="text-xs font-bold text-muted-foreground mb-3">Daftar Aktif Booking Tanggal</h4>
                     {bookings.length === 0 ? (
-                      <p className="text-xs text-slate-500 italic py-2">Belum ada booking terdaftar.</p>
+                      <p className="text-xs text-muted-foreground italic py-2">Belum ada booking terdaftar.</p>
                     ) : (
                       <div className="space-y-2 max-h-60 overflow-y-auto">
                         {bookings.map((b) => (
                           <div
                             key={b.id}
-                            className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4 text-xs text-slate-700"
+                            className="p-3 bg-muted border border-border rounded-xl flex items-center justify-between gap-4 text-xs text-foreground"
                           >
                             <div className="space-y-1">
                               <div className="flex items-center gap-2">
-                                <span className="font-bold text-slate-800">{b.activityName}</span>
+                                <span className="font-bold text-foreground">{b.activityName}</span>
                                 <span className={`text-[8px] border px-1.5 py-0.5 rounded font-extrabold ${
                                   b.type === 'CONFIRMED'
                                     ? 'bg-emerald-50 border-emerald-200 text-emerald-750'
                                     : b.type === 'TENTATIVE'
-                                    ? 'bg-amber-50 border-amber-250 text-amber-750'
-                                    : 'bg-red-50 border-red-200 text-red-750'
+                                    ? 'bg-amber-50 dark:bg-amber-950/30 border-amber-250 dark:border-amber-900 text-amber-750 dark:text-amber-200'
+                                    : 'bg-red-50 dark:bg-red-950/30 border-red-200 dark:border-red-900 text-red-750 dark:text-red-300'
                                 }`}>
                                   {b.type}
                                 </span>
                               </div>
-                              <p className="text-[10px] text-slate-500">
+                              <p className="text-[10px] text-muted-foreground">
                                 Ruang: {b.roomCodes.join(', ')} | Periode: {b.startDate} s/d {b.endDate}
                               </p>
-                              {b.notes && <p className="text-[9px] text-slate-400 italic mt-1">&quot;{b.notes}&quot;</p>}
+                              {b.notes && <p className="text-[9px] text-muted-foreground italic mt-1">&quot;{b.notes}&quot;</p>}
                             </div>
 
                             {role === 'PENGINPUT' && (
                               <button
                                 onClick={() => handleDeleteBooking(b.id)}
-                                className="px-2.5 py-1 rounded bg-red-50 hover:bg-red-100 text-red-600 border border-red-200 text-[10px] font-bold transition-all shadow-sm"
+                                className="px-2.5 py-1 rounded bg-red-50 dark:bg-red-950/30 hover:bg-red-100 text-red-600 dark:text-red-300 border border-red-200 dark:border-red-900 text-[10px] font-bold transition-all shadow-sm"
                               >
                                 Hapus
                               </button>
@@ -3687,29 +3687,29 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </div>
 
                   {/* Calendar Surveys List View */}
-                  <div className="mt-6 pt-4 border-t border-slate-100">
-                    <h4 className="text-xs font-bold text-slate-500 mb-3">Daftar Jadwal Survei Lokasi</h4>
+                  <div className="mt-6 pt-4 border-t border-border">
+                    <h4 className="text-xs font-bold text-muted-foreground mb-3">Daftar Jadwal Survei Lokasi</h4>
                     {surveys.filter(s => s.status !== 'CANCELLED').length === 0 ? (
-                      <p className="text-xs text-slate-500 italic py-2">Belum ada survei terjadwal.</p>
+                      <p className="text-xs text-muted-foreground italic py-2">Belum ada survei terjadwal.</p>
                     ) : (
                       <div className="space-y-2 max-h-60 overflow-y-auto">
                         {surveys.filter(s => s.status !== 'CANCELLED').map((s) => (
                           <div
                             key={s.id}
-                            className="p-3 bg-slate-50 border border-slate-200 rounded-xl flex items-center justify-between gap-4 text-xs text-slate-700"
+                            className="p-3 bg-muted border border-border rounded-xl flex items-center justify-between gap-4 text-xs text-foreground"
                           >
                             <div className="space-y-1">
                               <div className="flex items-center gap-2">
-                                <span className="font-bold text-slate-800">{s.companyName}</span>
+                                <span className="font-bold text-foreground">{s.companyName}</span>
                                 <span className={`text-[8px] border px-1.5 py-0.5 rounded font-extrabold ${
                                   s.status === 'SCHEDULED'
-                                    ? 'bg-blue-50 border-blue-200 text-blue-750'
+                                    ? 'bg-blue-50 dark:bg-blue-950/30 border-blue-200 dark:border-blue-900 text-blue-750 dark:text-blue-300'
                                     : 'bg-emerald-50 border-emerald-200 text-emerald-750'
                                 }`}>
                                   {s.status}
                                 </span>
                               </div>
-                              <p className="text-[10px] text-slate-500">
+                              <p className="text-[10px] text-muted-foreground">
                                 Tanggal Kunjungan: {s.date} · Waktu Slot: 10:00 WIB
                               </p>
                             </div>
@@ -3724,7 +3724,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                 </button>
                                 <button
                                   onClick={() => handleUpdateSurvey(s.id, 'CANCELLED')}
-                                  className="px-2.5 py-1 rounded bg-red-50 hover:bg-red-100 text-red-650 border border-red-200 text-[10px] font-bold transition-all shadow-sm"
+                                  className="px-2.5 py-1 rounded bg-red-50 dark:bg-red-950/30 hover:bg-red-100 text-red-650 dark:text-red-300 border border-red-200 dark:border-red-900 text-[10px] font-bold transition-all shadow-sm"
                                 >
                                   Batal
                                 </button>
@@ -3742,26 +3742,26 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
           {/* TAB 3: DOKUMEN OPERASIONAL */}
           {activeTab === 'documents' && (
-            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm text-slate-700">
+            <div className="bg-card border border-border rounded-xl p-6 shadow-sm text-foreground">
               <div className="mb-6">
-                <h2 className="text-base font-bold text-slate-800">Pusat Dokumen Operasional</h2>
-                <p className="text-xs text-slate-500 mt-1">Unduh berkas resmi operasional penyewaan Gedung A.A. Maramis. Data diperbarui berkala sesuai versi terbaru.</p>
+                <h2 className="text-base font-bold text-foreground">Pusat Dokumen Operasional</h2>
+                <p className="text-xs text-muted-foreground mt-1">Unduh berkas resmi operasional penyewaan Gedung A.A. Maramis. Data diperbarui berkala sesuai versi terbaru.</p>
               </div>
 
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 {documentsList.map((doc, idx) => (
                   <div
                     key={idx}
-                    className="p-4 bg-slate-50 border border-slate-200 hover:border-[#0073C2]/45 rounded-xl flex items-center justify-between gap-4 transition-all duration-300 group"
+                    className="p-4 bg-muted border border-border hover:border-[#0073C2]/45 rounded-xl flex items-center justify-between gap-4 transition-all duration-300 group"
                   >
                     <div className="flex items-start gap-3">
-                      <div className="p-2.5 bg-white border border-slate-200 rounded-lg text-slate-400 group-hover:text-[#0073C2] transition-colors mt-0.5">
+                      <div className="p-2.5 bg-card border border-border rounded-lg text-muted-foreground group-hover:text-[#0073C2] dark:text-sky-300 transition-colors mt-0.5">
                         <FileText className="h-5 w-5" />
                       </div>
                       <div>
-                        <h4 className="text-xs font-bold text-slate-700 group-hover:text-slate-900 transition-colors">{doc.name}</h4>
-                        <p className="text-[10px] text-slate-500 mt-0.5 leading-normal">{doc.desc}</p>
-                        <span className="inline-block text-[9px] bg-white text-slate-500 border border-slate-200 px-1.5 py-0.5 rounded font-semibold mt-2.5">
+                        <h4 className="text-xs font-bold text-foreground group-hover:text-foreground transition-colors">{doc.name}</h4>
+                        <p className="text-[10px] text-muted-foreground mt-0.5 leading-normal">{doc.desc}</p>
+                        <span className="inline-block text-[9px] bg-card text-muted-foreground border border-border px-1.5 py-0.5 rounded font-semibold mt-2.5">
                           Versi: {doc.version}
                         </span>
                       </div>
@@ -3769,7 +3769,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     
                     <button
                       onClick={() => alert(`Simulasi mengunduh berkas: ${doc.name} (${doc.type})`)}
-                      className="px-3 py-1.5 bg-white hover:bg-[#0073C2] hover:text-white border border-slate-200 rounded-lg text-[10px] font-bold text-slate-700 transition-all shrink-0 shadow-sm"
+                      className="px-3 py-1.5 bg-card hover:bg-[#0073C2] hover:text-white border border-border rounded-lg text-[10px] font-bold text-foreground transition-all shrink-0 shadow-sm"
                     >
                       Unduh {doc.type}
                     </button>
@@ -3781,27 +3781,27 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
           {/* TAB: DOC_LOI (F7) */}
           {activeTab === 'doc_loi' && (
-            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm text-slate-700 animate-fadeIn flex flex-col gap-6">
+            <div className="bg-card border border-border rounded-xl p-6 shadow-sm text-foreground animate-fadeIn flex flex-col gap-6">
               <div>
-                <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-[#0073C2]" />
+                <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-[#0073C2] dark:text-sky-300" />
                   Pembuatan Surat Penawaran Harga / Letter of Intent (LOI) [F7]
                 </h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   Pilih pengajuan sewa aktif di bawah ini untuk mengenerate naskah resmi LOI yang dapat diunduh atau disalin.
                 </p>
               </div>
 
               {/* Selection Dropdown */}
               <div className="max-w-md">
-                <label className="text-[10px] font-semibold text-slate-500 block mb-1">Pilih Pengajuan Sewa Terkait</label>
+                <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Pilih Pengajuan Sewa Terkait</label>
                 <select
                   value={activeLoiSubmission?.id || ''}
                   onChange={(e) => {
                     const selected = submissions.find(s => s.id === e.target.value);
                     setActiveLoiSubmission(selected || null);
                   }}
-                  className="w-full bg-white border border-slate-200 rounded-lg py-2.5 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                  className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                 >
                   <option value="">-- Pilih Pengajuan / Acara --</option>
                   {submissions.map((sub) => (
@@ -3813,120 +3813,120 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               </div>
 
               {activeLoiSubmission ? (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4 border-t border-slate-100">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4 border-t border-border">
                   {/* Left Parameter Panel */}
                   <div className="lg:col-span-1 space-y-4">
-                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Sesuaikan Parameter LOI</h4>
+                    <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Sesuaikan Parameter LOI</h4>
                     
                     <div className="space-y-3">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Surat Penawaran</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Surat Penawaran</label>
                         <input
                           type="text"
                           value={loiNomorSurat}
                           onChange={(e) => setLoiNomorSurat(e.target.value)}
                           placeholder="e.g. 001/LMAN-P3/2026"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Surat Permohonan Klien</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Surat Permohonan Klien</label>
                         <input
                           type="text"
                           value={loiNomorSuratPemohon}
                           onChange={(e) => setLoiNomorSuratPemohon(e.target.value)}
                           placeholder="e.g. 123/EXT/2026"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal Surat Permohonan Klien</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Surat Permohonan Klien</label>
                         <input
                           type="date"
                           value={loiTanggalSuratPemohon}
                           onChange={(e) => setLoiTanggalSuratPemohon(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Perihal Surat Permohonan Klien</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Perihal Surat Permohonan Klien</label>
                         <input
                           type="text"
                           value={loiPerihalSuratPemohon}
                           onChange={(e) => setLoiPerihalSuratPemohon(e.target.value)}
                           placeholder="e.g. Surat Permohonan Perizinan Lokasi Syuting"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Luas Area Pemanfaatan (Format Bebas)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Luas Area Pemanfaatan (Format Bebas)</label>
                         <input
                           type="text"
                           value={loiLuasAreaCustom}
                           onChange={(e) => setLoiLuasAreaCustom(e.target.value)}
                           placeholder="e.g. ±1.182 m2"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tautan Perjanjian (10.a)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tautan Perjanjian (10.a)</label>
                         <input
                           type="text"
                           value={loiTautanPerjanjian}
                           onChange={(e) => setLoiTautanPerjanjian(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tautan Tata Tertib (10.b)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tautan Tata Tertib (10.b)</label>
                         <input
                           type="text"
                           value={loiTautanTataTertib}
                           onChange={(e) => setLoiTautanTataTertib(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Penandatangan LMAN</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nama Penandatangan LMAN</label>
                         <input
                           type="text"
                           value={loiNamaPenandatangan}
                           onChange={(e) => setLoiNamaPenandatangan(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Jabatan Penandatangan LMAN</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Jabatan Penandatangan LMAN</label>
                         <input
                           type="text"
                           value={loiJabatanPenandatangan}
                           onChange={(e) => setLoiJabatanPenandatangan(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                     </div>
 
-                    <label className="flex items-start gap-2.5 p-3.5 bg-blue-50 border border-blue-200 rounded-xl cursor-pointer">
+                    <label className="flex items-start gap-2.5 p-3.5 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-xl cursor-pointer">
                       <input
                         type="checkbox"
                         checked={loiVerified}
                         onChange={(e) => setLoiVerified(e.target.checked)}
-                        className="mt-1 h-3.5 w-3.5 rounded border-slate-300 text-[#0073C2] focus:ring-[#0073C2]"
+                        className="mt-1 h-3.5 w-3.5 rounded border-border text-[#0073C2] dark:text-sky-300 focus:ring-[#0073C2]"
                       />
-                      <div className="text-[10px] text-blue-750 leading-normal font-medium">
+                      <div className="text-[10px] text-blue-750 dark:text-blue-300 leading-normal font-medium">
                         <strong>Verifikasi Data & Terbilang (F7)</strong>: Saya menyatakan telah memeriksa kebenaran data LOI, perhitungan tarif dasar, PPN 11%, dan ejaan terbilang rupiah.
                       </div>
                     </label>
 
-                    <div className="p-3 bg-yellow-50 border border-yellow-250 text-yellow-800 rounded-lg text-[9px] leading-relaxed">
+                    <div className="p-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-250 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg text-[9px] leading-relaxed">
                       💡 <strong>Petunjuk F7</strong>: Nomor surat, tautan eksternal, dan tanda tangan elektronik akan dicantumkan secara otomatis pada keluaran naskah dinas LOI di sebelah kanan.
                     </div>
                   </div>
@@ -3934,7 +3934,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   {/* Right Document Preview Panel */}
                   <div className="lg:col-span-2 flex flex-col gap-3">
                     <div className="flex justify-between items-center">
-                      <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Pratinjau Naskah LOI</h4>
+                      <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Pratinjau Naskah LOI</h4>
                       <div className="flex gap-2">
                         <button
                           onClick={() => handleSaveLoiParams(activeLoiSubmission)}
@@ -3947,7 +3947,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             navigator.clipboard.writeText(loiTextGenerated);
                             alert('Naskah LOI berhasil disalin ke clipboard!');
                           }}
-                          className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-[10px] font-bold text-slate-700 transition-colors shadow-sm"
+                          className="px-3 py-1.5 rounded-lg bg-card border border-border hover:bg-muted text-[10px] font-bold text-foreground transition-colors shadow-sm"
                         >
                           Salin Teks
                         </button>
@@ -3961,7 +3961,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             element.click();
                             document.body.removeChild(element);
                           }}
-                          className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-[10px] font-bold text-slate-700 transition-colors shadow-sm"
+                          className="px-3 py-1.5 rounded-lg bg-card border border-border hover:bg-muted text-[10px] font-bold text-foreground transition-colors shadow-sm"
                         >
                           Unduh (.txt)
                         </button>
@@ -3971,7 +3971,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           className={`px-3 py-1.5 rounded-lg text-[10px] font-bold transition-all shadow-sm ${
                             loiVerified
                               ? 'bg-[#0073C2] hover:bg-[#0284c7] text-white'
-                              : 'bg-slate-200 text-slate-400 cursor-not-allowed border border-slate-300'
+                              : 'bg-muted text-muted-foreground cursor-not-allowed border border-border'
                           }`}
                           title={!loiVerified ? "Harap centang kotak verifikasi data & terbilang sewa terlebih dahulu" : "Unduh Surat LOI (.docx)"}
                         >
@@ -3983,12 +3983,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       readOnly
                       value={loiTextGenerated}
                       rows={20}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-[10px] font-mono leading-normal text-slate-800 resize-y focus:outline-none scrollbar-thin"
+                      className="w-full bg-muted border border-border rounded-xl p-4 text-[10px] font-mono leading-normal text-foreground resize-y focus:outline-none scrollbar-thin"
                     />
                   </div>
                 </div>
               ) : (
-                <div className="p-8 text-center border border-dashed border-slate-250 rounded-xl bg-slate-50/50 text-slate-400 text-xs italic">
+                <div className="p-8 text-center border border-dashed border-border rounded-xl bg-muted text-muted-foreground text-xs italic">
                   Silakan pilih salah satu pengajuan sewa aktif di atas untuk memuat data pratinjau dokumen.
                 </div>
               )}
@@ -3997,27 +3997,27 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
           {/* TAB: DOC_PRJ (F8) */}
           {activeTab === 'doc_prj' && (
-            <div className="bg-white border border-slate-200 rounded-xl p-6 shadow-sm text-slate-700 animate-fadeIn flex flex-col gap-6">
+            <div className="bg-card border border-border rounded-xl p-6 shadow-sm text-foreground animate-fadeIn flex flex-col gap-6">
               <div>
-                <h2 className="text-base font-bold text-slate-800 flex items-center gap-2">
-                  <FileText className="h-5 w-5 text-[#0073C2]" />
+                <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+                  <FileText className="h-5 w-5 text-[#0073C2] dark:text-sky-300" />
                   Penyusunan Perjanjian Sewa Guna / Kontrak (PRJ) [F8]
                 </h2>
-                <p className="text-xs text-slate-500 mt-1">
+                <p className="text-xs text-muted-foreground mt-1">
                   Pilih pengajuan sewa aktif di bawah ini untuk mengenerate naskah Perjanjian Sewa Guna 17 Pasal.
                 </p>
               </div>
 
               {/* Selection Dropdown */}
               <div className="max-w-md">
-                <label className="text-[10px] font-semibold text-slate-500 block mb-1">Pilih Pengajuan Sewa Terkait</label>
+                <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Pilih Pengajuan Sewa Terkait</label>
                 <select
                   value={activeAgreementSubmission?.id || ''}
                   onChange={(e) => {
                     const selected = submissions.find(s => s.id === e.target.value);
                     setActiveAgreementSubmission(selected || null);
                   }}
-                  className="w-full bg-white border border-slate-200 rounded-lg py-2.5 px-3 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                  className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                 >
                   <option value="">-- Pilih Pengajuan / Acara --</option>
                   {submissions.map((sub) => (
@@ -4029,45 +4029,45 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               </div>
 
               {activeAgreementSubmission ? (
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4 border-t border-slate-100">
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 pt-4 border-t border-border">
                   {/* Left Parameter Panel */}
                   <div className="lg:col-span-1 space-y-4">
-                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Sesuaikan Ketentuan Kontrak</h4>
+                    <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Sesuaikan Ketentuan Kontrak</h4>
                     
                     <div className="space-y-3">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Kontrak Perjanjian</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Kontrak Perjanjian</label>
                         <input
                           type="text"
                           value={agreementNomor}
                           onChange={(e) => setAgreementNomor(e.target.value)}
                           placeholder="e.g. 002/SPG/LMAN/2026"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Pihak Pertama (LMAN)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nama Pihak Pertama (LMAN)</label>
                         <input
                           type="text"
                           value={agreementPihakPertama}
                           onChange={(e) => setAgreementPihakPertama(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Jabatan Pihak Pertama</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Jabatan Pihak Pertama</label>
                         <input
                           type="text"
                           value={agreementJabatanPihakPertama}
                           onChange={(e) => setAgreementJabatanPihakPertama(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                     </div>
 
-                    <div className="p-3 bg-yellow-50 border border-yellow-250 text-yellow-800 rounded-lg text-[9px] leading-relaxed">
+                    <div className="p-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-250 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg text-[9px] leading-relaxed">
                       📑 <strong>Petunjuk F8</strong>: Draf ini memuat 17 pasal standar sewa LMAN termasuk klausul jaminan keamanan (*security deposit* 10%) dan kewajiban denda keterlambatan.
                     </div>
                   </div>
@@ -4075,14 +4075,14 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   {/* Right Document Preview Panel */}
                   <div className="lg:col-span-2 flex flex-col gap-3">
                     <div className="flex justify-between items-center">
-                      <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Pratinjau Naskah Perjanjian</h4>
+                      <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Pratinjau Naskah Perjanjian</h4>
                       <div className="flex gap-2">
                         <button
                           onClick={() => {
                             navigator.clipboard.writeText(agreementTextGenerated);
                             alert('Naskah Perjanjian berhasil disalin ke clipboard!');
                           }}
-                          className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-[10px] font-bold text-slate-700 transition-colors shadow-sm"
+                          className="px-3 py-1.5 rounded-lg bg-card border border-border hover:bg-muted text-[10px] font-bold text-foreground transition-colors shadow-sm"
                         >
                           Salin Kontrak
                         </button>
@@ -4096,7 +4096,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                             element.click();
                             document.body.removeChild(element);
                           }}
-                          className="px-3 py-1.5 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-[10px] font-bold text-slate-700 transition-colors shadow-sm"
+                          className="px-3 py-1.5 rounded-lg bg-card border border-border hover:bg-muted text-[10px] font-bold text-foreground transition-colors shadow-sm"
                         >
                           Unduh (.txt)
                         </button>
@@ -4112,12 +4112,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       readOnly
                       value={agreementTextGenerated}
                       rows={20}
-                      className="w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-[10px] font-mono leading-normal text-slate-800 resize-y focus:outline-none scrollbar-thin"
+                      className="w-full bg-muted border border-border rounded-xl p-4 text-[10px] font-mono leading-normal text-foreground resize-y focus:outline-none scrollbar-thin"
                     />
                   </div>
                 </div>
               ) : (
-                <div className="p-8 text-center border border-dashed border-slate-250 rounded-xl bg-slate-50/50 text-slate-400 text-xs italic">
+                <div className="p-8 text-center border border-dashed border-border rounded-xl bg-muted text-muted-foreground text-xs italic">
                   Silakan pilih salah satu pengajuan sewa aktif di atas untuk memuat data pratinjau perjanjian.
                 </div>
               )}
@@ -4126,20 +4126,20 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
           {/* F7: LOI MODAL */}
           {activeLoiSubmission && (
-            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-fadeIn text-slate-700 font-sans">
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-fadeIn text-foreground font-sans">
                 {/* Modal Header */}
-                <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <div className="p-5 border-b border-border flex justify-between items-center bg-muted">
                   <div>
-                    <h3 className="text-sm font-bold text-[#0073C2] flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-[#0073C2] dark:text-sky-300 flex items-center gap-2">
                       <FileText className="h-4 w-4" />
                       Penerbitan Surat Penawaran Harga / LOI (F7)
                     </h3>
-                    <p className="text-[10px] text-slate-400 mt-1">Instansi: {activeLoiSubmission.companyName} · Kegiatan: {activeLoiSubmission.activityName}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">Instansi: {activeLoiSubmission.companyName} · Kegiatan: {activeLoiSubmission.activityName}</p>
                   </div>
                   <button
                     onClick={() => setActiveLoiSubmission(null)}
-                    className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
+                    className="p-1.5 hover:bg-muted rounded-lg text-muted-foreground hover:text-muted-foreground transition-colors"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -4149,140 +4149,140 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 <div className="flex-1 overflow-y-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Left Parameter Panel */}
                   <div className="lg:col-span-1 space-y-4">
-                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Sesuaikan Parameter LOI</h4>
+                    <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Sesuaikan Parameter LOI</h4>
                     
                     <div className="space-y-3">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Surat Penawaran</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Surat Penawaran</label>
                         <input
                           type="text"
                           value={loiNomorSurat}
                           onChange={(e) => setLoiNomorSurat(e.target.value)}
                           placeholder="e.g. 001/LMAN-P3/2026"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Surat Permohonan Klien</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Surat Permohonan Klien</label>
                         <input
                           type="text"
                           value={loiNomorSuratPemohon}
                           onChange={(e) => setLoiNomorSuratPemohon(e.target.value)}
                           placeholder="e.g. 123/EXT/2026"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Penandatangan LMAN</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nama Penandatangan LMAN</label>
                         <input
                           type="text"
                           value={loiNamaPenandatangan}
                           onChange={(e) => setLoiNamaPenandatangan(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tanggal Surat Permohonan Klien</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Surat Permohonan Klien</label>
                         <input
                           type="date"
                           value={loiTanggalSuratPemohon}
                           onChange={(e) => setLoiTanggalSuratPemohon(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Perihal Surat Permohonan Klien</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Perihal Surat Permohonan Klien</label>
                         <input
                           type="text"
                           value={loiPerihalSuratPemohon}
                           onChange={(e) => setLoiPerihalSuratPemohon(e.target.value)}
                           placeholder="e.g. Surat Permohonan Perizinan Lokasi Syuting"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Luas Area Pemanfaatan (Format Bebas)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Luas Area Pemanfaatan (Format Bebas)</label>
                         <input
                           type="text"
                           value={loiLuasAreaCustom}
                           onChange={(e) => setLoiLuasAreaCustom(e.target.value)}
                           placeholder="e.g. ±1.182 m2"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Jabatan Penandatangan LMAN</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Jabatan Penandatangan LMAN</label>
                         <input
                           type="text"
                           value={loiJabatanPenandatangan}
                           onChange={(e) => setLoiJabatanPenandatangan(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tautan Perjanjian (10.a)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tautan Perjanjian (10.a)</label>
                         <input
                           type="text"
                           value={loiTautanPerjanjian}
                           onChange={(e) => setLoiTautanPerjanjian(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Tautan Tata Tertib (10.b)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tautan Tata Tertib (10.b)</label>
                         <input
                           type="text"
                           value={loiTautanTataTertib}
                           onChange={(e) => setLoiTautanTataTertib(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                     </div>
 
-                    <label className="flex items-start gap-2.5 p-3.5 bg-blue-50 border border-blue-200 rounded-xl cursor-pointer">
+                    <label className="flex items-start gap-2.5 p-3.5 bg-blue-50 dark:bg-blue-950/30 border border-blue-200 dark:border-blue-900 rounded-xl cursor-pointer">
                       <input
                         type="checkbox"
                         checked={loiVerified}
                         onChange={(e) => setLoiVerified(e.target.checked)}
-                        className="mt-1 h-3.5 w-3.5 rounded border-slate-300 text-[#0073C2] focus:ring-[#0073C2]"
+                        className="mt-1 h-3.5 w-3.5 rounded border-border text-[#0073C2] dark:text-sky-300 focus:ring-[#0073C2]"
                       />
-                      <div className="text-[10px] text-blue-750 leading-normal font-medium">
+                      <div className="text-[10px] text-blue-750 dark:text-blue-300 leading-normal font-medium">
                         <strong>Verifikasi Data & Terbilang (F7)</strong>: Saya menyatakan telah memeriksa kebenaran data LOI, perhitungan tarif dasar, PPN 11%, dan ejaan terbilang rupiah.
                       </div>
                     </label>
 
-                    <div className="p-3 bg-yellow-50 border border-yellow-250 text-yellow-800 rounded-lg text-[9px] leading-relaxed">
+                    <div className="p-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-250 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg text-[9px] leading-relaxed">
                       💡 <strong>Petunjuk F7</strong>: Nomor surat, tautan eksternal, dan tanda tangan elektronik akan dicantumkan secara otomatis pada keluaran naskah dinas LOI di sebelah kanan.
                     </div>
                   </div>
 
                   {/* Right Document Preview Panel */}
                   <div className="lg:col-span-2 flex flex-col gap-3 h-[420px] lg:h-auto">
-                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Pratinjau Naskah LOI</h4>
+                    <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Pratinjau Naskah LOI</h4>
                     <textarea
                       readOnly
                       value={loiTextGenerated}
-                      className="flex-1 w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-[10px] font-mono leading-normal text-slate-800 resize-none focus:outline-none scrollbar-thin"
+                      className="flex-1 w-full bg-muted border border-border rounded-xl p-4 text-[10px] font-mono leading-normal text-foreground resize-none focus:outline-none scrollbar-thin"
                     />
                   </div>
                 </div>
 
                 {/* Modal Footer */}
-                <div className="p-4 border-t border-slate-100 flex justify-end gap-3 bg-slate-50">
+                <div className="p-4 border-t border-border flex justify-end gap-3 bg-muted">
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(loiTextGenerated);
                       alert('Naskah LOI berhasil disalin ke clipboard!');
                     }}
-                    className="px-4 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-xs font-bold text-slate-700 transition-colors shadow-sm"
+                    className="px-4 py-2 rounded-lg bg-card border border-border hover:bg-muted text-xs font-bold text-foreground transition-colors shadow-sm"
                   >
                     Salin Teks LOI
                   </button>
@@ -4296,7 +4296,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       element.click();
                       document.body.removeChild(element);
                     }}
-                    className="px-4 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-xs font-bold text-slate-700 transition-colors shadow-sm"
+                    className="px-4 py-2 rounded-lg bg-card border border-border hover:bg-muted text-xs font-bold text-foreground transition-colors shadow-sm"
                   >
                     Unduh File LOI (.txt)
                   </button>
@@ -4306,7 +4306,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     className={`px-4 py-2 rounded-lg text-xs font-bold transition-all shadow-sm ${
                       loiVerified
                         ? 'bg-[#0073C2] hover:bg-[#0284c7] text-white'
-                        : 'bg-slate-200 text-slate-400 cursor-not-allowed border border-slate-300'
+                        : 'bg-muted text-muted-foreground cursor-not-allowed border border-border'
                     }`}
                     title={!loiVerified ? "Harap centang kotak verifikasi data & terbilang sewa terlebih dahulu" : "Unduh Surat LOI (.docx)"}
                   >
@@ -4319,20 +4319,20 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
           {/* F8: AGREEMENT MODAL */}
           {activeAgreementSubmission && (
-            <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-              <div className="bg-white border border-slate-200 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-fadeIn text-slate-700 font-sans">
+            <div className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+              <div className="bg-card border border-border rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden animate-fadeIn text-foreground font-sans">
                 {/* Modal Header */}
-                <div className="p-5 border-b border-slate-100 flex justify-between items-center bg-slate-50">
+                <div className="p-5 border-b border-border flex justify-between items-center bg-muted">
                   <div>
-                    <h3 className="text-sm font-bold text-[#0073C2] flex items-center gap-2">
+                    <h3 className="text-sm font-bold text-[#0073C2] dark:text-sky-300 flex items-center gap-2">
                       <FileText className="h-4 w-4" />
                       Penyusunan Perjanjian Sewa Guna (F8)
                     </h3>
-                    <p className="text-[10px] text-slate-400 mt-1">Instansi: {activeAgreementSubmission.companyName} · Kegiatan: {activeAgreementSubmission.activityName}</p>
+                    <p className="text-[10px] text-muted-foreground mt-1">Instansi: {activeAgreementSubmission.companyName} · Kegiatan: {activeAgreementSubmission.activityName}</p>
                   </div>
                   <button
                     onClick={() => setActiveAgreementSubmission(null)}
-                    className="p-1.5 hover:bg-slate-200 rounded-lg text-slate-400 hover:text-slate-600 transition-colors"
+                    className="p-1.5 hover:bg-muted rounded-lg text-muted-foreground hover:text-muted-foreground transition-colors"
                   >
                     <X className="h-4 w-4" />
                   </button>
@@ -4342,65 +4342,65 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 <div className="flex-1 overflow-y-auto p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
                   {/* Left Parameter Panel */}
                   <div className="lg:col-span-1 space-y-4">
-                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Sesuaikan Ketentuan Kontrak</h4>
+                    <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Sesuaikan Ketentuan Kontrak</h4>
                     
                     <div className="space-y-3">
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nomor Kontrak Perjanjian</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Kontrak Perjanjian</label>
                         <input
                           type="text"
                           value={agreementNomor}
                           onChange={(e) => setAgreementNomor(e.target.value)}
                           placeholder="e.g. 002/SPG/LMAN/2026"
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Nama Pihak Pertama (LMAN)</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nama Pihak Pertama (LMAN)</label>
                         <input
                           type="text"
                           value={agreementPihakPertama}
                           onChange={(e) => setAgreementPihakPertama(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
 
                       <div>
-                        <label className="text-[10px] font-semibold text-slate-500 block mb-1">Jabatan Pihak Pertama</label>
+                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Jabatan Pihak Pertama</label>
                         <input
                           type="text"
                           value={agreementJabatanPihakPertama}
                           onChange={(e) => setAgreementJabatanPihakPertama(e.target.value)}
-                          className="w-full bg-white border border-slate-200 rounded-lg py-1.5 px-2.5 text-xs text-slate-800 focus:outline-none focus:border-[#0073C2]"
+                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#0073C2]"
                         />
                       </div>
                     </div>
 
-                    <div className="p-3 bg-yellow-550 border border-yellow-200 text-yellow-800 rounded-lg text-[9px] leading-relaxed">
+                    <div className="p-3 bg-yellow-550 border border-yellow-200 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg text-[9px] leading-relaxed">
                       📑 <strong>Petunjuk F8</strong>: Draf ini memuat 17 pasal standar sewa LMAN termasuk klausul jaminan keamanan (*security deposit* 10%) dan kewajiban denda keterlambatan.
                     </div>
                   </div>
 
                   {/* Right Document Preview Panel */}
                   <div className="lg:col-span-2 flex flex-col gap-3 h-[420px] lg:h-auto">
-                    <h4 className="text-[11px] font-bold text-slate-400 uppercase tracking-wide">Pratinjau Naskah Perjanjian</h4>
+                    <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Pratinjau Naskah Perjanjian</h4>
                     <textarea
                       readOnly
                       value={agreementTextGenerated}
-                      className="flex-1 w-full bg-slate-50 border border-slate-200 rounded-xl p-4 text-[10px] font-mono leading-normal text-slate-800 resize-none focus:outline-none scrollbar-thin"
+                      className="flex-1 w-full bg-muted border border-border rounded-xl p-4 text-[10px] font-mono leading-normal text-foreground resize-none focus:outline-none scrollbar-thin"
                     />
                   </div>
                 </div>
 
                 {/* Modal Footer */}
-                <div className="p-4 border-t border-slate-100 flex justify-end gap-3 bg-slate-50">
+                <div className="p-4 border-t border-border flex justify-end gap-3 bg-muted">
                   <button
                     onClick={() => {
                       navigator.clipboard.writeText(agreementTextGenerated);
                       alert('Naskah Perjanjian berhasil disalin ke clipboard!');
                     }}
-                    className="px-4 py-2 rounded-lg bg-white border border-slate-200 hover:bg-slate-50 text-xs font-bold text-slate-700 transition-colors shadow-sm"
+                    className="px-4 py-2 rounded-lg bg-card border border-border hover:bg-muted text-xs font-bold text-foreground transition-colors shadow-sm"
                   >
                     Salin Kontrak
                   </button>
@@ -4428,7 +4428,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
       </div>
 
       {/* FOOTER BAR - Satu Kemenkeu style */}
-      <footer className="border-t border-slate-200 bg-white py-3 px-6 text-slate-400 text-[10px] flex justify-between items-center select-none shadow-sm z-10 shrink-0">
+      <footer className="border-t border-border bg-card py-3 px-6 text-muted-foreground text-[10px] flex justify-between items-center select-none shadow-sm z-10 shrink-0">
         <div>© 2026 Lembaga Manajemen Aset Negara (LMAN). Hak Cipta Dilindungi.</div>
       </footer>
     </div>
