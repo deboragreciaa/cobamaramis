@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
+import { ThemeToggle } from "@/components/ThemeToggle";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -21,14 +22,14 @@ export default function RootLayout({
   return (
     <html
       lang="id"
-      className={`${inter.variable} h-full antialiased dark`}
+      className={`${inter.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col font-sans bg-slate-950 text-slate-100">
+      <body className="min-h-full flex flex-col font-sans bg-background text-foreground">
         <AuthProvider>
           {children}
         </AuthProvider>
+        <ThemeToggle />
       </body>
     </html>
   );
 }
-
