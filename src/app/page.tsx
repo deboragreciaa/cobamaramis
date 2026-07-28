@@ -1916,12 +1916,58 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
   // F10: Documents list with versions
   const documentsList = [
-    { name: 'Booklet Informasi Gedung A.A. Maramis', version: '2026-05', desc: 'Informasi lengkap kapasitas, denah, dan foto ruangan.', type: 'PDF' },
-    { name: 'Layout Gedung A, B & C Lengkap', version: '2026-04', desc: 'Denah arsitektur PDF berskala untuk kebutuhan mitigasi.', type: 'ZIP' },
-    { name: 'Tata Tertib Pengunjung Gedung', version: '2025-11', desc: 'Aturan umum untuk seluruh pengunjung dan tamu undangan.', type: 'PDF' },
-    { name: 'Tata Tertib Mitra Pemanfaatan', version: '2026-01', desc: 'Ketentuan teknis operasional loading barang, kelistrikan, dan kebersihan bagi penyelenggara.', type: 'PDF' },
-    { name: 'Template Surat Permohonan Sewa', version: '2026-03', desc: 'Draft surat resmi pengajuan sewa untuk dikirimkan oleh pemohon.', type: 'DOCX' },
-    { name: 'Formulir Operasional Acara', version: '2026-02', desc: 'Form checklist loading barang, izin keramaian, dan checklist kebersihan.', type: 'ZIP' },
+    {
+      name: 'Booklet Informasi Gedung A.A. Maramis',
+      version: '2026-05',
+      desc: 'Informasi lengkap kapasitas, denah, dan foto ruangan.',
+      type: 'PDF',
+      fileUrl: '/Booklet_Gedung_AA_Maramis_-_Updated_2026.pdf',
+      available: true
+    },
+    {
+      name: 'Layout Gedung A, B & C Lengkap',
+      version: '2026-04',
+      desc: 'Denah arsitektur PDF berskala untuk kebutuhan mitigasi.',
+      type: 'PDF',
+      fileUrl: '/Layout_Gedung_AA_Maramis.pdf',
+      available: true
+    },
+    {
+      name: 'Alur Penyewaan',
+      version: '2026-06',
+      desc: 'Bagan alur proses pengajuan sewa, survei lokasi, hingga persetujuan pemanfaatan.',
+      type: 'PNG',
+      fileUrl: '/Alur_Penyewaan_AA_Maramis.png',
+      available: true
+    },
+    {
+      name: 'Tata Tertib Pengunjung Gedung',
+      version: '2025-11',
+      desc: 'Aturan umum untuk seluruh pengunjung dan tamu undangan.',
+      type: 'PDF',
+      available: false
+    },
+    {
+      name: 'Tata Tertib Mitra Pemanfaatan',
+      version: '2026-01',
+      desc: 'Ketentuan teknis operasional loading barang, kelistrikan, dan kebersihan bagi penyelenggara.',
+      type: 'PDF',
+      available: false
+    },
+    {
+      name: 'Template Surat Permohonan Sewa',
+      version: '2026-03',
+      desc: 'Draft surat resmi pengajuan sewa untuk dikirimkan oleh pemohon.',
+      type: 'DOCX',
+      available: false
+    },
+    {
+      name: 'Formulir Operasional Acara',
+      version: '2026-02',
+      desc: 'Form checklist loading barang, izin keramaian, dan checklist kebersihan.',
+      type: 'ZIP',
+      available: false
+    },
   ];
 
   // Render Spinner
@@ -4013,12 +4059,19 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
                     </div>
                     
-                    <button
-                      onClick={() => alert(`Simulasi mengunduh berkas: ${doc.name} (${doc.type})`)}
-                      className="px-3 py-1.5 bg-card hover:bg-[#800020] hover:text-white border border-border rounded-lg text-[10px] font-bold text-foreground transition-all shrink-0 shadow-sm"
-                    >
-                      Unduh {doc.type}
-                    </button>
+                    {doc.available ? (
+                      <a
+                        href={doc.fileUrl}
+                        download
+                        className="px-3 py-1.5 bg-card hover:bg-[#800020] hover:text-white border border-border rounded-lg text-[10px] font-bold text-foreground transition-all shrink-0 shadow-sm inline-block text-center"
+                      >
+                        Unduh {doc.type}
+                      </a>
+                    ) : (
+                      <span className="text-[10px] text-muted-foreground font-semibold px-3 py-1.5 select-none shrink-0">
+                        Segera Tersedia
+                      </span>
+                    )}
                   </div>
                 ))}
               </div>
