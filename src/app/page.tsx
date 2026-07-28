@@ -2428,7 +2428,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
           {/* TAB 1: KATALOG RUANGAN */}
           {activeTab === 'catalog' && (
-            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6 animate-fadeIn">
+            <div className="flex flex-col gap-6 animate-fadeIn">
+              <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
               
               {/* LEFT COLUMN: PRIMARY ROOMS WIDGET */}
               <div className="lg:col-span-1">
@@ -2689,9 +2690,11 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </div>
                   </div>
                 </div>
+              </div>
+            </div>
 
-                {/* COMPACT ROOMS LIST (TABLE) */}
-                <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm p-5">
+            {/* COMPACT ROOMS LIST (TABLE) */}
+            <div className="bg-card border border-border rounded-xl overflow-hidden shadow-sm p-5">
                   <div className="flex justify-between items-center mb-4">
                     <div>
                       <h3 className="text-sm font-bold text-[#800020] dark:text-[#9a1a35] flex items-center gap-2">
@@ -2800,10 +2803,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </div>
                   )}
                 </div>
-
               </div>
-            </div>
-          )}
+            )}
 
           {/* TAB 2: KALKULATOR PENAWARAN */}
           {activeTab === 'calculator' && (
