@@ -1068,13 +1068,17 @@ export default function Home() {
 
   const handleSyncSubmissionWithCalculator = async (sub: Submission) => {
     const currentCost = calculatorResults.total;
-    const currentRooms = activePackages.length > 0
+    let currentRooms = activePackages.length > 0
       ? EXCEL_PACKAGES.filter((pkg) => selectedPackageIds.includes(pkg.id)).map((p) => p.label)
       : selectedRoomCodes;
 
     if (currentRooms.length === 0) {
-      alert('Silakan pilih minimal 1 ruangan atau paket di tab Kalkulator/Katalog terlebih dahulu.');
-      return;
+      if (parseFloat(manualAreaSqm) > 0) {
+        currentRooms = ['Manual'];
+      } else {
+        alert('Silakan pilih minimal 1 ruangan atau paket di tab Kalkulator/Katalog terlebih dahulu.');
+        return;
+      }
     }
 
     const confirmSync = window.confirm(
@@ -1136,13 +1140,17 @@ export default function Home() {
 
     // Use current F2 calculator settings
     const currentCost = calculatorResults.total;
-    const currentRooms = activePackages.length > 0
+    let currentRooms = activePackages.length > 0
       ? EXCEL_PACKAGES.filter((pkg) => selectedPackageIds.includes(pkg.id)).map((p) => p.label)
       : selectedRoomCodes;
 
     if (currentRooms.length === 0) {
-      alert('Silakan pilih minimal 1 ruangan atau paket di tab Kalkulator/Katalog terlebih dahulu.');
-      return;
+      if (parseFloat(manualAreaSqm) > 0) {
+        currentRooms = ['Manual'];
+      } else {
+        alert('Silakan pilih minimal 1 ruangan atau paket di tab Kalkulator/Katalog terlebih dahulu.');
+        return;
+      }
     }
 
     try {
