@@ -149,6 +149,7 @@ export default function Home() {
 
   // F2 Calculator Inputs
   const [selectedRoomCodes, setSelectedRoomCodes] = useState<string[]>([]);
+  const [manualAreaSqm, setManualAreaSqm] = useState<string>('');
   const [eventDays, setEventDays] = useState<string>('1');
   const [loadingDays, setLoadingDays] = useState<string>('1');
   const [selectedPurposeKey, setSelectedPurposeKey] = useState<string>('bisnis');
@@ -287,6 +288,19 @@ export default function Home() {
   const [agreementOfferLetterNo, setAgreementOfferLetterNo] = useState('');
   const [agreementOfferLetterDate, setAgreementOfferLetterDate] = useState('');
   const [agreementInstitutionAddress, setAgreementInstitutionAddress] = useState('');
+
+  // Automatically populate Pihak Pertama name and title from active official database
+  useEffect(() => {
+    if (activeAgreementSubmission) {
+      if (activeOfficial) {
+        setAgreementPihakPertama(activeOfficial.name);
+        setAgreementJabatanPihakPertama(activeOfficial.title);
+      } else {
+        setAgreementPihakPertama('Tim LMAN');
+        setAgreementJabatanPihakPertama('Divisi Pengembangan dan Pendayagunaan Properti 1');
+      }
+    }
+  }, [activeAgreementSubmission, activeOfficial]);
 
   // F7 & F8 Generated Memos
   const loiTextGenerated = useMemo(() => {
@@ -1799,11 +1813,15 @@ export default function Home() {
   }, [rooms, activePackages]);
 
   const totalSelectedArea = useMemo(() => {
+    const parsedManual = parseFloat(manualAreaSqm);
+    if (!isNaN(parsedManual) && parsedManual > 0) {
+      return parsedManual;
+    }
     if (activePackages.length > 0) {
       return activePackages.reduce((sum, pkg) => sum + pkg.areaSqm, 0); // Sum of Excel package areas!
     }
     return selectedRooms.reduce((sum, r) => sum + r.areaSqm, 0);
-  }, [selectedRooms, activePackages]);
+  }, [selectedRooms, activePackages, manualAreaSqm]);
 
   const totalSelectedCapacity = useMemo(() => {
     return selectedRooms.reduce((sum, r) => sum + r.capacity, 0);
@@ -2794,103 +2812,119 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               <div className="lg:col-span-2 flex flex-col gap-6">
                 {/* SELECTED ROOMS SUMMARY */}
                 <div className="bg-card border border-border rounded-xl p-5 shadow-sm">
-                  <div className="flex justify-between items-start mb-4">
-                    <div>
-                      <h2 className="text-base font-bold text-foreground">1. Ruangan Terpilih</h2>
-                      <p className="text-xs text-muted-foreground mt-1">Estimasi dihitung dari luas meter persegi ruangan terpilih</p>
-                    </div>
-                    {(selectedRoomCodes.length > 0 || selectedPackageIds.length > 0) && (
-                      <button
-                        onClick={() => {
-                          setSelectedRoomCodes([]);
-                          setSelectedPackageIds([]);
-                        }}
-                        className="text-xs text-red-500 dark:text-red-300 hover:text-red-600 dark:text-red-300 transition-colors font-medium"
-                      >
-                        Hapus Semua Pilihan
-                      </button>
-                    )}
-                  </div>
-
-                  {selectedRooms.length === 0 && activePackages.length === 0 ? (
-                    <div className="p-6 text-center border border-dashed border-border rounded-lg bg-muted">
-                      <p className="text-xs text-muted-foreground">Belum ada ruangan atau paket terpilih.</p>
-                      <button
-                        onClick={() => setActiveTab('catalog')}
-                        className="mt-2 text-xs font-bold text-[#800020] dark:text-[#9a1a35] hover:underline"
-                      >
-                        Pilih dari Katalog Ruangan &rarr;
-                      </button>
-                    </div>
-                  ) : (
-                    <div className="flex flex-col gap-4">
-                      {/* Render Active Packages Summary if any */}
-                      {activePackages.length > 0 && (
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    {/* Left Side: Selected Rooms from Catalog */}
+                    <div className="flex flex-col gap-3 border-r border-border pr-0 md:pr-6">
+                      <div className="flex justify-between items-start">
                         <div>
-                          <div className="flex flex-wrap gap-2">
-                            {activePackages.map((pkg) => (
-                              <span
-                                key={pkg.id}
-                                className="inline-flex items-center gap-1.5 text-xs font-bold bg-[#9a1a35]/10 border border-[#9a1a35]/30 text-[#800020] dark:text-[#9a1a35] px-3 py-1 rounded-lg"
-                              >
-                                <Layers className="h-3 w-3" />
-                                {pkg.label} (Lt. {pkg.floor}) — {pkg.areaSqm} m²
-                                <button
-                                  onClick={() => applyQuickPackage(pkg.id)}
-                                  className="text-red-500 dark:text-red-300 hover:text-red-600 dark:text-red-300 font-bold ml-1.5"
-                                >
-                                  &times;
-                                </button>
-                              </span>
-                            ))}
+                          <h2 className="text-sm font-bold text-foreground">1. Ruangan Terpilih</h2>
+                          <p className="text-[10px] text-muted-foreground mt-0.5">Ruangan yang dipilih dari katalog ruangan</p>
+                        </div>
+                        {(selectedRoomCodes.length > 0 || selectedPackageIds.length > 0) && (
+                          <button
+                            onClick={() => {
+                              setSelectedRoomCodes([]);
+                              setSelectedPackageIds([]);
+                            }}
+                            className="text-[10px] text-red-500 dark:text-red-300 hover:text-red-600 dark:text-red-350 transition-colors font-semibold"
+                          >
+                            Hapus Pilihan
+                          </button>
+                        )}
+                      </div>
+
+                      {selectedRooms.length === 0 && activePackages.length === 0 ? (
+                        <div className="p-4 text-center border border-dashed border-border rounded-lg bg-muted flex-1 flex flex-col justify-center min-h-[90px]">
+                          <p className="text-[10px] text-muted-foreground">Belum ada ruangan/paket terpilih.</p>
+                          <button
+                            onClick={() => setActiveTab('catalog')}
+                            className="mt-1 text-[10px] font-bold text-[#800020] dark:text-[#9a1a35] hover:underline"
+                          >
+                            Pilih dari Katalog Ruangan &rarr;
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="flex flex-col gap-3 flex-1 justify-between">
+                          <div className="space-y-2">
+                            {/* Render Active Packages Summary if any */}
+                            {activePackages.length > 0 && (
+                              <div className="flex flex-wrap gap-1.5 max-h-20 overflow-y-auto">
+                                {activePackages.map((pkg) => (
+                                  <span
+                                    key={pkg.id}
+                                    className="inline-flex items-center gap-1 text-[9px] font-bold bg-[#9a1a35]/10 border border-[#9a1a35]/30 text-[#800020] dark:text-[#9a1a35] px-2 py-0.5 rounded"
+                                  >
+                                    {pkg.label} (Lt. {pkg.floor})
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+
+                            {/* Render Individual Rooms Summary if any */}
+                            {selectedRooms.length > 0 && (
+                              <div className="flex flex-wrap gap-1 max-h-20 overflow-y-auto p-1.5 bg-muted border border-border rounded-lg">
+                                {selectedRooms.map((room) => (
+                                  <span
+                                    key={room.code}
+                                    className="inline-flex items-center gap-1 text-[9px] font-bold bg-card border border-border text-foreground px-1.5 py-0.5 rounded-full"
+                                  >
+                                    {room.code}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
+                          </div>
+
+                          <div className="text-[10px] text-muted-foreground border-t border-border pt-1">
+                            Terpilih: <span className="font-bold text-foreground">{activePackages.length > 0 ? `${activePackageRoomsCount} unit` : `${selectedRooms.length} unit`}</span>
                           </div>
                         </div>
                       )}
+                    </div>
 
-                      {/* Render Individual Rooms Summary if any */}
-                      {selectedRooms.length > 0 && (
-                        <div>
-                          <span className="text-[10px] text-muted-foreground font-bold block mb-2 uppercase tracking-wider">Ruangan Individual</span>
-                          <div className="flex flex-wrap gap-2 max-h-24 overflow-y-auto p-2 bg-muted border border-border rounded-lg">
-                            {selectedRooms.map((room) => (
-                              <span
-                                key={room.code}
-                                className="inline-flex items-center gap-1 text-[10px] font-bold bg-card border border-border text-foreground pl-2 pr-1 py-0.5 rounded-full shadow-sm"
-                              >
-                                {room.code} {room.name ? `(${room.name})` : ''}
-                                <button
-                                  onClick={() => toggleRoomSelection(room.code)}
-                                  className="text-muted-foreground hover:text-red-500 dark:text-red-300 ml-1 hover:bg-muted rounded-full h-3.5 w-3.5 flex items-center justify-center font-bold"
-                                >
-                                  &times;
-                                </button>
-                              </span>
-                            ))}
+                    {/* Right Side: Manual Area Input */}
+                    <div className="flex flex-col gap-3 justify-between">
+                      <div>
+                        <h2 className="text-sm font-bold text-foreground">Luas Area Manual (m²)</h2>
+                        <p className="text-[10px] text-muted-foreground mt-0.5">Isi jika ingin menggunakan input manual, mengabaikan katalog</p>
+                      </div>
+
+                      <div className="space-y-3">
+                        <div className="relative">
+                          <input
+                            type="number"
+                            min="0"
+                            placeholder="e.g. 500"
+                            value={manualAreaSqm}
+                            onChange={(e) => setManualAreaSqm(e.target.value)}
+                            className="w-full bg-card border border-border rounded-lg py-2 px-3 pr-10 text-xs text-foreground focus:outline-none focus:border-[#800020]"
+                          />
+                          <span className="absolute right-3 top-2 text-xs font-bold text-muted-foreground">m²</span>
+                        </div>
+
+                        {parseFloat(manualAreaSqm) > 0 && (
+                          <div className="flex justify-between items-center text-[10px] bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-250 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 p-2 rounded-lg leading-normal">
+                            <span>Menggunakan luas manual ({manualAreaSqm} m²) untuk perhitungan.</span>
+                            <button
+                              onClick={() => setManualAreaSqm('')}
+                              className="text-red-500 font-bold hover:underline ml-2 shrink-0"
+                            >
+                              Batal
+                            </button>
                           </div>
-                        </div>
-                      )}
+                        )}
+                      </div>
 
-                      {/* Summary Metrics Grid */}
-                      <div className="grid grid-cols-3 gap-4 pt-3 border-t border-border text-center">
-                        <div>
-                          <span className="text-[10px] text-muted-foreground block">Jumlah Ruang</span>
-                          <span className="text-base font-bold text-foreground">
-                            {activePackages.length > 0 ? `${activePackageRoomsCount} unit` : `${selectedRooms.length} unit`}
-                          </span>
-                        </div>
-                        <div>
-                          <span className="text-[10px] text-muted-foreground block">Akumulasi Luas</span>
-                          <span className="text-base font-bold text-[#800020] dark:text-[#9a1a35]">{totalSelectedArea} m²</span>
-                        </div>
-                        <div>
-                          <span className="text-[10px] text-muted-foreground block">Akumulasi Kapasitas</span>
-                          <span className="text-base font-bold text-foreground">
-                            {activePackages.length > 0 ? 'Sesuai Layanan Paket' : `${totalSelectedCapacity} orang`}
-                          </span>
-                        </div>
+                      <div className="pt-2 border-t border-border flex justify-between items-center">
+                        <span className="text-[10px] text-muted-foreground">Total Luas Terhitung:</span>
+                        <span className="text-sm font-bold text-[#800020] dark:text-[#9a1a35]">
+                          {totalSelectedArea} m²
+                        </span>
                       </div>
                     </div>
-                  )}
+
+                  </div>
                 </div>
 
                 {/* PMK 144 ADJUSTMENT PARAMETERS */}
