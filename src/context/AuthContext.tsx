@@ -135,6 +135,38 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       setLoading(false);
     }
   };
+  
+  // Auto logout on inactivity (1 hour)
+  useEffect(() => {
+    if (!user) return;
+
+    const IDLE_TIMEOUT = 60 * 60 * 1000; // 1 hour in ms
+    let idleTimer: NodeJS.Timeout;
+
+    const resetTimer = () => {
+      if (idleTimer) clearTimeout(idleTimer);
+      idleTimer = setTimeout(() => {
+        console.log('Session expired due to inactivity.');
+        logout();
+        alert('Sesi Anda telah berakhir karena tidak ada aktivitas selama 1 jam.');
+      }, IDLE_TIMEOUT);
+    };
+
+    const events = ['mousemove', 'mousedown', 'keypress', 'scroll', 'touchstart'];
+
+    events.forEach((event) => {
+      window.addEventListener(event, resetTimer);
+    });
+
+    resetTimer();
+
+    return () => {
+      if (idleTimer) clearTimeout(idleTimer);
+      events.forEach((event) => {
+        window.removeEventListener(event, resetTimer);
+      });
+    };
+  }, [user]);
 
   return (
     <AuthContext.Provider
