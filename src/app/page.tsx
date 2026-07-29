@@ -963,7 +963,7 @@ export default function Home() {
 
       const data = {
         offerLetterNoDate,
-        signatureDateWords: formatTanggalPanjang(new Date().toISOString().split('T')[0]).replace(/^hari /, ''),
+        offerLetterDateWords: formatTanggalPanjang(new Date().toISOString().split('T')[0]).replace(/^hari /, ''),
         officialName: (activeOfficial?.name || '').trim(),
         officialTitle: activeOfficial ? `${activeOfficial.title} ${officialOrdinanceLegalBasis}`.trim() : '',
         signatoryName: (client?.signatoryName || client?.picName || '').trim(),
@@ -982,7 +982,7 @@ export default function Home() {
 
       const FIELD_LABELS: Record<keyof typeof data, string> = {
         offerLetterNoDate: 'Nomor & Tanggal Surat Penawaran',
-        signatureDateWords: 'Tanggal Tanda Tangan',
+        offerLetterDateWords: 'Tanggal Tanda Tangan',
         officialName: 'Nama Pejabat LMAN Aktif',
         officialTitle: 'Jabatan Pejabat LMAN Aktif',
         signatoryName: 'Nama Penanda Tangan Klien',
