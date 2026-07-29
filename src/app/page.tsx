@@ -3107,10 +3107,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               </div>
 
               {/* RIGHT: RESULTS BOARD */}
-              <div className="flex flex-col gap-6 sticky top-24 self-start">
-                
-                {/* CARD 1: Hasil Kalkulasi */}
-                <div className="bg-card border border-border rounded-xl p-5 shadow-sm text-foreground">
+              <div className="bg-card border border-border rounded-xl p-5 flex flex-col h-fit gap-4 shadow-sm sticky top-24 text-foreground self-start">
+                <div>
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-base font-bold text-foreground">Hasil Kalkulasi</h2>
                     
@@ -3204,8 +3202,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   )}
                 </div>
 
-                {/* CARD 2: Total Estimasi */}
-                <div className="bg-card border border-border rounded-xl p-5 shadow-sm text-foreground">
+                <div className="mt-2 pt-4 border-t border-border">
                   <div className="flex justify-between items-baseline mb-4">
                     <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">TOTAL ESTIMASI</span>
                     <span className="text-xl font-black text-[#f59e0b] tracking-tight">
