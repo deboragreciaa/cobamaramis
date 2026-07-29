@@ -1059,12 +1059,68 @@ export default function Home() {
           setSelectedSubmissionId(null);
         }
         alert('Pengajuan sewa berhasil dihapus.');
-      } else {
-        alert('Gagal menghapus pengajuan sewa.');
       }
     } catch (err) {
       console.error(err);
       alert('Gagal menghapus pengajuan sewa.');
+    }
+  };
+
+  const handleSyncSubmissionWithCalculator = async (sub: Submission) => {
+    const currentCost = calculatorResults.total;
+    const currentRooms = activePackages.length > 0
+      ? EXCEL_PACKAGES.filter((pkg) => selectedPackageIds.includes(pkg.id)).map((p) => p.label)
+      : selectedRoomCodes;
+
+    if (currentRooms.length === 0) {
+      alert('Silakan pilih minimal 1 ruangan atau paket di tab Kalkulator/Katalog terlebih dahulu.');
+      return;
+    }
+
+    const confirmSync = window.confirm(
+      `Apakah Anda yakin ingin memperbarui estimasi biaya dan ruangan pengajuan ${sub.companyName} dari kalkulator sewa?\n\n` +
+      `Estimasi baru: ${formatRupiah(currentCost)}\n` +
+      `Ruangan baru: ${currentRooms.join(', ')}\n` +
+      `Luas baru: ${totalSelectedArea} m²\n` +
+      `Hari Acara: ${eventDays} hari · Hari Loading: ${loadingDays} hari`
+    );
+
+    if (!confirmSync) return;
+
+    try {
+      const updatedFields: Partial<Submission> = {
+        roomCodes: currentRooms,
+        totalAreaSqm: totalSelectedArea,
+        eventDays: parseInt(eventDays) || 1,
+        loadingDays: parseInt(loadingDays) || 0,
+        estimatedCost: currentCost,
+        offerValue: currentCost,
+        objectDescription: currentRooms.join(', '),
+        areaText: `±${new Intl.NumberFormat('id-ID').format(totalSelectedArea)} m2`,
+        loiLuasAreaCustom: `±${new Intl.NumberFormat('id-ID').format(totalSelectedArea)} m2`
+      };
+
+      const success = await updateSubmission(sub.id, updatedFields);
+      if (success) {
+        setSubmissions((prev) =>
+          prev.map((s) => (s.id === sub.id ? { ...s, ...updatedFields } : s))
+        );
+        
+        // Also update active modal state if it matches the current edited submission
+        if (activeLoiSubmission && activeLoiSubmission.id === sub.id) {
+          setActiveLoiSubmission((prev) => prev ? { ...prev, ...updatedFields } : null);
+        }
+        if (activeAgreementSubmission && activeAgreementSubmission.id === sub.id) {
+          setActiveAgreementSubmission((prev) => prev ? { ...prev, ...updatedFields } : null);
+        }
+
+        alert('Pengajuan berhasil diperbarui sesuai kalkulator sewa terbaru!');
+      } else {
+        alert('Gagal menyinkronkan data pengajuan.');
+      }
+    } catch (err) {
+      console.error(err);
+      alert('Gagal memperbarui pengajuan.');
     }
   };
 
@@ -3714,17 +3770,27 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                   Tahap {sub.stage}/9
                                 </span>
                                 {role === 'PENGINPUT' && (
-                                  <select
-                                    value={sub.stage}
-                                    onChange={(e) => handleUpdateStage(sub.id, parseInt(e.target.value))}
-                                    className="bg-card border border-border text-[10px] py-1 px-1.5 rounded text-foreground focus:outline-none font-bold focus:border-[#800020]"
-                                  >
-                                    {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((s) => (
-                                      <option key={s} value={s}>
-                                        Set Tahap {s}
-                                      </option>
-                                    ))}
-                                  </select>
+                                  <>
+                                    <select
+                                      value={sub.stage}
+                                      onChange={(e) => handleUpdateStage(sub.id, parseInt(e.target.value))}
+                                      className="bg-card border border-border text-[10px] py-1 px-1.5 rounded text-foreground focus:outline-none font-bold focus:border-[#800020]"
+                                    >
+                                      {[1, 2, 3, 4, 5, 6, 7, 8, 9].map((s) => (
+                                        <option key={s} value={s}>
+                                          Set Tahap {s}
+                                        </option>
+                                      ))}
+                                    </select>
+                                    <button
+                                      onClick={() => handleSyncSubmissionWithCalculator(sub)}
+                                      className="mt-1 px-1.5 py-0.5 rounded border border-dashed border-[#800020] text-[#800020] dark:text-[#9a1a35] hover:bg-[#800020]/10 text-[9px] font-bold transition-all flex items-center justify-center gap-1 shadow-sm w-full"
+                                      title="Sinkronkan nilai estimasi sewa dan detail ruangan dari kalkulator sewa"
+                                    >
+                                      <RefreshCw className="h-2.5 w-2.5" />
+                                      Sinkronkan
+                                    </button>
+                                  </>
                                 )}
                               </div>
                               
@@ -4498,6 +4564,14 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   {/* Left Parameter Panel */}
                   <div className="lg:col-span-1 space-y-4">
                     <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Sesuaikan Parameter LOI</h4>
+                    <button
+                      onClick={() => handleSyncSubmissionWithCalculator(activeLoiSubmission)}
+                      className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg border border-dashed border-[#800020] text-[#800020] dark:text-[#9a1a35] hover:bg-[#800020]/5 text-xs font-bold transition-all shadow-sm bg-card"
+                      title="Perbarui estimasi nilai sewa dan ruangan pengajuan ini berdasarkan data kalkulator sewa terbaru"
+                    >
+                      <RefreshCw className="h-3.5 w-3.5" />
+                      Sinkronkan dari Kalkulator
+                    </button>
                     
                     <div className="space-y-3">
                       <div>
@@ -4691,6 +4765,14 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   {/* Left Parameter Panel */}
                   <div className="lg:col-span-1 space-y-4">
                     <h4 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wide">Sesuaikan Ketentuan Kontrak</h4>
+                    <button
+                      onClick={() => handleSyncSubmissionWithCalculator(activeAgreementSubmission)}
+                      className="w-full flex items-center justify-center gap-1.5 py-1.5 px-3 rounded-lg border border-dashed border-[#800020] text-[#800020] dark:text-[#9a1a35] hover:bg-[#800020]/5 text-xs font-bold transition-all shadow-sm bg-card"
+                      title="Perbarui estimasi nilai sewa dan ruangan pengajuan ini berdasarkan data kalkulator sewa terbaru"
+                    >
+                      <RefreshCw className="h-3.5 w-3.5" />
+                      Sinkronkan dari Kalkulator
+                    </button>
                     
                     <div className="space-y-3">
                       <div>
