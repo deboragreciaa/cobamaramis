@@ -3797,7 +3797,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                     className="mt-2 px-2.5 py-1 rounded bg-[#800020] hover:bg-[#600018] text-white font-bold text-[9px] transition-all flex items-center gap-1 shadow-sm"
                                   >
                                     <FileText className="h-3 w-3" />
-                                    Buat / Lihat LOI (F7)
+                                     Buat / Lihat LOI
                                   </button>
                                 )}
 
@@ -3810,7 +3810,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                     className="mt-2 px-2.5 py-1 rounded bg-[#800020] hover:bg-[#600018] text-white font-bold text-[9px] transition-all flex items-center gap-1 shadow-sm"
                                   >
                                     <FileText className="h-3 w-3" />
-                                    Buat / Lihat Perjanjian (F8)
+                                     Buat / Lihat Perjanjian
                                   </button>
                                 )}
                               </div>
@@ -4066,7 +4066,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               <div>
                 <h2 className="text-base font-bold text-foreground flex items-center gap-2">
                   <FileText className="h-5 w-5 text-[#800020] dark:text-[#9a1a35]" />
-                  Pembuatan Surat Penawaran Harga / Letter of Intent (LOI) [F7]
+                  Pembuatan Surat Penawaran Harga / Letter of Intent (LOI)
                 </h2>
                 <p className="text-xs text-muted-foreground mt-1">
                   Pilih pengajuan sewa aktif di bawah ini untuk mengenerate naskah resmi LOI yang dapat diunduh atau disalin.
@@ -4203,12 +4203,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         className="mt-1 h-3.5 w-3.5 rounded border-border text-[#800020] dark:text-[#9a1a35] focus:ring-[#800020]"
                       />
                       <div className="text-[10px] text-[#800020] dark:text-[#9a1a35] leading-normal font-medium">
-                        <strong>Verifikasi Data & Terbilang (F7)</strong>: Saya menyatakan telah memeriksa kebenaran data LOI, perhitungan tarif dasar, PPN 11%, dan ejaan terbilang rupiah.
+                        <strong>Verifikasi Data & Terbilang</strong>: Saya menyatakan telah memeriksa kebenaran data LOI, perhitungan tarif dasar, PPN 11%, dan ejaan terbilang rupiah.
                       </div>
                     </label>
 
                     <div className="p-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-250 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg text-[9px] leading-relaxed">
-                      💡 <strong>Petunjuk F7</strong>: Nomor surat, tautan eksternal, dan tanda tangan elektronik akan dicantumkan secara otomatis pada keluaran naskah dinas LOI di sebelah kanan.
+                      💡 <strong>Petunjuk</strong>: Nomor surat, tautan eksternal, dan tanda tangan elektronik akan dicantumkan secara otomatis pada keluaran naskah dinas LOI di sebelah kanan.
                     </div>
                   </div>
 
@@ -4282,7 +4282,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               <div>
                 <h2 className="text-base font-bold text-foreground flex items-center gap-2">
                   <FileText className="h-5 w-5 text-[#800020] dark:text-[#9a1a35]" />
-                  Penyusunan Perjanjian Sewa Guna / Kontrak (PRJ) [F8]
+                  Penyusunan Perjanjian Sewa Guna / Kontrak (PRJ)
                 </h2>
                 <p className="text-xs text-muted-foreground mt-1">
                   Pilih pengajuan sewa aktif di bawah ini untuk mengenerate naskah Perjanjian Sewa Guna 17 Pasal.
@@ -4382,7 +4382,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </div>
 
                     <div className="p-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-250 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg text-[9px] leading-relaxed">
-                      📑 <strong>Petunjuk F8</strong>: Draf ini memuat 17 pasal standar sewa LMAN termasuk klausul jaminan keamanan (*security deposit* 10%) dan kewajiban denda keterlambatan.
+                      📑 <strong>Petunjuk</strong>: Draf ini memuat 17 pasal standar sewa LMAN termasuk klausul jaminan keamanan (*security deposit* 10%) dan kewajiban denda keterlambatan.
                     </div>
                   </div>
 
@@ -4447,7 +4447,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   <div>
                     <h3 className="text-sm font-bold text-[#800020] dark:text-[#9a1a35] flex items-center gap-2">
                       <FileText className="h-4 w-4" />
-                      Penerbitan Surat Penawaran Harga / LOI (F7)
+                      Penerbitan Surat Penawaran Harga / LOI
                     </h3>
                     <p className="text-[10px] text-muted-foreground mt-1">Instansi: {activeLoiSubmission.companyName} · Kegiatan: {activeLoiSubmission.activityName}</p>
                   </div>
@@ -4569,12 +4569,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         className="mt-1 h-3.5 w-3.5 rounded border-border text-[#800020] dark:text-[#9a1a35] focus:ring-[#800020]"
                       />
                       <div className="text-[10px] text-[#800020] dark:text-[#9a1a35] leading-normal font-medium">
-                        <strong>Verifikasi Data & Terbilang (F7)</strong>: Saya menyatakan telah memeriksa kebenaran data LOI, perhitungan tarif dasar, PPN 11%, dan ejaan terbilang rupiah.
+                        <strong>Verifikasi Data & Terbilang</strong>: Saya menyatakan telah memeriksa kebenaran data LOI, perhitungan tarif dasar, PPN 11%, dan ejaan terbilang rupiah.
                       </div>
                     </label>
 
                     <div className="p-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-250 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg text-[9px] leading-relaxed">
-                      💡 <strong>Petunjuk F7</strong>: Nomor surat, tautan eksternal, dan tanda tangan elektronik akan dicantumkan secara otomatis pada keluaran naskah dinas LOI di sebelah kanan.
+                      💡 <strong>Petunjuk</strong>: Nomor surat, tautan eksternal, dan tanda tangan elektronik akan dicantumkan secara otomatis pada keluaran naskah dinas LOI di sebelah kanan.
                     </div>
                   </div>
 
@@ -4640,7 +4640,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   <div>
                     <h3 className="text-sm font-bold text-[#800020] dark:text-[#9a1a35] flex items-center gap-2">
                       <FileText className="h-4 w-4" />
-                      Penyusunan Perjanjian Sewa Guna (F8)
+                      Penyusunan Perjanjian Sewa Guna
                     </h3>
                     <p className="text-[10px] text-muted-foreground mt-1">Instansi: {activeAgreementSubmission.companyName} · Kegiatan: {activeAgreementSubmission.activityName}</p>
                   </div>
@@ -4725,7 +4725,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                     </div>
 
                     <div className="p-3 bg-yellow-550 border border-yellow-200 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg text-[9px] leading-relaxed">
-                      📑 <strong>Petunjuk F8</strong>: Draf ini memuat 17 pasal standar sewa LMAN termasuk klausul jaminan keamanan (*security deposit* 10%) dan kewajiban denda keterlambatan.
+                      📑 <strong>Petunjuk</strong>: Draf ini memuat 17 pasal standar sewa LMAN termasuk klausul jaminan keamanan (*security deposit* 10%) dan kewajiban denda keterlambatan.
                     </div>
                   </div>
 
