@@ -382,9 +382,7 @@ JANGKA WAKTU SEWA GUNA
 
 PASAL 7
 UANG SEWA GUNA DAN KETENTUAN PEMBAYARAN
-7.1 Uang SEWA GUNA ditetapkan sebesar ${formatRupiahTerbilang(input.uangSewa)},
-    termasuk Pajak Pertambahan Nilai (PPN), yang wajib dibayarkan sekaligus paling lambat
-    ${formatTanggalIndo(input.batasBayar)}.
+7.1 Uang SEWA GUNA ditetapkan sebesar ${formatRupiahTerbilang(input.uangSewa)}.
 7.2 Besaran kewajiban pembayaran uang jaminan (security deposit) adalah sebesar
     ${formatRupiahTerbilang(input.securityDeposit)}, yang wajib dibayarkan sekaligus paling lambat
     1 (satu) hari sebelum JANGKA WAKTU SEWA GUNA.

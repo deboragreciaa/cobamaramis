@@ -198,7 +198,6 @@ describe('F8 Perjanjian generator', () => {
     expect(text).toContain('1.089 meter persegi');
     expect(text).toContain('1 (satu) hari yaitu tanggal 3 Februari 2026');
     expect(text).toContain('Rp45.329.625 (empat puluh lima juta tiga ratus dua puluh sembilan ribu enam ratus dua puluh lima rupiah)');
-    expect(text).toContain('paling lambat\n    9 Februari 2026');
     expect(text).toContain('Rp0 (nol rupiah)');
   });
 

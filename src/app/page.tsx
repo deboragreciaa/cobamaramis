@@ -64,7 +64,9 @@ import {
   ChevronLeft,
   ChevronRight,
   X,
-  Award
+  Award,
+  Eye,
+  EyeOff
 } from 'lucide-react';
 
 interface QuickPackageNew {
@@ -114,7 +116,8 @@ export default function Home() {
   }, []);
 
   // App States
-  const [usernameInput, setUsernameInput] = useState('maramis');
+  const [usernameInput, setUsernameInput] = useState('');
+  const [showPassword, setShowPassword] = useState(false);
   const [passwordInput, setPasswordInput] = useState('');
   const [activeTab, setActiveTab] = useState<'catalog' | 'calculator' | 'clients' | 'submissions' | 'calendar_booking' | 'calendar_survey' | 'calendar_recap' | 'documents' | 'doc_loi' | 'doc_prj'>('catalog');
   const [selectedPackageIds, setSelectedPackageIds] = useState<string[]>([]);
@@ -2099,25 +2102,34 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 required
                 value={usernameInput}
                 onChange={(e) => setUsernameInput(e.target.value)}
-                placeholder="username"
+                placeholder="Username"
                 autoCapitalize="none"
                 autoCorrect="off"
                 spellCheck={false}
-                className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-foreground text-sm focus:outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020] transition-colors"
+                className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020] transition-colors"
               />
               <span className="text-[10px] text-muted-foreground block">Satu akun bersama untuk seluruh tim pengelola.</span>
             </div>
 
             <div className="space-y-2">
               <label className="text-xs font-semibold text-white/90 uppercase tracking-wider block">Kata Sandi</label>
-              <input
-                type="password"
-                required
-                placeholder="Masukkan kata sandi tim"
-                value={passwordInput}
-                onChange={(e) => setPasswordInput(e.target.value)}
-                className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020] transition-colors"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  placeholder="Masukkan kata sandi tim"
+                  value={passwordInput}
+                  onChange={(e) => setPasswordInput(e.target.value)}
+                  className="w-full bg-card border border-border rounded-lg py-2.5 px-3 pr-10 text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020] transition-colors"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors flex items-center justify-center"
+                >
+                  {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                </button>
+              </div>
             </div>
 
             {error && (
@@ -3095,7 +3107,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               </div>
 
               {/* RIGHT: RESULTS BOARD */}
-              <div className="bg-card border border-border rounded-xl p-5 flex flex-col justify-between h-fit gap-6 shadow-sm sticky top-24 text-foreground">
+              <div className="bg-card border border-border rounded-xl p-5 flex flex-col h-fit gap-4 shadow-sm sticky top-24 text-foreground self-start">
                 <div>
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="text-base font-bold text-foreground">Hasil Kalkulasi</h2>
@@ -3126,12 +3138,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </div>
 
                   {calcMode === 'manual' ? (
-                    <div className="space-y-3 my-4">
+                    <div className="grid grid-cols-2 gap-3 my-4">
                       <div>
                         <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Sewa Acara (Rp)</label>
                         <input
                           type="number"
-                          placeholder="Masukkan nilai sewa"
+                          placeholder="Nilai sewa"
                           value={manualSewa}
                           onChange={(e) => setManualSewa(e.target.value)}
                           className="w-full bg-card border border-border rounded py-1 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
@@ -3169,20 +3181,20 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                       </div>
                     </div>
                   ) : (
-                    <div className="space-y-4 my-6">
-                      <div className="flex justify-between text-xs pb-2 border-b border-border">
+                    <div className="space-y-4 mt-4">
+                      <div className="flex justify-between items-center text-xs pb-2 border-b border-border">
                         <span className="text-muted-foreground">Sewa Acara ({eventDays} hari)</span>
                         <span className="font-bold text-foreground">{formatRupiah(calculatorResults.sewa)}</span>
                       </div>
-                      <div className="flex justify-between text-xs pb-2 border-b border-border">
+                      <div className="flex justify-between items-center text-xs pb-2 border-b border-border">
                         <span className="text-muted-foreground">PPN Sewa ({(systemSettings.ppnRate * 100)}%)</span>
                         <span className="font-bold text-foreground">{formatRupiah(calculatorResults.ppnSewa)}</span>
                       </div>
-                      <div className="flex justify-between text-xs pb-2 border-b border-border">
+                      <div className="flex justify-between items-center text-xs pb-2 border-b border-border">
                         <span className="text-muted-foreground">Loading ({loadingDays} hari)</span>
                         <span className="font-bold text-foreground">{formatRupiah(calculatorResults.loading)}</span>
                       </div>
-                      <div className="flex justify-between text-xs pb-2 border-b border-border">
+                      <div className="flex justify-between items-center text-xs pb-2 border-b border-border">
                         <span className="text-muted-foreground">PPN Loading ({(systemSettings.ppnRate * 100)}%)</span>
                         <span className="font-bold text-foreground">{formatRupiah(calculatorResults.ppnLoading)}</span>
                       </div>
@@ -3190,8 +3202,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   )}
                 </div>
 
-                <div className="mt-4 pt-4 border-t border-border">
-                  <div className="flex justify-between items-baseline mb-6">
+                <div className="mt-2 pt-4 border-t border-border">
+                  <div className="flex justify-between items-baseline mb-4">
                     <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">TOTAL ESTIMASI</span>
                     <span className="text-xl font-black text-[#f59e0b] tracking-tight">
                       {formatRupiah(calculatorResults.total)}
