@@ -300,9 +300,16 @@ export default function Home() {
   const [agreementOfferLetterDate, setAgreementOfferLetterDate] = useState('');
   const [agreementInstitutionAddress, setAgreementInstitutionAddress] = useState('');
 
+  // Tanggal Perjanjian & Batas Pembayaran — independent of Tanggal Surat Penawaran, filled manually by Penginput
+  const [agreementDate, setAgreementDate] = useState('');
+  const [agreementPaymentDeadline, setAgreementPaymentDeadline] = useState('');
+
   // Automatically populate Pihak Pertama name, title, and authority fields from active official database or snapshot
   useEffect(() => {
     if (activeAgreementSubmission) {
+      setAgreementDate(activeAgreementSubmission.prjAgreementDate || '');
+      setAgreementPaymentDeadline(activeAgreementSubmission.prjPaymentDeadline || '');
+
       if (activeAgreementSubmission.prjOfficialName) {
         setAgreementPihakPertama(activeAgreementSubmission.prjOfficialName);
         setAgreementJabatanPihakPertama(activeAgreementSubmission.prjOfficialTitle || '');
@@ -392,7 +399,7 @@ export default function Home() {
 
     return buildPerjanjianText({
       nomorPerjanjian: agreementNomor || '002/SPG/LMAN/2026',
-      tanggalPerjanjian: new Date().toISOString().split('T')[0],
+      tanggalPerjanjian: agreementDate,
       nomorSuratPenawaran: loiNomorSurat || '001/LMAN-P3/2026',
       tanggalSuratPenawaran: activeAgreementSubmission.createdAt.split('T')[0],
       nomorSuratPermohonan: loiNomorSuratPemohon || '123/EXT/2026',
@@ -414,7 +421,7 @@ export default function Home() {
       tanggalMulai: startDate,
       tanggalSelesai: endDate,
       uangSewa: activeAgreementSubmission.estimatedCost,
-      batasBayar: new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
+      batasBayar: agreementPaymentDeadline,
       securityDeposit: activeAgreementSubmission.estimatedCost * 0.10
     });
   }, [
@@ -422,6 +429,7 @@ export default function Home() {
     clients,
     bookings,
     agreementNomor,
+    agreementDate,
     loiNomorSurat,
     loiNomorSuratPemohon,
     agreementPihakPertama,
@@ -429,7 +437,8 @@ export default function Home() {
     agreementOfficialOrderNo,
     agreementOfficialOrderDate,
     agreementOfficialMandateNo,
-    agreementOfficialMandateTitle
+    agreementOfficialMandateTitle,
+    agreementPaymentDeadline
   ]);
 
   // Calendar Month Navigation
@@ -1015,8 +1024,6 @@ export default function Home() {
       const offerLetterDate = agreementOfferLetterDate ? formatTanggalIndo(agreementOfferLetterDate) : '';
       const offerLetterNoDate = offerLetterNo && offerLetterDate ? `${offerLetterNo} tanggal ${offerLetterDate}` : '';
 
-      const paymentDeadlineIso = new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0];
-
       const areaText = `${new Intl.NumberFormat('id-ID').format(sub.totalAreaSqm)} meter`;
       const objectDescriptionBase = (sub.objectDescription || sub.roomCodes.join(', ')).trim();
 
@@ -1024,7 +1031,7 @@ export default function Home() {
         offerLetterNoDate,
         offerLetterDateWords: formatTanggalPanjang(new Date().toISOString().split('T')[0]).replace(/^hari /, ''),
         agreementNo: (agreementNomor || '').trim(),
-        agreementDateWords: formatTanggalPanjang(new Date().toISOString().split('T')[0]).replace(/^hari /, ''),
+        agreementDateWords: formatTanggalPanjang(agreementDate).replace(/^hari /, ''),
         officialName: (agreementPihakPertama || '').trim(),
         officialTitle: (agreementJabatanPihakPertama || '').trim(),
         officialOrderNo: (agreementOfficialOrderNo || '').trim(),
@@ -1040,7 +1047,7 @@ export default function Home() {
         eventDuration,
         eventDate: eventDateRange,
         nilaiSewa: formatRupiahTerbilang(sub.offerValue || sub.estimatedCost),
-        paymentDeadline: formatTanggalIndo(paymentDeadlineIso),
+        paymentDeadline: formatTanggalIndo(agreementPaymentDeadline),
         institutionName: (client ? (client.institutionName || client.companyName) : sub.companyName).trim(),
         institutionAddress: agreementInstitutionAddress.trim(),
       };
@@ -1111,6 +1118,8 @@ export default function Home() {
         prjOfficialOrderDate: agreementOfficialOrderDate,
         prjOfficialMandateNo: data.officialMandateNo,
         prjOfficialMandateTitle: data.officialMandateTitle,
+        prjAgreementDate: agreementDate,
+        prjPaymentDeadline: agreementPaymentDeadline,
       };
       await updateSubmission(sub.id, updatedSub);
       setSubmissions((prev) => prev.map((s) => (s.id === sub.id ? updatedSub : s)));
@@ -4577,6 +4586,29 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         />
                       </div>
 
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Perjanjian</label>
+                          <input
+                            type="date"
+                            value={agreementDate}
+                            onChange={(e) => setAgreementDate(e.target.value)}
+                            required
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Batas Pembayaran</label>
+                          <input
+                            type="date"
+                            value={agreementPaymentDeadline}
+                            onChange={(e) => setAgreementPaymentDeadline(e.target.value)}
+                            required
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
+                          />
+                        </div>
+                      </div>
+
                       <div>
                         <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nama Pihak Pertama (LMAN)</label>
                         <input
@@ -4979,6 +5011,29 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           placeholder="e.g. 002/SPG/LMAN/2026"
                           className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Perjanjian</label>
+                          <input
+                            type="date"
+                            value={agreementDate}
+                            onChange={(e) => setAgreementDate(e.target.value)}
+                            required
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Batas Pembayaran</label>
+                          <input
+                            type="date"
+                            value={agreementPaymentDeadline}
+                            onChange={(e) => setAgreementPaymentDeadline(e.target.value)}
+                            required
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
+                          />
+                        </div>
                       </div>
 
                       <div>

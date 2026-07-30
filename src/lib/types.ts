@@ -59,6 +59,8 @@ export interface Submission {
   prjOfficialOrderDate?: string;
   prjOfficialMandateNo?: string;
   prjOfficialMandateTitle?: string;
+  prjAgreementDate?: string;
+  prjPaymentDeadline?: string;
 }
 
 export type BookingType = 'TENTATIVE' | 'CONFIRMED' | 'UNAVAILABLE';
