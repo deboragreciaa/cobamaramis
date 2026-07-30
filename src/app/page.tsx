@@ -298,7 +298,6 @@ export default function Home() {
   // F8 DOCX Generator — Surat Penawaran reference + client address, filled manually by Penginput
   const [agreementOfferLetterNo, setAgreementOfferLetterNo] = useState('');
   const [agreementOfferLetterDate, setAgreementOfferLetterDate] = useState('');
-  const [agreementInstitutionAddress, setAgreementInstitutionAddress] = useState('');
 
   // Tanggal Perjanjian & Batas Pembayaran — independent of Tanggal Surat Penawaran, filled manually by Penginput
   const [agreementDate, setAgreementDate] = useState('');
@@ -1051,7 +1050,6 @@ export default function Home() {
         nilaiSewa: formatRupiahTerbilang(sub.offerValue || sub.estimatedCost),
         paymentDeadline: formatTanggalIndo(agreementPaymentDeadline),
         institutionName: (client ? (client.institutionName || client.companyName) : sub.companyName).trim(),
-        institutionAddress: agreementInstitutionAddress.trim(),
       };
 
       const FIELD_LABELS: Record<keyof typeof data, string> = {
@@ -1075,7 +1073,6 @@ export default function Home() {
         nilaiSewa: 'Nilai Sewa',
         paymentDeadline: 'Batas Pembayaran',
         institutionName: 'Nama Instansi Klien',
-        institutionAddress: 'Alamat Instansi Klien',
       };
 
       const missingFields = (Object.keys(data) as (keyof typeof data)[])
@@ -4697,16 +4694,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         </div>
                       </div>
 
-                      <div>
-                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Alamat Instansi Klien (Pihak Kedua)</label>
-                        <input
-                          type="text"
-                          value={agreementInstitutionAddress}
-                          onChange={(e) => setAgreementInstitutionAddress(e.target.value)}
-                          placeholder="e.g. Jalan Lapangan Banteng Timur Nomor 2-4, Jakarta Pusat"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
-                        />
-                      </div>
                     </div>
 
                     <div className="p-3 bg-yellow-50 dark:bg-yellow-950/30 border border-yellow-250 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg text-[9px] leading-relaxed">
@@ -5124,16 +5111,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         </div>
                       </div>
 
-                      <div>
-                        <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Alamat Instansi Klien (Pihak Kedua)</label>
-                        <input
-                          type="text"
-                          value={agreementInstitutionAddress}
-                          onChange={(e) => setAgreementInstitutionAddress(e.target.value)}
-                          placeholder="e.g. Jalan Lapangan Banteng Timur Nomor 2-4, Jakarta Pusat"
-                          className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
-                        />
-                      </div>
                     </div>
 
                     <div className="p-3 bg-yellow-550 border border-yellow-200 dark:border-yellow-900 text-yellow-800 dark:text-yellow-200 rounded-lg text-[9px] leading-relaxed">
