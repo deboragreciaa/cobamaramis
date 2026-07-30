@@ -218,6 +218,10 @@ export interface PerjanjianInput {
   tanggalSuratPermohonan: string; // YYYY-MM-DD
   namaPihakPertama: string;
   jabatanPihakPertama: string;
+  officialOrderNo?: string;
+  officialOrderDate?: string;
+  officialMandateNo?: string;
+  officialMandateTitle?: string;
   namaPihakKedua: string;
   jabatanPihakKedua: string;
   instansiPihakKedua: string;
@@ -236,6 +240,11 @@ export interface PerjanjianInput {
 /** F8 — builds the draft Perjanjian Sewa Guna as plain text (17 pasal). */
 export function buildPerjanjianText(input: PerjanjianInput): string {
   const luas = new Intl.NumberFormat('id-ID').format(input.luasAreaSqm);
+
+  const orderNo = input.officialOrderNo || '[Nomor Surat Perintah]';
+  const orderDate = input.officialOrderDate || '[Tanggal Surat Perintah]';
+  const mandateNo = input.officialMandateNo || '[Nomor Keputusan]';
+  const mandateTitle = input.officialMandateTitle || '[Judul Keputusan]';
 
   return `Lampiran: Surat Penawaran Harga Nomor ${input.nomorSuratPenawaran} tanggal ${formatTanggalIndo(
     input.tanggalSuratPenawaran
@@ -260,7 +269,7 @@ ditandatangani di Jakarta pada ${formatTanggalPanjang(
     fungsi untuk menyelenggarakan pengelolaan aset berdasarkan Keputusan Menteri Keuangan Nomor
     1319/KMK.05/2015 tanggal 30 Desember 2015, berkedudukan di Jalan Pangeran Diponegoro No.62A,
     Pegangsaan, Jakarta Pusat 10320, dalam hal ini diwakili oleh ${input.namaPihakPertama},
-    ${input.jabatanPihakPertama}, untuk selanjutnya disebut sebagai "PIHAK PERTAMA".
+    ${input.jabatanPihakPertama} berdasarkan Surat Perintah Direktur Utama Lembaga Manajemen Aset Negara Nomor ${orderNo} tanggal ${orderDate} dan dalam kapasitasnya bertindak untuk dan atas nama Direktur Utama Lembaga Manajemen Aset Negara berdasarkan Keputusan Direktur Utama Lembaga Manajemen Aset Negara Nomor ${mandateNo} tentang ${mandateTitle}, untuk selanjutnya disebut sebagai "PIHAK PERTAMA".
 
 2.  ${input.namaPihakKedua} dalam PERJANJIAN ini bertindak dalam melakukan jabatannya selaku
     ${input.jabatanPihakKedua}, ${input.instansiPihakKedua}, yang memanfaatkan Barang Milik Negara

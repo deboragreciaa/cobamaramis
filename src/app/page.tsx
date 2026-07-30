@@ -182,6 +182,10 @@ export default function Home() {
   const [officialTitle, setOfficialTitle] = useState('');
   const [officialOrdinanceNumber, setOfficialOrdinanceNumber] = useState('');
   const [officialOrdinanceDate, setOfficialOrdinanceDate] = useState('');
+  const [officialOrderNo, setOfficialOrderNo] = useState('');
+  const [officialOrderDate, setOfficialOrderDate] = useState('');
+  const [officialMandateNo, setOfficialMandateNo] = useState('');
+  const [officialMandateTitle, setOfficialMandateTitle] = useState('');
   
   const activeClients = useMemo(() => {
     return clients.filter((c) => c.isActive !== false);
@@ -286,21 +290,40 @@ export default function Home() {
   const [agreementNomor, setAgreementNomor] = useState('');
   const [agreementPihakPertama, setAgreementPihakPertama] = useState('Tim LMAN');
   const [agreementJabatanPihakPertama, setAgreementJabatanPihakPertama] = useState('Divisi Pengembangan dan Pendayagunaan Properti 1');
+  const [agreementOfficialOrderNo, setAgreementOfficialOrderNo] = useState('');
+  const [agreementOfficialOrderDate, setAgreementOfficialOrderDate] = useState('');
+  const [agreementOfficialMandateNo, setAgreementOfficialMandateNo] = useState('');
+  const [agreementOfficialMandateTitle, setAgreementOfficialMandateTitle] = useState('');
 
   // F8 DOCX Generator — Surat Penawaran reference + client address, filled manually by Penginput
   const [agreementOfferLetterNo, setAgreementOfferLetterNo] = useState('');
   const [agreementOfferLetterDate, setAgreementOfferLetterDate] = useState('');
   const [agreementInstitutionAddress, setAgreementInstitutionAddress] = useState('');
 
-  // Automatically populate Pihak Pertama name and title from active official database
+  // Automatically populate Pihak Pertama name, title, and authority fields from active official database or snapshot
   useEffect(() => {
     if (activeAgreementSubmission) {
-      if (activeOfficial) {
+      if (activeAgreementSubmission.prjOfficialName) {
+        setAgreementPihakPertama(activeAgreementSubmission.prjOfficialName);
+        setAgreementJabatanPihakPertama(activeAgreementSubmission.prjOfficialTitle || '');
+        setAgreementOfficialOrderNo(activeAgreementSubmission.prjOfficialOrderNo || '');
+        setAgreementOfficialOrderDate(activeAgreementSubmission.prjOfficialOrderDate || '');
+        setAgreementOfficialMandateNo(activeAgreementSubmission.prjOfficialMandateNo || '');
+        setAgreementOfficialMandateTitle(activeAgreementSubmission.prjOfficialMandateTitle || '');
+      } else if (activeOfficial) {
         setAgreementPihakPertama(activeOfficial.name);
         setAgreementJabatanPihakPertama(activeOfficial.title);
+        setAgreementOfficialOrderNo(activeOfficial.officialOrderNo || activeOfficial.ordinanceNumber || '');
+        setAgreementOfficialOrderDate(activeOfficial.officialOrderDate || activeOfficial.ordinanceDate || '');
+        setAgreementOfficialMandateNo(activeOfficial.officialMandateNo || '');
+        setAgreementOfficialMandateTitle(activeOfficial.officialMandateTitle || '');
       } else {
         setAgreementPihakPertama('Tim LMAN');
         setAgreementJabatanPihakPertama('Divisi Pengembangan dan Pendayagunaan Properti 1');
+        setAgreementOfficialOrderNo('');
+        setAgreementOfficialOrderDate('');
+        setAgreementOfficialMandateNo('');
+        setAgreementOfficialMandateTitle('');
       }
     }
   }, [activeAgreementSubmission, activeOfficial]);
@@ -376,6 +399,10 @@ export default function Home() {
       tanggalSuratPermohonan: activeAgreementSubmission.createdAt.split('T')[0],
       namaPihakPertama: agreementPihakPertama,
       jabatanPihakPertama: agreementJabatanPihakPertama,
+      officialOrderNo: agreementOfficialOrderNo,
+      officialOrderDate: agreementOfficialOrderDate ? formatTanggalIndo(agreementOfficialOrderDate) : '',
+      officialMandateNo: agreementOfficialMandateNo,
+      officialMandateTitle: agreementOfficialMandateTitle,
       namaPihakKedua: client.picName,
       jabatanPihakKedua: 'Direktur Utama',
       instansiPihakKedua: client.companyName,
@@ -390,7 +417,20 @@ export default function Home() {
       batasBayar: new Date(new Date().getTime() + 14 * 24 * 60 * 60 * 1000).toISOString().split('T')[0],
       securityDeposit: activeAgreementSubmission.estimatedCost * 0.10
     });
-  }, [activeAgreementSubmission, clients, bookings, agreementNomor, loiNomorSurat, loiNomorSuratPemohon, agreementPihakPertama, agreementJabatanPihakPertama]);
+  }, [
+    activeAgreementSubmission,
+    clients,
+    bookings,
+    agreementNomor,
+    loiNomorSurat,
+    loiNomorSuratPemohon,
+    agreementPihakPertama,
+    agreementJabatanPihakPertama,
+    agreementOfficialOrderNo,
+    agreementOfficialOrderDate,
+    agreementOfficialMandateNo,
+    agreementOfficialMandateTitle
+  ]);
 
   // Calendar Month Navigation
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
@@ -675,7 +715,7 @@ export default function Home() {
   // LMAN Official Handlers
   const handleCreateOfficial = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!officialName || !officialTitle || !officialOrdinanceNumber || !officialOrdinanceDate) {
+    if (!officialName || !officialTitle || !officialOrderNo || !officialOrderDate || !officialMandateNo || !officialMandateTitle) {
       alert('Semua field pejabat wajib diisi.');
       return;
     }
@@ -683,8 +723,12 @@ export default function Home() {
       const newOfficial = await createOfficial({
         name: officialName,
         title: officialTitle,
-        ordinanceNumber: officialOrdinanceNumber,
-        ordinanceDate: officialOrdinanceDate,
+        ordinanceNumber: officialOrderNo,
+        ordinanceDate: officialOrderDate,
+        officialOrderNo,
+        officialOrderDate,
+        officialMandateNo,
+        officialMandateTitle,
         isActive: officials.length === 0
       });
       setOfficials((prev) => [...prev, newOfficial]);
@@ -692,6 +736,10 @@ export default function Home() {
       setOfficialTitle('');
       setOfficialOrdinanceNumber('');
       setOfficialOrdinanceDate('');
+      setOfficialOrderNo('');
+      setOfficialOrderDate('');
+      setOfficialMandateNo('');
+      setOfficialMandateTitle('');
       alert('Pejabat LMAN baru berhasil ditambahkan!');
     } catch (err) {
       console.error(err);
@@ -702,7 +750,7 @@ export default function Home() {
   const handleUpdateOfficial = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!editingOfficialId) return;
-    if (!officialName || !officialTitle || !officialOrdinanceNumber || !officialOrdinanceDate) {
+    if (!officialName || !officialTitle || !officialOrderNo || !officialOrderDate || !officialMandateNo || !officialMandateTitle) {
       alert('Semua field pejabat wajib diisi.');
       return;
     }
@@ -710,8 +758,12 @@ export default function Home() {
       const success = await updateOfficial(editingOfficialId, {
         name: officialName,
         title: officialTitle,
-        ordinanceNumber: officialOrdinanceNumber,
-        ordinanceDate: officialOrdinanceDate,
+        ordinanceNumber: officialOrderNo,
+        ordinanceDate: officialOrderDate,
+        officialOrderNo,
+        officialOrderDate,
+        officialMandateNo,
+        officialMandateTitle,
       });
       if (success) {
         setOfficials((prev) =>
@@ -721,8 +773,12 @@ export default function Home() {
                   ...o,
                   name: officialName,
                   title: officialTitle,
-                  ordinanceNumber: officialOrdinanceNumber,
-                  ordinanceDate: officialOrdinanceDate,
+                  ordinanceNumber: officialOrderNo,
+                  ordinanceDate: officialOrderDate,
+                  officialOrderNo,
+                  officialOrderDate,
+                  officialMandateNo,
+                  officialMandateTitle,
                 }
               : o
           )
@@ -732,6 +788,10 @@ export default function Home() {
         setOfficialTitle('');
         setOfficialOrdinanceNumber('');
         setOfficialOrdinanceDate('');
+        setOfficialOrderNo('');
+        setOfficialOrderDate('');
+        setOfficialMandateNo('');
+        setOfficialMandateTitle('');
         alert('Perubahan data pejabat berhasil disimpan!');
       } else {
         alert('Gagal menyimpan perubahan pejabat.');
@@ -960,15 +1020,15 @@ export default function Home() {
       const areaText = `${new Intl.NumberFormat('id-ID').format(sub.totalAreaSqm)} meter`;
       const objectDescriptionBase = (sub.objectDescription || sub.roomCodes.join(', ')).trim();
 
-      const officialOrdinanceLegalBasis = activeOfficial
-        ? `berdasarkan Surat Perintah Direktur Utama Lembaga Manajemen Aset Negara Nomor ${activeOfficial.ordinanceNumber} tanggal ${formatTanggalIndo(activeOfficial.ordinanceDate)} dan dalam kapasitasnya bertindak untuk dan atas nama Direktur Utama Lembaga Manajemen Aset Negara berdasarkan Keputusan Direktur Utama Lembaga Manajemen Aset Negara Nomor 45/LMAN/2025 tentang Pelimpahan Sebagian Kewenangan Direktur Utama Dalam Bentuk Mandat Kepada Direktur dan Kepala Divisi di Lingkungan Lembaga Manajemen Aset Negara Untuk dan Atas Nama Direktur Utama Lembaga Manajemen Aset Negara Menandatangani Dokumen Dalam Rangka Pelaksanaan Tugas dan Fungsi`
-        : '';
-
       const data = {
         offerLetterNoDate,
         offerLetterDateWords: formatTanggalPanjang(new Date().toISOString().split('T')[0]).replace(/^hari /, ''),
-        officialName: (activeOfficial?.name || '').trim(),
-        officialTitle: activeOfficial ? `${activeOfficial.title} ${officialOrdinanceLegalBasis}`.trim() : '',
+        officialName: (agreementPihakPertama || '').trim(),
+        officialTitle: (agreementJabatanPihakPertama || '').trim(),
+        officialOrderNo: (agreementOfficialOrderNo || '').trim(),
+        officialOrderDate: agreementOfficialOrderDate ? formatTanggalIndo(agreementOfficialOrderDate) : '',
+        officialMandateNo: (agreementOfficialMandateNo || '').trim(),
+        officialMandateTitle: (agreementOfficialMandateTitle || '').trim(),
         signatoryName: (client?.signatoryName || client?.picName || '').trim(),
         signatoryTitle: (client?.signatoryTitle || client?.picTitle || '').trim(),
         applicationLetterNo: (loiNomorSuratPemohon || sub.applicationLetterNo || '').trim(),
@@ -988,6 +1048,10 @@ export default function Home() {
         offerLetterDateWords: 'Tanggal Tanda Tangan',
         officialName: 'Nama Pejabat LMAN Aktif',
         officialTitle: 'Jabatan Pejabat LMAN Aktif',
+        officialOrderNo: 'Nomor Surat Perintah',
+        officialOrderDate: 'Tanggal Surat Perintah',
+        officialMandateNo: 'Nomor Keputusan Mandat',
+        officialMandateTitle: 'Judul Keputusan Mandat',
         signatoryName: 'Nama Penanda Tangan Klien',
         signatoryTitle: 'Jabatan/Sebutan Klien',
         applicationLetterNo: 'Nomor Surat Permohonan',
@@ -1027,6 +1091,19 @@ export default function Home() {
         type: 'blob',
         mimeType: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       });
+
+      // Save snapshots to database
+      const updatedSub: Submission = {
+        ...sub,
+        prjOfficialName: data.officialName,
+        prjOfficialTitle: data.officialTitle,
+        prjOfficialOrderNo: data.officialOrderNo,
+        prjOfficialOrderDate: agreementOfficialOrderDate,
+        prjOfficialMandateNo: data.officialMandateNo,
+        prjOfficialMandateTitle: data.officialMandateTitle,
+      };
+      await updateSubmission(sub.id, updatedSub);
+      setSubmissions((prev) => prev.map((s) => (s.id === sub.id ? updatedSub : s)));
 
       const sanitizeForFilename = (s: string) =>
         s.replace(/[\\/:*?"<>|]/g, '').trim().replace(/\s+/g, '_').slice(0, 60);
@@ -3342,14 +3419,18 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                   </h2>
                   
                   {activeOfficial ? (
-                    <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs">
+                    <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl text-xs flex flex-col gap-1.5">
                       <div className="flex justify-between items-start">
                         <span className="font-extrabold text-[9px] text-emerald-800 uppercase tracking-wider">Pejabat Aktif</span>
                         <span className="bg-emerald-200 text-emerald-800 text-[8px] font-extrabold px-1.5 py-0.5 rounded">Aktif</span>
                       </div>
-                      <div className="font-bold mt-1 text-foreground">{activeOfficial.name}</div>
-                      <div className="text-[10px] text-muted-foreground mt-0.5 leading-normal">{activeOfficial.title}</div>
-                      <div className="text-[9px] text-muted-foreground mt-1.5">SK: {activeOfficial.ordinanceNumber} ({formatTanggalIndo(activeOfficial.ordinanceDate)})</div>
+                      <div className="font-bold text-foreground">{activeOfficial.name}</div>
+                      <div className="text-[10px] text-muted-foreground leading-normal font-medium">{activeOfficial.title}</div>
+                      <div className="border-t border-emerald-200/50 pt-1.5 text-[9px] text-muted-foreground flex flex-col gap-0.5">
+                        <div><strong>SP:</strong> {activeOfficial.officialOrderNo || activeOfficial.ordinanceNumber || '-'} ({activeOfficial.officialOrderDate ? formatTanggalIndo(activeOfficial.officialOrderDate) : (activeOfficial.ordinanceDate ? formatTanggalIndo(activeOfficial.ordinanceDate) : '-')})</div>
+                        <div><strong>Keputusan Mandat:</strong> {activeOfficial.officialMandateNo || '-'}</div>
+                        <div className="italic text-[8px] line-clamp-2 leading-snug">{activeOfficial.officialMandateTitle || '-'}</div>
+                      </div>
                     </div>
                   ) : (
                     <div className="p-3 bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-amber-800 dark:text-amber-200 rounded-xl text-xs italic">
@@ -3387,8 +3468,12 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                                     setEditingOfficialId(o.id);
                                     setOfficialName(o.name);
                                     setOfficialTitle(o.title);
-                                    setOfficialOrdinanceNumber(o.ordinanceNumber);
-                                    setOfficialOrdinanceDate(o.ordinanceDate);
+                                    setOfficialOrdinanceNumber(o.officialOrderNo || o.ordinanceNumber || '');
+                                    setOfficialOrdinanceDate(o.officialOrderDate || o.ordinanceDate || '');
+                                    setOfficialOrderNo(o.officialOrderNo || o.ordinanceNumber || '');
+                                    setOfficialOrderDate(o.officialOrderDate || o.ordinanceDate || '');
+                                    setOfficialMandateNo(o.officialMandateNo || '');
+                                    setOfficialMandateTitle(o.officialMandateTitle || '');
                                   }}
                                   className="p-0.5 text-muted-foreground hover:text-muted-foreground transition-colors"
                                   title="Edit Data Pejabat"
@@ -3420,36 +3505,67 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                         />
                       </div>
                       <div>
-                        <label className="text-[9px] font-semibold text-muted-foreground block mb-1">Jabatan Resmi</label>
+                        <label className="text-[9px] font-semibold text-muted-foreground block mb-0.5">Jabatan Pihak Pertama</label>
+                        <span className="text-[8px] text-muted-foreground block mb-1">Isi hanya jabatan resmi, tanpa dasar hukum seperti Surat Perintah/Keputusan</span>
                         <input
                           type="text"
                           required
                           value={officialTitle}
                           onChange={(e) => setOfficialTitle(e.target.value)}
-                          placeholder="e.g. Pelaksana Tugas Direktur Pengembangan..."
+                          placeholder="e.g. Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan..."
                           className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#800020]"
                         />
                       </div>
                       <div className="grid grid-cols-2 gap-2">
                         <div>
-                          <label className="text-[9px] font-semibold text-muted-foreground block mb-1">Nomor SK / Ordinance</label>
+                          <label className="text-[9px] font-semibold text-muted-foreground block mb-1">Nomor Surat Perintah</label>
                           <input
                             type="text"
                             required
-                            value={officialOrdinanceNumber}
-                            onChange={(e) => setOfficialOrdinanceNumber(e.target.value)}
+                            value={officialOrderNo}
+                            onChange={(e) => {
+                              setOfficialOrderNo(e.target.value);
+                              setOfficialOrdinanceNumber(e.target.value);
+                            }}
                             placeholder="e.g. PRIN-10/LMAN/2024"
                             className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#800020]"
                           />
                         </div>
                         <div>
-                          <label className="text-[9px] font-semibold text-muted-foreground block mb-1">Tanggal SK</label>
+                          <label className="text-[9px] font-semibold text-muted-foreground block mb-1">Tanggal Surat Perintah</label>
                           <input
                             type="date"
                             required
-                            value={officialOrdinanceDate}
-                            onChange={(e) => setOfficialOrdinanceDate(e.target.value)}
+                            value={officialOrderDate}
+                            onChange={(e) => {
+                              setOfficialOrderDate(e.target.value);
+                              setOfficialOrdinanceDate(e.target.value);
+                            }}
                             className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#800020]"
+                          />
+                        </div>
+                      </div>
+                      <div className="grid grid-cols-1 gap-2">
+                        <div>
+                          <label className="text-[9px] font-semibold text-muted-foreground block mb-1">Nomor Keputusan Mandat</label>
+                          <input
+                            type="text"
+                            required
+                            value={officialMandateNo}
+                            onChange={(e) => setOfficialMandateNo(e.target.value)}
+                            placeholder="e.g. 45/LMAN/2025"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#800020]"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[9px] font-semibold text-muted-foreground block mb-1">Judul Keputusan Mandat (tentang)</label>
+                          <textarea
+                            required
+                            rows={3}
+                            value={officialMandateTitle}
+                            onChange={(e) => setOfficialMandateTitle(e.target.value)}
+                            placeholder="e.g. Pelimpahan Sebagian Kewenangan Direktur Utama..."
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-[11px] text-foreground focus:outline-none focus:border-[#800020] resize-y"
                           />
                         </div>
                       </div>
@@ -3473,6 +3589,10 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                               setOfficialTitle('');
                               setOfficialOrdinanceNumber('');
                               setOfficialOrdinanceDate('');
+                              setOfficialOrderNo('');
+                              setOfficialOrderDate('');
+                              setOfficialMandateNo('');
+                              setOfficialMandateTitle('');
                             }}
                             className="bg-muted hover:bg-muted text-foreground font-bold py-1.5 px-3 rounded-lg text-[10px] transition-colors"
                           >
@@ -4469,6 +4589,51 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                       <div className="grid grid-cols-2 gap-3">
                         <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Surat Perintah</label>
+                          <input
+                            type="text"
+                            value={agreementOfficialOrderNo}
+                            onChange={(e) => setAgreementOfficialOrderNo(e.target.value)}
+                            placeholder="e.g. PRIN-10/LMAN/2024"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Surat Perintah</label>
+                          <input
+                            type="date"
+                            value={agreementOfficialOrderDate}
+                            onChange={(e) => setAgreementOfficialOrderDate(e.target.value)}
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-3">
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Keputusan Mandat</label>
+                          <input
+                            type="text"
+                            value={agreementOfficialMandateNo}
+                            onChange={(e) => setAgreementOfficialMandateNo(e.target.value)}
+                            placeholder="e.g. 45/LMAN/2025"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Judul Keputusan Mandat / tentang</label>
+                          <textarea
+                            value={agreementOfficialMandateTitle}
+                            onChange={(e) => setAgreementOfficialMandateTitle(e.target.value)}
+                            placeholder="e.g. Pelimpahan Sebagian Kewenangan..."
+                            rows={3}
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020] resize-y"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
                           <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Surat Penawaran</label>
                           <input
                             type="text"
@@ -4824,6 +4989,51 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                           onChange={(e) => setAgreementJabatanPihakPertama(e.target.value)}
                           className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
                         />
+                      </div>
+
+                      <div className="grid grid-cols-2 gap-3">
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Surat Perintah</label>
+                          <input
+                            type="text"
+                            value={agreementOfficialOrderNo}
+                            onChange={(e) => setAgreementOfficialOrderNo(e.target.value)}
+                            placeholder="e.g. PRIN-10/LMAN/2024"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Tanggal Surat Perintah</label>
+                          <input
+                            type="date"
+                            value={agreementOfficialOrderDate}
+                            onChange={(e) => setAgreementOfficialOrderDate(e.target.value)}
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
+                          />
+                        </div>
+                      </div>
+
+                      <div className="grid grid-cols-1 gap-3">
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Nomor Keputusan Mandat</label>
+                          <input
+                            type="text"
+                            value={agreementOfficialMandateNo}
+                            onChange={(e) => setAgreementOfficialMandateNo(e.target.value)}
+                            placeholder="e.g. 45/LMAN/2025"
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020]"
+                          />
+                        </div>
+                        <div>
+                          <label className="text-[10px] font-semibold text-muted-foreground block mb-1">Judul Keputusan Mandat / tentang</label>
+                          <textarea
+                            value={agreementOfficialMandateTitle}
+                            onChange={(e) => setAgreementOfficialMandateTitle(e.target.value)}
+                            placeholder="e.g. Pelimpahan Sebagian Kewenangan..."
+                            rows={3}
+                            className="w-full bg-card border border-border rounded-lg py-1.5 px-2.5 text-xs text-foreground focus:outline-none focus:border-[#800020] resize-y"
+                          />
+                        </div>
                       </div>
 
                       <div className="grid grid-cols-2 gap-3">

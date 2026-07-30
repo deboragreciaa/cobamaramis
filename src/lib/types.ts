@@ -51,6 +51,14 @@ export interface Submission {
   loiVerified?: boolean;
   loiOfficialName?: string;
   loiOfficialTitle?: string;
+  
+  // PRJ Official Snapshot fields
+  prjOfficialName?: string;
+  prjOfficialTitle?: string;
+  prjOfficialOrderNo?: string;
+  prjOfficialOrderDate?: string;
+  prjOfficialMandateNo?: string;
+  prjOfficialMandateTitle?: string;
 }
 
 export type BookingType = 'TENTATIVE' | 'CONFIRMED' | 'UNAVAILABLE';
@@ -98,4 +106,9 @@ export interface Official {
   ordinanceNumber: string;
   ordinanceDate: string;
   isActive: boolean;
+  officialOrderNo?: string;
+  officialOrderDate?: string;
+  officialMandateNo?: string;
+  officialMandateTitle?: string;
 }
+

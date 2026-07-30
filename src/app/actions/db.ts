@@ -67,9 +67,13 @@ export async function seedDatabase() {
     if (officialsSnapshot.empty) {
       await db.collection('officials').add({
         name: 'Mahdi',
-        title: 'Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan LMAN',
+        title: 'Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan Lembaga Manajemen Aset Negara, Direktorat Jenderal Kekayaan Negara pada Kementerian Keuangan',
         ordinanceNumber: 'PRIN-10/LMAN/2024',
         ordinanceDate: '2024-10-09',
+        officialOrderNo: 'PRIN-10/LMAN/2024',
+        officialOrderDate: '2024-10-09',
+        officialMandateNo: '45/LMAN/2025',
+        officialMandateTitle: 'Pelimpahan Sebagian Kewenangan Direktur Utama Dalam Bentuk Mandat Kepada Direktur dan Kepala Divisi di Lingkungan Lembaga Manajemen Aset Negara Untuk dan Atas Nama Direktur Utama Lembaga Manajemen Aset Negara Menandatangani Dokumen Dalam Rangka Pelaksanaan Tugas dan Fungsi',
         isActive: true,
       });
       console.log('Seeded default LMAN official.');
@@ -208,9 +212,13 @@ let mockOfficials: Official[] = [
   {
     id: 'mock-official-1',
     name: 'Mahdi',
-    title: 'Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan LMAN',
+    title: 'Pelaksana Tugas Direktur Pengembangan dan Pendayagunaan Lembaga Manajemen Aset Negara, Direktorat Jenderal Kekayaan Negara pada Kementerian Keuangan',
     ordinanceNumber: 'PRIN-10/LMAN/2024',
     ordinanceDate: '2024-10-09',
+    officialOrderNo: 'PRIN-10/LMAN/2024',
+    officialOrderDate: '2024-10-09',
+    officialMandateNo: '45/LMAN/2025',
+    officialMandateTitle: 'Pelimpahan Sebagian Kewenangan Direktur Utama Dalam Bentuk Mandat Kepada Direktur dan Kepala Divisi di Lingkungan Lembaga Manajemen Aset Negara Untuk dan Atas Nama Direktur Utama Lembaga Manajemen Aset Negara Menandatangani Dokumen Dalam Rangka Pelaksanaan Tugas dan Fungsi',
     isActive: true
   }
 ];
