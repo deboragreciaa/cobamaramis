@@ -1024,7 +1024,6 @@ export default function Home() {
       const offerLetterNoDate = offerLetterNo && offerLetterDate ? `${offerLetterNo} tanggal ${offerLetterDate}` : '';
 
       const areaText = `${new Intl.NumberFormat('id-ID').format(sub.totalAreaSqm)} meter`;
-      const objectDescriptionBase = (sub.objectDescription || sub.roomCodes.join(', ')).trim();
 
       const data = {
         offerLetterNoDate,
@@ -1044,7 +1043,7 @@ export default function Home() {
         applicationLetterNo: (loiNomorSuratPemohon || sub.applicationLetterNo || '').trim(),
         applicationLetterDate: formatTanggalIndo(loiTanggalSuratPemohon || sub.applicationLetterDate || ''),
         eventName: (sub.eventName || sub.activityName || '').trim(),
-        objectDescription: objectDescriptionBase ? `${objectDescriptionBase}, dengan luas ${areaText}` : '',
+        objectDescription: `dengan luas ${areaText}`,
         eventDuration,
         eventDate: eventDateRange,
         nilaiSewa: formatRupiahTerbilang(sub.offerValue || sub.estimatedCost),
