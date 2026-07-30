@@ -1023,6 +1023,8 @@ export default function Home() {
       const data = {
         offerLetterNoDate,
         offerLetterDateWords: formatTanggalPanjang(new Date().toISOString().split('T')[0]).replace(/^hari /, ''),
+        agreementNo: (agreementNomor || '').trim(),
+        agreementDateWords: formatTanggalPanjang(new Date().toISOString().split('T')[0]).replace(/^hari /, ''),
         officialName: (agreementPihakPertama || '').trim(),
         officialTitle: (agreementJabatanPihakPertama || '').trim(),
         officialOrderNo: (agreementOfficialOrderNo || '').trim(),
@@ -1046,6 +1048,8 @@ export default function Home() {
       const FIELD_LABELS: Record<keyof typeof data, string> = {
         offerLetterNoDate: 'Nomor & Tanggal Surat Penawaran',
         offerLetterDateWords: 'Tanggal Tanda Tangan',
+        agreementNo: 'Nomor Perjanjian',
+        agreementDateWords: 'Tanggal Perjanjian Terbilang',
         officialName: 'Nama Pejabat LMAN Aktif',
         officialTitle: 'Jabatan Pejabat LMAN Aktif',
         officialOrderNo: 'Nomor Surat Perintah',
@@ -1083,7 +1087,13 @@ export default function Home() {
         paragraphLoop: true,
         linebreaks: true,
         delimiters: { start: '{{', end: '}}' },
+        nullGetter: () => "",
       });
+
+      // Debug: log placeholder di template yang tidak punya data
+      const tags = doc.getFullText().match(/\{\{(\w+)\}\}/g) || [];
+      const missing = [...new Set(tags.map(t => t.replace(/[{}]/g, "")))].filter(k => !(k in data));
+      if (missing.length) console.warn("Placeholder tanpa data:", missing);
 
       doc.render(data);
 
