@@ -3989,10 +3989,10 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
                   const stagesInfo = [
                     { t: 1, label: 'Konsultasi Awal', desc: 'Melakukan diskusi awal perihal kebutuhan ruangan, kapasitas, dan tanggal acara.' },
-                    { t: 2, label: 'Perhitungan Tarif & Penawaran', desc: 'Mempersiapkan rincian tarif menggunakan rumus PMK 144.' },
-                    { t: 3, label: 'Penerbitan Letter of Intent (LOI)', desc: 'Menerbitkan LOI minat pemanfaatan ruang.' },
                     { t: 4, label: 'Survei Lokasi', desc: 'Penjadwalan survei lapangan bersama perwakilan instansi.' },
+                    { t: 2, label: 'Perhitungan Tarif & Penawaran', desc: 'Mempersiapkan rincian tarif menggunakan rumus PMK 144.' },
                     { t: 5, label: 'Surat Permohonan Resmi', desc: 'Menerima surat permohonan resmi pemohon (Syarat utama Tanggal Terkunci).' },
+                    { t: 3, label: 'Penerbitan Letter of Intent (LOI)', desc: 'Menerbitkan LOI minat pemanfaatan ruang.' },
                     { t: 6, label: 'Perjanjian Sewa Guna', desc: 'Penyusunan draf kontrak perjanjian kerjasama pemanfaatan.' },
                     { t: 7, label: 'Technical Meeting (H-7)', desc: 'Koordinasi operasional loading, kelistrikan, & rundown acara.' },
                     { t: 8, label: 'Pembayaran & Pelaksanaan Kegiatan', desc: 'Verifikasi pelunasan PNBP sewa dan pelaksanaan hari-H acara.' },
