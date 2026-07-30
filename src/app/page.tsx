@@ -1029,9 +1029,11 @@ export default function Home() {
 
       const data = {
         offerLetterNoDate,
-        offerLetterDateWords: formatTanggalPanjang(new Date().toISOString().split('T')[0]).replace(/^hari /, ''),
+        // Fills the "{{offerLetterDateWords}}" placeholder in the template, which is actually
+        // the PERJANJIAN's own signing-date clause ("...ditandatangani di Jakarta pada hari ...") —
+        // it must reflect Tanggal Perjanjian, not today's date.
+        offerLetterDateWords: formatTanggalPanjang(agreementDate).replace(/^hari /, ''),
         agreementNo: (agreementNomor || '').trim(),
-        agreementDateWords: formatTanggalPanjang(agreementDate).replace(/^hari /, ''),
         officialName: (agreementPihakPertama || '').trim(),
         officialTitle: (agreementJabatanPihakPertama || '').trim(),
         officialOrderNo: (agreementOfficialOrderNo || '').trim(),
@@ -1054,9 +1056,8 @@ export default function Home() {
 
       const FIELD_LABELS: Record<keyof typeof data, string> = {
         offerLetterNoDate: 'Nomor & Tanggal Surat Penawaran',
-        offerLetterDateWords: 'Tanggal Tanda Tangan',
+        offerLetterDateWords: 'Tanggal Perjanjian',
         agreementNo: 'Nomor Perjanjian',
-        agreementDateWords: 'Tanggal Perjanjian Terbilang',
         officialName: 'Nama Pejabat LMAN Aktif',
         officialTitle: 'Jabatan Pejabat LMAN Aktif',
         officialOrderNo: 'Nomor Surat Perintah',
