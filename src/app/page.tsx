@@ -2123,7 +2123,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
       version: '2025-11',
       desc: 'Aturan umum untuk seluruh pengunjung dan tamu undangan.',
       type: 'PDF',
-      fileUrl: '/Tata_Tertib_Mitra_dan_Pengunjung_Gedung_AA_Maramis.pdf',
+      fileUrl: '/Tata_Tertib_Pengunjung_Gedung_AA_Maramis.pdf',
       available: true
     },
     {
@@ -2131,7 +2131,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
       version: '2026-01',
       desc: 'Ketentuan teknis operasional loading barang, kelistrikan, dan kebersihan bagi penyelenggara.',
       type: 'PDF',
-      available: false
+      fileUrl: '/Tata_Tertib_Mitra_Pemanfaatan_Gedung_AA_Maramis.pdf',
+      available: true
     },
     {
       name: 'Template Surat Permohonan Sewa',
