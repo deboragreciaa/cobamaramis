@@ -2590,12 +2590,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               {activeTab === 'calendar_recap' && 'Kalender — Rekap Penjadwalan'}
               {activeTab === 'documents' && 'Dokumen Operasional Sewa'}
             </h2>
-            
-            {role === 'PENGINPUT' && (
-              <div className="text-[10px] text-[#800020] dark:text-[#9a1a35] font-bold bg-[#9a1a35]/10 border border-[#9a1a35]/30 rounded-full px-3 py-1 tracking-wider uppercase">
-                Mode Pengeditan Aktif
-              </div>
-            )}
           </div>
 
           {/* TAB CONTENTS */}
