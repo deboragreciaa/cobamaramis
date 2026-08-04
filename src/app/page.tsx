@@ -2134,20 +2134,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
       fileUrl: '/Tata_Tertib_Mitra_Pemanfaatan_Gedung_AA_Maramis.pdf',
       available: true
     },
-    {
-      name: 'Template Surat Permohonan Sewa',
-      version: '2026-03',
-      desc: 'Draft surat resmi pengajuan sewa untuk dikirimkan oleh pemohon.',
-      type: 'DOCX',
-      available: false
-    },
-    {
-      name: 'Formulir Operasional Acara',
-      version: '2026-02',
-      desc: 'Form checklist loading barang, izin keramaian, dan checklist kebersihan.',
-      type: 'ZIP',
-      available: false
-    },
   ];
 
   // Render Spinner
