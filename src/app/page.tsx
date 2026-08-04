@@ -2171,7 +2171,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
               className="hidden dark:block w-[300px] h-auto mb-4"
             />
             <h1 className="text-2xl font-bold text-center text-[#800020] dark:text-[#fb7185] tracking-wide">Gedung A.A. Maramis</h1>
-            <p className="text-muted-foreground text-xs mt-1 text-center font-bold tracking-wider">SISTEM KELOLA SEWA INTERNAL — LMAN</p>
+            <p className="text-black dark:text-muted-foreground text-xs mt-1 text-center font-bold tracking-wider">SISTEM KELOLA SEWA INTERNAL — LMAN</p>
           </div>
 
           <form onSubmit={handleLoginSubmit} className="space-y-6">
@@ -2188,7 +2188,6 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 spellCheck={false}
                 className="w-full bg-card border border-border rounded-lg py-2.5 px-3 text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020] transition-colors"
               />
-              <span className="text-[10px] text-muted-foreground block">Satu akun bersama untuk seluruh tim pengelola.</span>
             </div>
 
             <div className="space-y-2">
@@ -2197,7 +2196,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
                 <input
                   type={showPassword ? "text" : "password"}
                   required
-                  placeholder="Masukkan kata sandi tim"
+                  placeholder="Masukkan kata sandi"
                   value={passwordInput}
                   onChange={(e) => setPasswordInput(e.target.value)}
                   className="w-full bg-card border border-border rounded-lg py-2.5 px-3 pr-10 text-foreground text-sm placeholder:text-muted-foreground focus:outline-none focus:border-[#800020] focus:ring-1 focus:ring-[#800020] transition-colors"
