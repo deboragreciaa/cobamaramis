@@ -2157,8 +2157,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
         <div className="absolute inset-0 bg-[rgba(0,0,0,0.55)] pointer-events-none"></div>
 
         <div
-          className="w-full max-w-md border border-border rounded-2xl shadow-xl p-8 z-10"
-          style={{ background: 'rgba(30, 30, 30, 0.70)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
+          className="w-full max-w-md border border-border rounded-2xl shadow-xl p-8 z-10 bg-[rgba(255,255,255,0.85)] dark:bg-[rgba(30,30,30,0.70)] backdrop-blur-sm"
         >
           <div className="flex flex-col items-center mb-8">
             <img
@@ -2177,7 +2176,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
           <form onSubmit={handleLoginSubmit} className="space-y-6">
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-white/90 uppercase tracking-wider block">Username</label>
+              <label className="text-xs font-semibold text-foreground uppercase tracking-wider block">Username</label>
               <input
                 type="text"
                 required
@@ -2193,7 +2192,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             </div>
 
             <div className="space-y-2">
-              <label className="text-xs font-semibold text-white/90 uppercase tracking-wider block">Kata Sandi</label>
+              <label className="text-xs font-semibold text-foreground uppercase tracking-wider block">Kata Sandi</label>
               <div className="relative">
                 <input
                   type={showPassword ? "text" : "password"}
@@ -2255,8 +2254,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
         <div className="absolute inset-0 bg-[rgba(0,0,0,0.55)] pointer-events-none"></div>
 
         <div
-          className="w-full max-w-xl border border-border rounded-2xl shadow-xl p-8 z-10"
-          style={{ background: 'rgba(30, 30, 30, 0.70)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
+          className="w-full max-w-xl border border-border rounded-2xl shadow-xl p-8 z-10 bg-[rgba(255,255,255,0.85)] dark:bg-[rgba(30,30,30,0.70)] backdrop-blur-sm"
         >
           <div className="flex flex-col items-center mb-6">
             <h1 className="text-xl font-bold text-[#800020] dark:text-[#fb7185] tracking-wide">Pilih Peran Sesi Anda</h1>
@@ -2267,14 +2265,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             {/* PENGINPUT BUTTON */}
             <button
               onClick={() => selectRole('PENGINPUT')}
-              className="group text-left p-6 border border-border hover:border-amber-400 hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between"
-              style={{ background: 'rgba(30, 30, 30, 0.70)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
+              className="group text-left p-6 border border-border hover:border-amber-400 hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between bg-[rgba(255,255,255,0.85)] dark:bg-[rgba(30,30,30,0.70)] backdrop-blur-sm"
             >
               <div>
                 <div className="h-10 w-10 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-amber-650 dark:text-amber-200 flex items-center justify-center mb-4 group-hover:bg-amber-100 transition-colors">
                   <Calculator className="h-5 w-5" />
                 </div>
-                <h3 className="text-white/90 font-bold group-hover:text-amber-600 dark:text-amber-300 transition-colors">Penginput</h3>
+                <h3 className="text-foreground font-bold group-hover:text-amber-600 dark:text-amber-300 transition-colors">Penginput</h3>
                 <p className="text-muted-foreground text-xs mt-2 leading-relaxed font-medium">
                   Akses penuh untuk input data klien, survei, booking, kelola parameter hitungan, membuat LOI/Perjanjian, serta mengunduh dokumen.
                 </p>
@@ -2285,14 +2282,13 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             {/* PEREVIEW BUTTON */}
             <button
               onClick={() => selectRole('PEREVIEW')}
-              className="group text-left p-6 border border-border hover:border-[#800020] hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between"
-              style={{ background: 'rgba(30, 30, 30, 0.70)', backdropFilter: 'blur(4px)', WebkitBackdropFilter: 'blur(4px)' }}
+              className="group text-left p-6 border border-border hover:border-[#800020] hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between bg-[rgba(255,255,255,0.85)] dark:bg-[rgba(30,30,30,0.70)] backdrop-blur-sm"
             >
               <div>
                 <div className="h-10 w-10 rounded-lg bg-[#9a1a35]/10 dark:bg-[#600018]/30 border border-[#9a1a35]/40 dark:border-[#600018] text-[#800020] dark:text-[#fb7185] flex items-center justify-center mb-4 group-hover:bg-[#9a1a35]/15 transition-colors">
                   <Layers className="h-5 w-5" />
                 </div>
-                <h3 className="text-white/90 font-bold group-hover:text-[#800020] dark:text-[#fb7185] transition-colors">Pereview</h3>
+                <h3 className="text-foreground font-bold group-hover:text-[#800020] dark:text-[#fb7185] transition-colors">Pereview</h3>
                 <p className="text-muted-foreground text-xs mt-2 leading-relaxed font-medium">
                   Akses pantau dan monitoring saja. Melihat progres tahap pemesanan, melihat katalog ruangan, dan menggunakan kalkulator penawaran.
                 </p>
@@ -2303,7 +2299,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
 
           <div className="flex justify-between items-center pt-6 border-t border-border mt-4">
             <span className="text-[11px] text-muted-foreground font-medium">
-              Sesi aktif: <span className="font-semibold text-white/90">{toUsernameDisplay(user.email)}</span>
+              Sesi aktif: <span className="font-semibold text-foreground">{toUsernameDisplay(user.email)}</span>
             </span>
             <button
               onClick={logout}
