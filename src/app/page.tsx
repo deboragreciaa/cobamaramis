@@ -2157,7 +2157,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
         <div className="absolute inset-0 bg-[rgba(0,0,0,0.55)] pointer-events-none"></div>
 
         <div
-          className="w-full max-w-md border border-border rounded-2xl shadow-xl p-8 z-10 bg-[rgba(255,255,255,0.60)] dark:bg-[rgba(30,30,30,0.60)] backdrop-blur-sm"
+          className="w-full max-w-md border border-border rounded-2xl shadow-xl p-8 z-10 bg-[rgba(255,255,255,0.30)] dark:bg-[rgba(30,30,30,0.30)] backdrop-blur-sm"
         >
           <div className="flex flex-col items-center mb-8">
             <img
@@ -2254,7 +2254,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
         <div className="absolute inset-0 bg-[rgba(0,0,0,0.55)] pointer-events-none"></div>
 
         <div
-          className="w-full max-w-xl border border-border rounded-2xl shadow-xl p-8 z-10 bg-[rgba(255,255,255,0.60)] dark:bg-[rgba(30,30,30,0.60)] backdrop-blur-sm"
+          className="w-full max-w-xl border border-border rounded-2xl shadow-xl p-8 z-10 bg-[rgba(255,255,255,0.30)] dark:bg-[rgba(30,30,30,0.30)] backdrop-blur-sm"
         >
           <div className="flex flex-col items-center mb-6">
             <h1 className="text-xl font-bold text-[#800020] dark:text-[#fb7185] tracking-wide">Pilih Peran Sesi Anda</h1>
@@ -2265,7 +2265,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             {/* PENGINPUT BUTTON */}
             <button
               onClick={() => selectRole('PENGINPUT')}
-              className="group text-left p-6 border border-border hover:border-amber-400 hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between bg-[rgba(255,255,255,0.60)] dark:bg-[rgba(30,30,30,0.60)] backdrop-blur-sm"
+              className="group text-left p-6 border border-border hover:border-amber-400 hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between bg-[rgba(255,255,255,0.30)] dark:bg-[rgba(30,30,30,0.30)] backdrop-blur-sm"
             >
               <div>
                 <div className="h-10 w-10 rounded-lg bg-amber-50 dark:bg-amber-950/30 border border-amber-200 dark:border-amber-900 text-amber-650 dark:text-amber-200 flex items-center justify-center mb-4 group-hover:bg-amber-100 transition-colors">
@@ -2282,7 +2282,7 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
             {/* PEREVIEW BUTTON */}
             <button
               onClick={() => selectRole('PEREVIEW')}
-              className="group text-left p-6 border border-border hover:border-[#800020] hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between bg-[rgba(255,255,255,0.60)] dark:bg-[rgba(30,30,30,0.60)] backdrop-blur-sm"
+              className="group text-left p-6 border border-border hover:border-[#800020] hover:shadow-md rounded-xl transition-all duration-300 flex flex-col justify-between bg-[rgba(255,255,255,0.30)] dark:bg-[rgba(30,30,30,0.30)] backdrop-blur-sm"
             >
               <div>
                 <div className="h-10 w-10 rounded-lg bg-[#9a1a35]/10 dark:bg-[#600018]/30 border border-[#9a1a35]/40 dark:border-[#600018] text-[#800020] dark:text-[#fb7185] flex items-center justify-center mb-4 group-hover:bg-[#9a1a35]/15 transition-colors">
