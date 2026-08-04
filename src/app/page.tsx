@@ -2123,7 +2123,8 @@ TOTAL TARIF   : ${formatRupiah(calculatorResults.total)}
       version: '2025-11',
       desc: 'Aturan umum untuk seluruh pengunjung dan tamu undangan.',
       type: 'PDF',
-      available: false
+      fileUrl: '/Tata_Tertib_Mitra_dan_Pengunjung_Gedung_AA_Maramis.pdf',
+      available: true
     },
     {
       name: 'Tata Tertib Mitra Pemanfaatan',
